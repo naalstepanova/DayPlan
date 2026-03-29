@@ -779,17 +779,17 @@ function openLogDay(ds){
   const entry=S.log[ds]||{};
   const chosen=entry.trackers||[];
   const grid=document.getElementById('logIconsGrid');
-  grid.innerHTML=S.trackers.map(t=>`<button class="log-icon-btn ${chosen.includes(t.id)?'active':''}" onclick="toggleLogIcon(this,'${t.id}')">
+  grid.innerHTML=S.trackers.map(t=>`<button class="log-icon-btn ${chosen.includes(t.id)?'active':''}" data-tid="${t.id}" onclick="toggleLogIcon(this)">
     <span class="log-icon-emoji">${t.emoji}</span>
     <span class="log-icon-lbl">${esc(t.name)}</span>
   </button>`).join('');
   document.getElementById('logNote').value=entry.note||'';
   openModal('logModal');
 }
-function toggleLogIcon(btn,tid){btn.classList.toggle('active');}
+function toggleLogIcon(btn){btn.classList.toggle('active');}
 function saveLogDay(){
   if(!logEditDate)return;
-  const chosen=Array.from(document.querySelectorAll('#logIconsGrid .log-icon-btn.active')).map(b=>b.getAttribute('onclick').match(/'([^']+)'\)$/)[1]);
+  const chosen=Array.from(document.querySelectorAll('#logIconsGrid .log-icon-btn.active')).map(b=>b.getAttribute('data-tid'));
   const note=document.getElementById('logNote').value.trim();
   if(!S.log)S.log={};
   S.log[logEditDate]={trackers:chosen,note};
@@ -1052,7 +1052,7 @@ function stopMic(){if(activeRec){try{activeRec.stop();}catch(e){}activeRec=null;
 /* ═══════════════════════════════════════
    GOOGLE DRIVE
 ═══════════════════════════════════════ */
-const GD_CLIENT_ID='502819867089-lsf30tpnoeofc260k4tjl2fa79qi1ohg.apps.googleusercontent.com';// ← replace with your Google OAuth client ID
+const GD_CLIENT_ID='YOUR_GOOGLE_CLIENT_ID';// ← replace with your Google OAuth client ID
 const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
 const GD_FILE_NAME='dayplan_data.json';
 let gdFileId=localStorage.getItem('gd_file_id')||null;
