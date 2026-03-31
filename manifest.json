@@ -2,7 +2,7 @@
   "name": "DayPlan",
   "short_name": "DayPlan",
   "description": "My Y2K daily planner — tasks, habits, water, beauty & more ♡",
-  "start_url": "/dayplan/",
+  "start_url": "https://naalstepanova.github.io/dayplan/",
   "display": "standalone",
   "background_color": "#f2cfe8",
   "theme_color": "#c060a8",
