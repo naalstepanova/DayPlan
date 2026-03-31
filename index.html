@@ -267,484 +267,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 /* dose tags */
 .dose-tag{display:inline-block;padding:0 6px;font-size:13px;border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl);background:var(--white);margin:1px}
 </style>
-</head>
-<body>
-<div class="dbg"></div>
-<div id="app">
-
-<div class="header">
-  <div class="hwin">
-    <div class="tbar">
-      <div class="tbar-l"><span>♡</span> DAYPLAN.EXE — <span id="hDate" style="color:#ffccf0;font-size:6px"></span></div>
-      <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn">✕</div></div>
-    </div>
-    <div class="hbody">
-      <div class="htitle">my <span>day</span><br>planner ♡</div>
-      <div class="hright">
-        <div class="hdate" id="hDateFull"></div>
-        <div class="hstats" id="hStats"></div>
-        <div id="gdStatusMini" style="font-size:12px;color:#40c040;margin-top:2px"></div>
-        <button onclick="sw('drive')" style="margin-top:4px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);padding:3px 8px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px" id="loginHeaderBtn">💾 LOGIN</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="inst" id="instBanner">
-  <span>♡ add to home screen for best experience</span>
-  <button class="ix" onclick="dismissInst()">✕</button>
-</div>
-
-<div class="taskbar">
-  <button class="ttab active" onclick="sw('today')">TODAY</button>
-  <button class="ttab" onclick="sw('water')">WATER</button>
-  <button class="ttab" onclick="sw('log')">LOG ♡</button>
-  <button class="ttab" onclick="sw('meds')">MEDS</button>
-  <button class="ttab" onclick="sw('goals')">GOALS</button>
-  <button class="ttab" onclick="sw('habits')">HABITS</button>
-  <button class="ttab" onclick="sw('beauty')">BEAUTY</button>
-  <button class="ttab" onclick="sw('notifs')">NOTIFS 🔔</button>
-</div>
-
-<div class="scroll-area" id="sa">
-
-<!-- TODAY -->
-<div class="section active" id="tab-today">
-  <div class="stats-row">
-    <div class="stat-win"><div class="stat-n" id="sDone">0</div><div class="stat-l">done ♡</div></div>
-    <div class="stat-win"><div class="stat-n" id="sLeft">0</div><div class="stat-l">left...</div></div>
-    <div class="stat-win"><div class="stat-n" id="sPct">0%</div><div class="stat-l">complete</div></div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>👟</span> STEPS.EXE</div><div class="wbtns"><div class="wbtn">_</div><div class="wbtn">✕</div></div></div>
-    <div class="steps-body">
-      <div class="sring">
-        <svg width="76" height="76" viewBox="0 0 76 76"><circle class="rt" cx="38" cy="38" r="32"/><circle class="rf" cx="38" cy="38" r="32" id="sRing" stroke-dasharray="201.06" stroke-dashoffset="201.06"/></svg>
-        <div class="sctr"><div class="sbig" id="sNum">0</div><div class="sunit">steps</div></div>
-      </div>
-      <div class="sinfo" style="flex:1">
-        <h3>DAILY STEPS</h3>
-        <p id="sGoalTxt">Goal: 10,000</p>
-        <div class="sbtns">
-          <button class="w98 sm" onclick="addSteps(500)">+500</button>
-          <button class="w98 sm" onclick="addSteps(1000)">+1k</button>
-          <button class="w98 sm" onclick="addSteps(2000)">+2k</button>
-          <button class="w98 sm" onclick="addSteps(5000)">+5k</button>
-          <button class="w98 sm" onclick="resetSteps()" style="color:var(--text3)">rst</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📋</span> TASKS_TODAY.TXT</div><div class="wbtns"><div class="wbtn" onclick="openTaskModal()">+</div><div class="wbtn">✕</div></div></div>
-    <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
-        <button class="w98" onclick="openTaskModal()">✦ NEW TASK</button>
-      </div>
-      <div id="taskList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- WATER -->
-<div class="section" id="tab-water">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💧</span> WATER_TRACKER.EXE</div><div class="wbtns"><div class="wbtn">✕</div></div></div>
-    <div class="water-body">
-      <div class="prog-lbl"><span id="wDrunk">0 ml</span><span id="wGoalLbl">/ 2000 ml</span></div>
-      <div class="prog-wrap"><div class="prog98" id="wProg" style="width:0%"></div></div>
-      <div class="water-info">
-        <span id="wMsg">keep drinking! ♡</span>
-        <span id="wPct" style="color:var(--acc)">0%</span>
-      </div>
-      <div class="water-glasses" id="wGlasses"></div>
-      <div class="water-goal-row">
-        <span>glass =</span>
-        <input type="number" id="wGlassSize" value="250" min="50" max="500" step="50" onchange="saveWaterSettings()"/>
-        <span>ml &nbsp;|&nbsp; goal:</span>
-        <input type="number" id="wGoalInput" value="2000" min="500" max="5000" step="250" onchange="saveWaterSettings()"/>
-        <span>ml</span>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-        <button class="w98 sm" onclick="addWater(1)">+ 1 glass</button>
-        <button class="w98 sm" onclick="addWater(-1)">- 1 glass</button>
-        <button class="w98 sm" onclick="resetWater()" style="color:var(--text3)">reset</button>
-      </div>
-    </div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📅</span> WATER_HISTORY</div></div>
-    <div class="pbody"><div id="wHistory"></div></div>
-  </div>
-</div>
-
-<!-- LIFE LOG -->
-<div class="section" id="tab-log">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📅</span> LIFE_LOG.EXE</div><div class="wbtns"><div class="wbtn">✕</div></div></div>
-    <div class="pbody">
-      <div class="cal-nav">
-        <button class="cal-nav-btn" onclick="calPrev()">◄</button>
-        <div class="cal-month" id="calMonth"></div>
-        <button class="cal-nav-btn" onclick="calNext()">►</button>
-      </div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div class="slabel">LEGEND</div>
-      <div id="logLegend" style="display:flex;flex-wrap:wrap;gap:5px;font-size:14px;color:var(--text2)"></div>
-    </div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>⚙</span> MANAGE_TRACKERS</div><div class="wbtns"><div class="wbtn" onclick="openAddTracker()">+</div></div></div>
-    <div class="pbody"><div id="trackerList"></div>
-      <button class="w98" onclick="openAddTracker()" style="margin-top:8px">✦ ADD TRACKER</button>
-    </div>
-  </div>
-</div>
-
-<!-- MEDS -->
-<div class="section" id="tab-meds">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💊</span> MEDICINE_SCHEDULE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openAddMed()">+</div><div class="wbtn">✕</div></div></div>
-    <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
-        <button class="w98" onclick="openAddMed()">✦ ADD MED/VITAMIN</button>
-      </div>
-      <div id="medList"></div>
-    </div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📋</span> TODAY_LOG</div></div>
-    <div class="pbody"><div id="medTodayLog" style="font-size:15px;color:var(--text2)"></div></div>
-  </div>
-</div>
-
-<!-- GOALS -->
-<div class="section" id="tab-goals">
-  <!-- sub-tabs -->
-  <div style="display:flex;gap:4px;margin-bottom:9px">
-    <button class="gtab active" id="gtab-yearly" onclick="swGoal('yearly')">⭐ YEARLY</button>
-    <button class="gtab" id="gtab-monthly" onclick="swGoal('monthly')">📅 MONTHLY</button>
-    <button class="gtab" id="gtab-weekly" onclick="swGoal('weekly')">📋 WEEKLY</button>
-    <button class="gtab" id="gtab-map" onclick="swGoal('map')">🗺 MAP</button>
-  </div>
-
-  <!-- YEARLY -->
-  <div class="gsection active" id="gsec-yearly">
-    <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>⭐</span> YEARLY_GOALS.EXE — <span id="yearLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('yearly')">+</div></div></div>
-      <div class="pbody">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('yearly')">✦ ADD YEARLY GOAL</button></div>
-        <div id="yearlyGoalList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MONTHLY -->
-  <div class="gsection" id="gsec-monthly">
-    <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>📅</span> MONTHLY_GOALS.EXE — <span id="monthLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('monthly')">+</div></div></div>
-      <div class="pbody">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('monthly')">✦ ADD MONTHLY GOAL</button></div>
-        <div id="monthlyGoalList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- WEEKLY -->
-  <div class="gsection" id="gsec-weekly">
-    <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>📋</span> WEEKLY_GOALS.EXE — <span id="weekLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('weekly')">+</div></div></div>
-      <div class="pbody">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('weekly')">✦ ADD WEEKLY GOAL</button></div>
-        <div id="weeklyGoalList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAP -->
-  <div class="gsection" id="gsec-map">
-    <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>🗺</span> GOAL_MAP.EXE</div></div>
-      <div class="pbody">
-        <div style="font-size:14px;color:var(--text3);margin-bottom:10px">how your weekly actions feed into yearly goals ♡</div>
-        <div id="goalMap"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- HABITS -->
-<div class="section" id="tab-habits">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>🌸</span> HABITS_21DAY.EXE</div><div class="wbtns"><div class="wbtn" onclick="openModal('habitModal')">+</div><div class="wbtn">✕</div></div></div>
-    <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openModal('habitModal')">✦ NEW HABIT</button></div>
-      <div id="habitList"></div>
-    </div>
-  </div>
-  <div class="slabel">SUGGESTED_HABITS.TXT</div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💡</span> HABIT_SUGGESTIONS</div></div>
-    <div class="pbody">
-      <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:var(--acc)"></div>WELLNESS</div><div class="sg-grid" id="sg-wellness"></div></div>
-      <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:#9040a0"></div>MIND</div><div class="sg-grid" id="sg-mind"></div></div>
-      <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:#e080c0"></div>BEAUTY</div><div class="sg-grid" id="sg-beauty"></div></div>
-      <div class="sg-sec" style="margin-bottom:0"><div class="sg-cat"><div class="sg-dot" style="background:#c09000"></div>GROWTH</div><div class="sg-grid" id="sg-growth"></div></div>
-      <button class="w98 acc full" onclick="addSuggested()">✦ ADD SELECTED</button>
-    </div>
-  </div>
-</div>
-
-<!-- BEAUTY -->
-<div class="section" id="tab-beauty">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>🌷</span> MORNING_ROUTINE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openBeautyModal('morning')">+</div></div></div>
-    <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyModal('morning')">+ STEP</button></div>
-      <div id="beautyMorning"></div>
-    </div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>🌙</span> EVENING_ROUTINE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openBeautyModal('evening')">+</div></div></div>
-    <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyModal('evening')">+ STEP</button></div>
-      <div id="beautyEvening"></div>
-    </div>
-  </div>
-</div>
-
-<!-- NOTIFS -->
-<div class="section" id="tab-notifs">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>🔔</span> NOTIFICATIONS.EXE</div></div>
-    <div class="pbody">
-      <div id="notifPermBox" style="margin-bottom:10px"></div>
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
-        <button class="w98" onclick="openAddNotif()">✦ ADD REMINDER</button>
-      </div>
-      <div id="notifList"></div>
-    </div>
-  </div>
-  <div class="slabel">SUGGESTED_REMINDERS.TXT</div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💡</span> QUICK_ADD</div></div>
-    <div class="pbody">
-      <div style="font-size:14px;color:var(--text3);margin-bottom:9px">tap to add a girly reminder ♡</div>
-      <div id="notifSuggestions" style="display:flex;flex-direction:column;gap:6px"></div>
-    </div>
-  </div>
-</div>
-
-<!-- DRIVE -->
-<div class="section" id="tab-drive">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💾</span> GOOGLE_DRIVE.EXE</div></div>
-    <div class="pbody">
-      <div class="gd-status"><div class="gd-dot" id="gdDot"></div><span id="gdStatusTxt">not connected</span></div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        <button class="w98 gd" onclick="gdSignIn()">♡ SIGN IN WITH GOOGLE</button>
-        <button class="w98 sm" onclick="gdSave()" id="gdSaveBtn" style="display:none">💾 SAVE TO DRIVE</button>
-        <button class="w98 sm" onclick="gdLoad()" id="gdLoadBtn" style="display:none">📂 LOAD FROM DRIVE</button>
-        <button class="w98 sm" onclick="gdSignOut()" id="gdOutBtn" style="display:none" style="color:var(--text3)">sign out</button>
-      </div>
-      <div class="slabel">INFO</div>
-      <div style="font-size:15px;color:var(--text2);line-height:1.6">
-        your data saves as <b>dayplan_data.json</b> in your google drive.<br>
-        sign in once → auto-saves every 5 min ♡<br>
-        <span style="color:var(--text3);font-size:13px">note: you need to allow popup on first sign-in</span>
-      </div>
-      <div class="gd-log" id="gdLog" style="margin-top:8px"></div>
-    </div>
-  </div>
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📤</span> EXPORT / IMPORT</div></div>
-    <div class="pbody">
-      <div style="display:flex;gap:7px;flex-wrap:wrap">
-        <button class="w98 sm" onclick="exportJSON()">📤 export JSON</button>
-        <button class="w98 sm" onclick="document.getElementById('importFile').click()">📥 import JSON</button>
-      </div>
-      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)"/>
-      <div style="font-size:13px;color:var(--text3);margin-top:7px">backup your data locally anytime ♡</div>
-    </div>
-  </div>
-</div>
-
-</div><!-- /scroll -->
-</div><!-- /app -->
-
-<!-- TASK MODAL -->
-<div class="modal-backdrop" id="taskModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>📋</span> NEW_TASK.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="voice-hint">♡ tap mic & speak your task!</div>
-      <div class="field"><label>TASK NAME</label>
-        <div class="iwrap"><input type="text" id="tIn" placeholder="what to do..."/>
-          <button class="mic-btn" id="tMic" onclick="toggleMic('tIn','tMic','tMicSt')">🎤</button></div>
-        <div class="mic-st" id="tMicSt"></div>
-      </div>
-      <div class="field"><label>TIME</label><input type="time" id="tTime"/></div>
-      <div class="field"><label>LINK TO GOAL</label>
-      <select id="tGoal"><option value="">-- no goal --</option></select>
-      <div style="font-size:12px;color:var(--text3);margin-top:3px">links to yearly/monthly/weekly goals ♡</div>
-    </div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTask()">OK ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- GOAL MODAL -->
-<div class="modal-backdrop" id="goalModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle" id="goalModalTitle"><span>⭐</span> NEW_GOAL.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="voice-hint">♡ tap mic & say your goal!</div>
-      <div class="field"><label>GOAL NAME</label>
-        <div class="iwrap"><input type="text" id="gIn" placeholder="your goal..."/>
-          <button class="mic-btn" id="gMic" onclick="toggleMic('gIn','gMic','gMicSt')">🎤</button></div>
-        <div class="mic-st" id="gMicSt"></div>
-      </div>
-      <div class="field"><label>COLOR</label>
-        <div class="color-opts" id="goalColorPicker"></div>
-        <input type="hidden" id="gColor" value="pink"/>
-      </div>
-      <div class="field" id="parentGoalField" style="display:none"><label>LINKS TO YEARLY GOAL</label>
-        <select id="gParent"><option value="">-- standalone --</option></select>
-      </div>
-      <div class="field" id="parentMonthField" style="display:none"><label>LINKS TO MONTHLY GOAL</label>
-        <select id="gParentMonth"><option value="">-- standalone --</option></select>
-      </div>
-      <div class="field"><label>DEADLINE (OPTIONAL)</label><input type="date" id="gDeadline"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveGoal()">OK ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- HABIT MODAL -->
-<div class="modal-backdrop" id="habitModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>🌸</span> NEW_HABIT.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="field"><label>HABIT NAME</label><input type="text" id="hIn" placeholder="e.g. drink 2L water..."/></div>
-      <div class="field"><label>GOAL (OPTIONAL)</label><select id="hGoal"><option value="">-- no goal --</option></select></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveHabit()">START ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- BEAUTY MODAL -->
-<div class="modal-backdrop" id="beautyModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle" id="bModalTitle"><span>🌷</span> ADD_STEP.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="field"><label>STEP NAME</label><input type="text" id="bIn" placeholder="e.g. vitamin C serum..."/></div>
-      <div class="field"><label>DURATION</label><input type="text" id="bDur" placeholder="e.g. 1 min"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveBeauty()">ADD ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- LOG DAY MODAL -->
-<div class="modal-backdrop" id="logModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>📅</span> LOG_DAY.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--text2);margin-bottom:10px" id="logModalDate"></div>
-      <div class="log-icons-grid" id="logIconsGrid"></div>
-      <div class="log-note-row">
-        <div class="field"><label>NOTE (OPTIONAL)</label><textarea id="logNote" placeholder="how was your day?"></textarea></div>
-      </div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveLogDay()">SAVE ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- ADD TRACKER MODAL -->
-<div class="modal-backdrop" id="trackerModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>⚙</span> ADD_TRACKER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="field"><label>TRACKER NAME</label><input type="text" id="trName" placeholder="e.g. Went for a walk..."/></div>
-      <div class="field"><label>EMOJI ICON</label><input type="text" id="trEmoji" placeholder="e.g. 🚶" maxlength="2"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTracker()">ADD ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- MED MODAL -->
-<div class="modal-backdrop" id="medModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>💊</span> ADD_MED.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="field"><label>NAME</label><input type="text" id="mIn" placeholder="e.g. Vitamin D, Aspirin..."/></div>
-      <div class="field"><label>DOSE</label><input type="text" id="mDose" placeholder="e.g. 1 tablet, 500mg..."/></div>
-      <div class="field"><label>TIMES PER DAY</label><select id="mFreq">
-        <option value="1">Once a day</option>
-        <option value="2">Twice a day</option>
-        <option value="3">3x a day</option>
-        <option value="4">4x a day</option>
-        <option value="0">As needed</option>
-      </select></div>
-      <div class="field"><label>REMINDER TIME</label><input type="time" id="mTime"/></div>
-      <div class="field"><label>TYPE</label><select id="mType">
-        <option value="💊">💊 Medicine</option>
-        <option value="🌿">🌿 Vitamin / supplement</option>
-        <option value="💉">💉 Injection</option>
-        <option value="💧">💧 Drops</option>
-        <option value="🧴">🧴 Topical</option>
-      </select></div>
-      <div class="field"><label>SUPPLY (PILLS LEFT)</label><input type="number" id="mSupply" placeholder="e.g. 30" min="0"/></div>
-      <div class="field"><label>NOTES</label><input type="text" id="mNotes" placeholder="with food, before bed..."/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveMed()">SAVE ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- NOTIF MODAL -->
-<div class="modal-backdrop" id="notifModal">
-  <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>🔔</span> ADD_REMINDER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
-    <div class="mbody">
-      <div class="field"><label>MESSAGE</label><input type="text" id="nfMsg" placeholder="e.g. Drink a glass of water! 💧"/></div>
-      <div class="field"><label>TIME</label><input type="time" id="nfTime"/></div>
-      <div class="field"><label>REPEAT</label>
-        <select id="nfRepeat">
-          <option value="daily">Every day</option>
-          <option value="weekdays">Weekdays only</option>
-          <option value="weekends">Weekends only</option>
-          <option value="once">Just once</option>
-        </select>
-      </div>
-      <div class="field"><label>EMOJI</label><input type="text" id="nfEmoji" placeholder="💊" maxlength="2"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveNotif()">SAVE ♡</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- WIN98 NOTIFICATION POPUP -->
-<div id="win98notif" style="display:none;position:fixed;bottom:16px;right:12px;left:12px;z-index:9000;max-width:340px;margin:0 auto">
-  <div style="background:#f5d0ea;border-top:2px solid #ffb8f0;border-left:2px solid #ffb8f0;border-right:2px solid #8030a0;border-bottom:2px solid #8030a0;box-shadow:3px 3px 0 rgba(128,48,160,0.3)">
-    <div style="background:linear-gradient(90deg,#c060a8,#9040a0);padding:4px 8px;display:flex;align-items:center;justify-content:space-between">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#fff8fe;text-shadow:1px 1px 0 rgba(0,0,0,.3);display:flex;align-items:center;gap:5px">
-        <span id="win98notifEmoji">🔔</span> DAYPLAN.EXE — REMINDER
-      </div>
-      <div style="width:16px;height:14px;background:#e8a8d8;border-top:1px solid #ffccf0;border-left:1px solid #ffccf0;border-right:1px solid #9040a0;border-bottom:1px solid #9040a0;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'VT323',monospace;color:#3a0060" onclick="dismissWin98Notif()">✕</div>
-    </div>
-    <div style="padding:12px 14px;display:flex;align-items:flex-start;gap:10px">
-      <div style="font-size:32px;flex-shrink:0;line-height:1" id="win98notifIcon">🔔</div>
-      <div style="flex:1">
-        <div style="font-size:18px;color:#3a0060;line-height:1.3;font-family:'VT323',monospace" id="win98notifMsg">Time to drink water! 💧</div>
-        <div style="font-size:13px;color:#b060c8;margin-top:4px;font-family:'VT323',monospace" id="win98notifTime"></div>
-      </div>
-    </div>
-    <div style="padding:4px 10px 10px;display:flex;justify-content:flex-end;gap:7px">
-      <button onclick="snoozeNotif()" style="background:#e8a8d8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#3a0060;cursor:pointer">snooze 10min</button>
-      <button onclick="dismissWin98Notif()" style="background:#d070b8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#fff8fe;cursor:pointer">ok ♡</button>
-    </div>
-  </div>
-</div>
-
-<script>
+<script defer>
 /* ═══════════════════════════════════════
    CONSTANTS & DATA
 ═══════════════════════════════════════ */
@@ -1711,5 +1234,483 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/dayplan/sw.js').catch(()=>{});
 }
 </script>
+</head>
+<body>
+<div class="dbg"></div>
+<div id="app">
+
+<div class="header">
+  <div class="hwin">
+    <div class="tbar">
+      <div class="tbar-l"><span>♡</span> DAYPLAN.EXE — <span id="hDate" style="color:#ffccf0;font-size:6px"></span></div>
+      <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn">✕</div></div>
+    </div>
+    <div class="hbody">
+      <div class="htitle">my <span>day</span><br>planner ♡</div>
+      <div class="hright">
+        <div class="hdate" id="hDateFull"></div>
+        <div class="hstats" id="hStats"></div>
+        <div id="gdStatusMini" style="font-size:12px;color:#40c040;margin-top:2px"></div>
+        <button onclick="sw('drive')" style="margin-top:4px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);padding:3px 8px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px" id="loginHeaderBtn">💾 LOGIN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="inst" id="instBanner">
+  <span>♡ add to home screen for best experience</span>
+  <button class="ix" onclick="dismissInst()">✕</button>
+</div>
+
+<div class="taskbar">
+  <button class="ttab active" onclick="sw('today')">TODAY</button>
+  <button class="ttab" onclick="sw('water')">WATER</button>
+  <button class="ttab" onclick="sw('log')">LOG ♡</button>
+  <button class="ttab" onclick="sw('meds')">MEDS</button>
+  <button class="ttab" onclick="sw('goals')">GOALS</button>
+  <button class="ttab" onclick="sw('habits')">HABITS</button>
+  <button class="ttab" onclick="sw('beauty')">BEAUTY</button>
+  <button class="ttab" onclick="sw('notifs')">NOTIFS 🔔</button>
+</div>
+
+<div class="scroll-area" id="sa">
+
+<!-- TODAY -->
+<div class="section active" id="tab-today">
+  <div class="stats-row">
+    <div class="stat-win"><div class="stat-n" id="sDone">0</div><div class="stat-l">done ♡</div></div>
+    <div class="stat-win"><div class="stat-n" id="sLeft">0</div><div class="stat-l">left...</div></div>
+    <div class="stat-win"><div class="stat-n" id="sPct">0%</div><div class="stat-l">complete</div></div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>👟</span> STEPS.EXE</div><div class="wbtns"><div class="wbtn">_</div><div class="wbtn">✕</div></div></div>
+    <div class="steps-body">
+      <div class="sring">
+        <svg width="76" height="76" viewBox="0 0 76 76"><circle class="rt" cx="38" cy="38" r="32"/><circle class="rf" cx="38" cy="38" r="32" id="sRing" stroke-dasharray="201.06" stroke-dashoffset="201.06"/></svg>
+        <div class="sctr"><div class="sbig" id="sNum">0</div><div class="sunit">steps</div></div>
+      </div>
+      <div class="sinfo" style="flex:1">
+        <h3>DAILY STEPS</h3>
+        <p id="sGoalTxt">Goal: 10,000</p>
+        <div class="sbtns">
+          <button class="w98 sm" onclick="addSteps(500)">+500</button>
+          <button class="w98 sm" onclick="addSteps(1000)">+1k</button>
+          <button class="w98 sm" onclick="addSteps(2000)">+2k</button>
+          <button class="w98 sm" onclick="addSteps(5000)">+5k</button>
+          <button class="w98 sm" onclick="resetSteps()" style="color:var(--text3)">rst</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>📋</span> TASKS_TODAY.TXT</div><div class="wbtns"><div class="wbtn" onclick="openTaskModal()">+</div><div class="wbtn">✕</div></div></div>
+    <div class="pbody">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
+        <button class="w98" onclick="openTaskModal()">✦ NEW TASK</button>
+      </div>
+      <div id="taskList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WATER -->
+<div class="section" id="tab-water">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>💧</span> WATER_TRACKER.EXE</div><div class="wbtns"><div class="wbtn">✕</div></div></div>
+    <div class="water-body">
+      <div class="prog-lbl"><span id="wDrunk">0 ml</span><span id="wGoalLbl">/ 2000 ml</span></div>
+      <div class="prog-wrap"><div class="prog98" id="wProg" style="width:0%"></div></div>
+      <div class="water-info">
+        <span id="wMsg">keep drinking! ♡</span>
+        <span id="wPct" style="color:var(--acc)">0%</span>
+      </div>
+      <div class="water-glasses" id="wGlasses"></div>
+      <div class="water-goal-row">
+        <span>glass =</span>
+        <input type="number" id="wGlassSize" value="250" min="50" max="500" step="50" onchange="saveWaterSettings()"/>
+        <span>ml &nbsp;|&nbsp; goal:</span>
+        <input type="number" id="wGoalInput" value="2000" min="500" max="5000" step="250" onchange="saveWaterSettings()"/>
+        <span>ml</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <button class="w98 sm" onclick="addWater(1)">+ 1 glass</button>
+        <button class="w98 sm" onclick="addWater(-1)">- 1 glass</button>
+        <button class="w98 sm" onclick="resetWater()" style="color:var(--text3)">reset</button>
+      </div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>📅</span> WATER_HISTORY</div></div>
+    <div class="pbody"><div id="wHistory"></div></div>
+  </div>
+</div>
+
+<!-- LIFE LOG -->
+<div class="section" id="tab-log">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>📅</span> LIFE_LOG.EXE</div><div class="wbtns"><div class="wbtn">✕</div></div></div>
+    <div class="pbody">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calPrev()">◄</button>
+        <div class="cal-month" id="calMonth"></div>
+        <button class="cal-nav-btn" onclick="calNext()">►</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="slabel">LEGEND</div>
+      <div id="logLegend" style="display:flex;flex-wrap:wrap;gap:5px;font-size:14px;color:var(--text2)"></div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>⚙</span> MANAGE_TRACKERS</div><div class="wbtns"><div class="wbtn" onclick="openAddTracker()">+</div></div></div>
+    <div class="pbody"><div id="trackerList"></div>
+      <button class="w98" onclick="openAddTracker()" style="margin-top:8px">✦ ADD TRACKER</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEDS -->
+<div class="section" id="tab-meds">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>💊</span> MEDICINE_SCHEDULE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openAddMed()">+</div><div class="wbtn">✕</div></div></div>
+    <div class="pbody">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
+        <button class="w98" onclick="openAddMed()">✦ ADD MED/VITAMIN</button>
+      </div>
+      <div id="medList"></div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>📋</span> TODAY_LOG</div></div>
+    <div class="pbody"><div id="medTodayLog" style="font-size:15px;color:var(--text2)"></div></div>
+  </div>
+</div>
+
+<!-- GOALS -->
+<div class="section" id="tab-goals">
+  <!-- sub-tabs -->
+  <div style="display:flex;gap:4px;margin-bottom:9px">
+    <button class="gtab active" id="gtab-yearly" onclick="swGoal('yearly')">⭐ YEARLY</button>
+    <button class="gtab" id="gtab-monthly" onclick="swGoal('monthly')">📅 MONTHLY</button>
+    <button class="gtab" id="gtab-weekly" onclick="swGoal('weekly')">📋 WEEKLY</button>
+    <button class="gtab" id="gtab-map" onclick="swGoal('map')">🗺 MAP</button>
+  </div>
+
+  <!-- YEARLY -->
+  <div class="gsection active" id="gsec-yearly">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>⭐</span> YEARLY_GOALS.EXE — <span id="yearLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('yearly')">+</div></div></div>
+      <div class="pbody">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('yearly')">✦ ADD YEARLY GOAL</button></div>
+        <div id="yearlyGoalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTHLY -->
+  <div class="gsection" id="gsec-monthly">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>📅</span> MONTHLY_GOALS.EXE — <span id="monthLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('monthly')">+</div></div></div>
+      <div class="pbody">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('monthly')">✦ ADD MONTHLY GOAL</button></div>
+        <div id="monthlyGoalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY -->
+  <div class="gsection" id="gsec-weekly">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>📋</span> WEEKLY_GOALS.EXE — <span id="weekLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('weekly')">+</div></div></div>
+      <div class="pbody">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('weekly')">✦ ADD WEEKLY GOAL</button></div>
+        <div id="weeklyGoalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="gsection" id="gsec-map">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>🗺</span> GOAL_MAP.EXE</div></div>
+      <div class="pbody">
+        <div style="font-size:14px;color:var(--text3);margin-bottom:10px">how your weekly actions feed into yearly goals ♡</div>
+        <div id="goalMap"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HABITS -->
+<div class="section" id="tab-habits">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>🌸</span> HABITS_21DAY.EXE</div><div class="wbtns"><div class="wbtn" onclick="openModal('habitModal')">+</div><div class="wbtn">✕</div></div></div>
+    <div class="pbody">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openModal('habitModal')">✦ NEW HABIT</button></div>
+      <div id="habitList"></div>
+    </div>
+  </div>
+  <div class="slabel">SUGGESTED_HABITS.TXT</div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>💡</span> HABIT_SUGGESTIONS</div></div>
+    <div class="pbody">
+      <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:var(--acc)"></div>WELLNESS</div><div class="sg-grid" id="sg-wellness"></div></div>
+      <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:#9040a0"></div>MIND</div><div class="sg-grid" id="sg-mind"></div></div>
+      <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:#e080c0"></div>BEAUTY</div><div class="sg-grid" id="sg-beauty"></div></div>
+      <div class="sg-sec" style="margin-bottom:0"><div class="sg-cat"><div class="sg-dot" style="background:#c09000"></div>GROWTH</div><div class="sg-grid" id="sg-growth"></div></div>
+      <button class="w98 acc full" onclick="addSuggested()">✦ ADD SELECTED</button>
+    </div>
+  </div>
+</div>
+
+<!-- BEAUTY -->
+<div class="section" id="tab-beauty">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>🌷</span> MORNING_ROUTINE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openBeautyModal('morning')">+</div></div></div>
+    <div class="pbody">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyModal('morning')">+ STEP</button></div>
+      <div id="beautyMorning"></div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>🌙</span> EVENING_ROUTINE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openBeautyModal('evening')">+</div></div></div>
+    <div class="pbody">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyModal('evening')">+ STEP</button></div>
+      <div id="beautyEvening"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFS -->
+<div class="section" id="tab-notifs">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>🔔</span> NOTIFICATIONS.EXE</div></div>
+    <div class="pbody">
+      <div id="notifPermBox" style="margin-bottom:10px"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
+        <button class="w98" onclick="openAddNotif()">✦ ADD REMINDER</button>
+      </div>
+      <div id="notifList"></div>
+    </div>
+  </div>
+  <div class="slabel">SUGGESTED_REMINDERS.TXT</div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>💡</span> QUICK_ADD</div></div>
+    <div class="pbody">
+      <div style="font-size:14px;color:var(--text3);margin-bottom:9px">tap to add a girly reminder ♡</div>
+      <div id="notifSuggestions" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DRIVE -->
+<div class="section" id="tab-drive">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>💾</span> GOOGLE_DRIVE.EXE</div></div>
+    <div class="pbody">
+      <div class="gd-status"><div class="gd-dot" id="gdDot"></div><span id="gdStatusTxt">not connected</span></div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <button class="w98 gd" onclick="gdSignIn()">♡ SIGN IN WITH GOOGLE</button>
+        <button class="w98 sm" onclick="gdSave()" id="gdSaveBtn" style="display:none">💾 SAVE TO DRIVE</button>
+        <button class="w98 sm" onclick="gdLoad()" id="gdLoadBtn" style="display:none">📂 LOAD FROM DRIVE</button>
+        <button class="w98 sm" onclick="gdSignOut()" id="gdOutBtn" style="display:none" style="color:var(--text3)">sign out</button>
+      </div>
+      <div class="slabel">INFO</div>
+      <div style="font-size:15px;color:var(--text2);line-height:1.6">
+        your data saves as <b>dayplan_data.json</b> in your google drive.<br>
+        sign in once → auto-saves every 5 min ♡<br>
+        <span style="color:var(--text3);font-size:13px">note: you need to allow popup on first sign-in</span>
+      </div>
+      <div class="gd-log" id="gdLog" style="margin-top:8px"></div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>📤</span> EXPORT / IMPORT</div></div>
+    <div class="pbody">
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="w98 sm" onclick="exportJSON()">📤 export JSON</button>
+        <button class="w98 sm" onclick="document.getElementById('importFile').click()">📥 import JSON</button>
+      </div>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)"/>
+      <div style="font-size:13px;color:var(--text3);margin-top:7px">backup your data locally anytime ♡</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /scroll -->
+</div><!-- /app -->
+
+<!-- TASK MODAL -->
+<div class="modal-backdrop" id="taskModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>📋</span> NEW_TASK.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="voice-hint">♡ tap mic & speak your task!</div>
+      <div class="field"><label>TASK NAME</label>
+        <div class="iwrap"><input type="text" id="tIn" placeholder="what to do..."/>
+          <button class="mic-btn" id="tMic" onclick="toggleMic('tIn','tMic','tMicSt')">🎤</button></div>
+        <div class="mic-st" id="tMicSt"></div>
+      </div>
+      <div class="field"><label>TIME</label><input type="time" id="tTime"/></div>
+      <div class="field"><label>LINK TO GOAL</label>
+      <select id="tGoal"><option value="">-- no goal --</option></select>
+      <div style="font-size:12px;color:var(--text3);margin-top:3px">links to yearly/monthly/weekly goals ♡</div>
+    </div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTask()">OK ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal-backdrop" id="goalModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle" id="goalModalTitle"><span>⭐</span> NEW_GOAL.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="voice-hint">♡ tap mic & say your goal!</div>
+      <div class="field"><label>GOAL NAME</label>
+        <div class="iwrap"><input type="text" id="gIn" placeholder="your goal..."/>
+          <button class="mic-btn" id="gMic" onclick="toggleMic('gIn','gMic','gMicSt')">🎤</button></div>
+        <div class="mic-st" id="gMicSt"></div>
+      </div>
+      <div class="field"><label>COLOR</label>
+        <div class="color-opts" id="goalColorPicker"></div>
+        <input type="hidden" id="gColor" value="pink"/>
+      </div>
+      <div class="field" id="parentGoalField" style="display:none"><label>LINKS TO YEARLY GOAL</label>
+        <select id="gParent"><option value="">-- standalone --</option></select>
+      </div>
+      <div class="field" id="parentMonthField" style="display:none"><label>LINKS TO MONTHLY GOAL</label>
+        <select id="gParentMonth"><option value="">-- standalone --</option></select>
+      </div>
+      <div class="field"><label>DEADLINE (OPTIONAL)</label><input type="date" id="gDeadline"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveGoal()">OK ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- HABIT MODAL -->
+<div class="modal-backdrop" id="habitModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>🌸</span> NEW_HABIT.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="field"><label>HABIT NAME</label><input type="text" id="hIn" placeholder="e.g. drink 2L water..."/></div>
+      <div class="field"><label>GOAL (OPTIONAL)</label><select id="hGoal"><option value="">-- no goal --</option></select></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveHabit()">START ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- BEAUTY MODAL -->
+<div class="modal-backdrop" id="beautyModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle" id="bModalTitle"><span>🌷</span> ADD_STEP.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="field"><label>STEP NAME</label><input type="text" id="bIn" placeholder="e.g. vitamin C serum..."/></div>
+      <div class="field"><label>DURATION</label><input type="text" id="bDur" placeholder="e.g. 1 min"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveBeauty()">ADD ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOG DAY MODAL -->
+<div class="modal-backdrop" id="logModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>📅</span> LOG_DAY.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--text2);margin-bottom:10px" id="logModalDate"></div>
+      <div class="log-icons-grid" id="logIconsGrid"></div>
+      <div class="log-note-row">
+        <div class="field"><label>NOTE (OPTIONAL)</label><textarea id="logNote" placeholder="how was your day?"></textarea></div>
+      </div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveLogDay()">SAVE ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TRACKER MODAL -->
+<div class="modal-backdrop" id="trackerModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>⚙</span> ADD_TRACKER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="field"><label>TRACKER NAME</label><input type="text" id="trName" placeholder="e.g. Went for a walk..."/></div>
+      <div class="field"><label>EMOJI ICON</label><input type="text" id="trEmoji" placeholder="e.g. 🚶" maxlength="2"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTracker()">ADD ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- MED MODAL -->
+<div class="modal-backdrop" id="medModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>💊</span> ADD_MED.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="field"><label>NAME</label><input type="text" id="mIn" placeholder="e.g. Vitamin D, Aspirin..."/></div>
+      <div class="field"><label>DOSE</label><input type="text" id="mDose" placeholder="e.g. 1 tablet, 500mg..."/></div>
+      <div class="field"><label>TIMES PER DAY</label><select id="mFreq">
+        <option value="1">Once a day</option>
+        <option value="2">Twice a day</option>
+        <option value="3">3x a day</option>
+        <option value="4">4x a day</option>
+        <option value="0">As needed</option>
+      </select></div>
+      <div class="field"><label>REMINDER TIME</label><input type="time" id="mTime"/></div>
+      <div class="field"><label>TYPE</label><select id="mType">
+        <option value="💊">💊 Medicine</option>
+        <option value="🌿">🌿 Vitamin / supplement</option>
+        <option value="💉">💉 Injection</option>
+        <option value="💧">💧 Drops</option>
+        <option value="🧴">🧴 Topical</option>
+      </select></div>
+      <div class="field"><label>SUPPLY (PILLS LEFT)</label><input type="number" id="mSupply" placeholder="e.g. 30" min="0"/></div>
+      <div class="field"><label>NOTES</label><input type="text" id="mNotes" placeholder="with food, before bed..."/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveMed()">SAVE ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIF MODAL -->
+<div class="modal-backdrop" id="notifModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>🔔</span> ADD_REMINDER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="field"><label>MESSAGE</label><input type="text" id="nfMsg" placeholder="e.g. Drink a glass of water! 💧"/></div>
+      <div class="field"><label>TIME</label><input type="time" id="nfTime"/></div>
+      <div class="field"><label>REPEAT</label>
+        <select id="nfRepeat">
+          <option value="daily">Every day</option>
+          <option value="weekdays">Weekdays only</option>
+          <option value="weekends">Weekends only</option>
+          <option value="once">Just once</option>
+        </select>
+      </div>
+      <div class="field"><label>EMOJI</label><input type="text" id="nfEmoji" placeholder="💊" maxlength="2"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveNotif()">SAVE ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- WIN98 NOTIFICATION POPUP -->
+<div id="win98notif" style="display:none;position:fixed;bottom:16px;right:12px;left:12px;z-index:9000;max-width:340px;margin:0 auto">
+  <div style="background:#f5d0ea;border-top:2px solid #ffb8f0;border-left:2px solid #ffb8f0;border-right:2px solid #8030a0;border-bottom:2px solid #8030a0;box-shadow:3px 3px 0 rgba(128,48,160,0.3)">
+    <div style="background:linear-gradient(90deg,#c060a8,#9040a0);padding:4px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#fff8fe;text-shadow:1px 1px 0 rgba(0,0,0,.3);display:flex;align-items:center;gap:5px">
+        <span id="win98notifEmoji">🔔</span> DAYPLAN.EXE — REMINDER
+      </div>
+      <div style="width:16px;height:14px;background:#e8a8d8;border-top:1px solid #ffccf0;border-left:1px solid #ffccf0;border-right:1px solid #9040a0;border-bottom:1px solid #9040a0;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'VT323',monospace;color:#3a0060" onclick="dismissWin98Notif()">✕</div>
+    </div>
+    <div style="padding:12px 14px;display:flex;align-items:flex-start;gap:10px">
+      <div style="font-size:32px;flex-shrink:0;line-height:1" id="win98notifIcon">🔔</div>
+      <div style="flex:1">
+        <div style="font-size:18px;color:#3a0060;line-height:1.3;font-family:'VT323',monospace" id="win98notifMsg">Time to drink water! 💧</div>
+        <div style="font-size:13px;color:#b060c8;margin-top:4px;font-family:'VT323',monospace" id="win98notifTime"></div>
+      </div>
+    </div>
+    <div style="padding:4px 10px 10px;display:flex;justify-content:flex-end;gap:7px">
+      <button onclick="snoozeNotif()" style="background:#e8a8d8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#3a0060;cursor:pointer">snooze 10min</button>
+      <button onclick="dismissWin98Notif()" style="background:#d070b8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#fff8fe;cursor:pointer">ok ♡</button>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>
