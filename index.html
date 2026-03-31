@@ -6,7 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DayPlan">
-<meta name="theme-color" content="#f0c8e8">
+<meta name="theme-color" content="#c060a8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>DayPlan ♡</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -114,6 +116,11 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .goal-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .goal-name{font-size:19px;color:var(--text);display:flex;align-items:center;gap:6px}
 .gdot{width:10px;height:10px;flex-shrink:0}
+/* goal sub-tabs */
+.gtab{flex:1;padding:5px 4px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text2);background:var(--bf);border-top:2px solid var(--bl);border-left:2px solid var(--bl);border-right:2px solid var(--bd);border-bottom:2px solid var(--bd);cursor:pointer;text-align:center;line-height:1.4;white-space:nowrap}
+.gtab.active{background:var(--white);border-top-color:var(--bd);border-left-color:var(--bd);border-right-color:var(--bl);border-bottom-color:var(--white);color:var(--acc);margin-top:2px}
+.gsection{display:none}.gsection.active{display:block}
+
 
 /* habits */
 .habit-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--bl)}
@@ -152,6 +159,23 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .blabel.done{text-decoration:line-through;color:var(--text3)}
 .bdur{font-size:13px;color:var(--text3)}
 .bdel{background:none;border:none;cursor:pointer;color:var(--text3);font-family:'VT323',monospace;font-size:19px;padding:0 3px}
+
+/* notifs */
+.notif-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--bl)}
+.notif-item:last-child{border-bottom:none}
+.notif-toggle{width:32px;height:18px;background:var(--bd);border-radius:9px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
+.notif-toggle.on{background:var(--acc)}
+.notif-toggle::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--white);transition:left .2s}
+.notif-toggle.on::after{left:16px}
+.notif-body{flex:1}
+.notif-msg{font-size:17px;color:var(--text);line-height:1.2}
+.notif-sub{font-size:13px;color:var(--text3);margin-top:2px}
+.notif-del{background:none;border:none;cursor:pointer;color:var(--text3);font-family:"VT323",monospace;font-size:19px;padding:0 3px}
+.ns-chip{background:var(--white);border-top:2px solid var(--bd);border-left:2px solid var(--bd);border-right:2px solid var(--bl);border-bottom:2px solid var(--bl);padding:9px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:"VT323",monospace;width:100%;text-align:left}
+.ns-chip:active{border-top-color:var(--bl);border-left-color:var(--bl);border-right-color:var(--bd);border-bottom-color:var(--bd);background:var(--pink)}
+.ns-emoji{font-size:22px;flex-shrink:0}
+.ns-name{font-size:17px;color:var(--text)}
+.ns-time{font-size:13px;color:var(--text3)}
 
 /* ── LIFE LOG CALENDAR ── */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
@@ -278,6 +302,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <button class="ttab" onclick="sw('goals')">GOALS</button>
   <button class="ttab" onclick="sw('habits')">HABITS</button>
   <button class="ttab" onclick="sw('beauty')">BEAUTY</button>
+  <button class="ttab" onclick="sw('notifs')">NOTIFS 🔔</button>
   <button class="ttab" onclick="sw('drive')">DRIVE</button>
 </div>
 
@@ -395,11 +420,55 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <!-- GOALS -->
 <div class="section" id="tab-goals">
-  <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>⭐</span> MY_GOALS.EXE</div><div class="wbtns"><div class="wbtn" onclick="openModal('goalModal')">+</div><div class="wbtn">✕</div></div></div>
-    <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openModal('goalModal')">✦ NEW GOAL</button></div>
-      <div id="goalList"></div>
+  <!-- sub-tabs -->
+  <div style="display:flex;gap:4px;margin-bottom:9px">
+    <button class="gtab active" id="gtab-yearly" onclick="swGoal('yearly')">⭐ YEARLY</button>
+    <button class="gtab" id="gtab-monthly" onclick="swGoal('monthly')">📅 MONTHLY</button>
+    <button class="gtab" id="gtab-weekly" onclick="swGoal('weekly')">📋 WEEKLY</button>
+    <button class="gtab" id="gtab-map" onclick="swGoal('map')">🗺 MAP</button>
+  </div>
+
+  <!-- YEARLY -->
+  <div class="gsection active" id="gsec-yearly">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>⭐</span> YEARLY_GOALS.EXE — <span id="yearLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('yearly')">+</div></div></div>
+      <div class="pbody">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('yearly')">✦ ADD YEARLY GOAL</button></div>
+        <div id="yearlyGoalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTHLY -->
+  <div class="gsection" id="gsec-monthly">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>📅</span> MONTHLY_GOALS.EXE — <span id="monthLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('monthly')">+</div></div></div>
+      <div class="pbody">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('monthly')">✦ ADD MONTHLY GOAL</button></div>
+        <div id="monthlyGoalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY -->
+  <div class="gsection" id="gsec-weekly">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>📋</span> WEEKLY_GOALS.EXE — <span id="weekLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('weekly')">+</div></div></div>
+      <div class="pbody">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('weekly')">✦ ADD WEEKLY GOAL</button></div>
+        <div id="weeklyGoalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="gsection" id="gsec-map">
+    <div class="win-panel">
+      <div class="tbar"><div class="tbar-l"><span>🗺</span> GOAL_MAP.EXE</div></div>
+      <div class="pbody">
+        <div style="font-size:14px;color:var(--text3);margin-bottom:10px">how your weekly actions feed into yearly goals ♡</div>
+        <div id="goalMap"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -440,6 +509,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="pbody">
       <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyModal('evening')">+ STEP</button></div>
       <div id="beautyEvening"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFS -->
+<div class="section" id="tab-notifs">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>🔔</span> NOTIFICATIONS.EXE</div></div>
+    <div class="pbody">
+      <div id="notifPermBox" style="margin-bottom:10px"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
+        <button class="w98" onclick="openAddNotif()">✦ ADD REMINDER</button>
+      </div>
+      <div id="notifList"></div>
+    </div>
+  </div>
+  <div class="slabel">SUGGESTED_REMINDERS.TXT</div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>💡</span> QUICK_ADD</div></div>
+    <div class="pbody">
+      <div style="font-size:14px;color:var(--text3);margin-bottom:9px">tap to add a girly reminder ♡</div>
+      <div id="notifSuggestions" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
   </div>
 </div>
@@ -493,7 +584,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="mic-st" id="tMicSt"></div>
       </div>
       <div class="field"><label>TIME</label><input type="time" id="tTime"/></div>
-      <div class="field"><label>GOAL</label><select id="tGoal"><option value="">-- no goal --</option></select></div>
+      <div class="field"><label>LINK TO GOAL</label>
+      <select id="tGoal"><option value="">-- no goal --</option></select>
+      <div style="font-size:12px;color:var(--text3);margin-top:3px">links to yearly/monthly/weekly goals ♡</div>
+    </div>
       <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTask()">OK ♡</button></div>
     </div>
   </div>
@@ -502,7 +596,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <!-- GOAL MODAL -->
 <div class="modal-backdrop" id="goalModal">
   <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>⭐</span> NEW_GOAL.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mtbar"><div class="mtitle" id="goalModalTitle"><span>⭐</span> NEW_GOAL.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
       <div class="voice-hint">♡ tap mic & say your goal!</div>
       <div class="field"><label>GOAL NAME</label>
@@ -514,6 +608,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="color-opts" id="goalColorPicker"></div>
         <input type="hidden" id="gColor" value="pink"/>
       </div>
+      <div class="field" id="parentGoalField" style="display:none"><label>LINKS TO YEARLY GOAL</label>
+        <select id="gParent"><option value="">-- standalone --</option></select>
+      </div>
+      <div class="field" id="parentMonthField" style="display:none"><label>LINKS TO MONTHLY GOAL</label>
+        <select id="gParentMonth"><option value="">-- standalone --</option></select>
+      </div>
+      <div class="field"><label>DEADLINE (OPTIONAL)</label><input type="date" id="gDeadline"/></div>
       <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveGoal()">OK ♡</button></div>
     </div>
   </div>
@@ -599,7 +700,50 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 </div>
 
-<script>
+<!-- NOTIF MODAL -->
+<div class="modal-backdrop" id="notifModal">
+  <div class="mwin">
+    <div class="mtbar"><div class="mtitle"><span>🔔</span> ADD_REMINDER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mbody">
+      <div class="field"><label>MESSAGE</label><input type="text" id="nfMsg" placeholder="e.g. Drink a glass of water! 💧"/></div>
+      <div class="field"><label>TIME</label><input type="time" id="nfTime"/></div>
+      <div class="field"><label>REPEAT</label>
+        <select id="nfRepeat">
+          <option value="daily">Every day</option>
+          <option value="weekdays">Weekdays only</option>
+          <option value="weekends">Weekends only</option>
+          <option value="once">Just once</option>
+        </select>
+      </div>
+      <div class="field"><label>EMOJI</label><input type="text" id="nfEmoji" placeholder="💊" maxlength="2"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveNotif()">SAVE ♡</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- WIN98 NOTIFICATION POPUP -->
+<div id="win98notif" style="display:none;position:fixed;bottom:16px;right:12px;left:12px;z-index:9000;max-width:340px;margin:0 auto">
+  <div style="background:#f5d0ea;border-top:2px solid #ffb8f0;border-left:2px solid #ffb8f0;border-right:2px solid #8030a0;border-bottom:2px solid #8030a0;box-shadow:3px 3px 0 rgba(128,48,160,0.3)">
+    <div style="background:linear-gradient(90deg,#c060a8,#9040a0);padding:4px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#fff8fe;text-shadow:1px 1px 0 rgba(0,0,0,.3);display:flex;align-items:center;gap:5px">
+        <span id="win98notifEmoji">🔔</span> DAYPLAN.EXE — REMINDER
+      </div>
+      <div style="width:16px;height:14px;background:#e8a8d8;border-top:1px solid #ffccf0;border-left:1px solid #ffccf0;border-right:1px solid #9040a0;border-bottom:1px solid #9040a0;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'VT323',monospace;color:#3a0060" onclick="dismissWin98Notif()">✕</div>
+    </div>
+    <div style="padding:12px 14px;display:flex;align-items:flex-start;gap:10px">
+      <div style="font-size:32px;flex-shrink:0;line-height:1" id="win98notifIcon">🔔</div>
+      <div style="flex:1">
+        <div style="font-size:18px;color:#3a0060;line-height:1.3;font-family:'VT323',monospace" id="win98notifMsg">Time to drink water! 💧</div>
+        <div style="font-size:13px;color:#b060c8;margin-top:4px;font-family:'VT323',monospace" id="win98notifTime"></div>
+      </div>
+    </div>
+    <div style="padding:4px 10px 10px;display:flex;justify-content:flex-end;gap:7px">
+      <button onclick="snoozeNotif()" style="background:#e8a8d8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#3a0060;cursor:pointer">snooze 10min</button>
+      <button onclick="dismissWin98Notif()" style="background:#d070b8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#fff8fe;cursor:pointer">ok ♡</button>
+    </div>
+  </div>
+</div>
+
 /* ═══════════════════════════════════════
    CONSTANTS & DATA
 ═══════════════════════════════════════ */
@@ -619,7 +763,7 @@ const now=new Date();calYear=now.getFullYear();calMonth_=now.getMonth();
 
 function loadState(){
   try{const s=localStorage.getItem('dp_v4');if(s)return JSON.parse(s);}catch(e){}
-  return{tasks:[],goals:[],habits:[],beauty:{morning:DEFAULT_BEAUTY.morning.map(s=>({...s,done:false})),evening:DEFAULT_BEAUTY.evening.map(s=>({...s,done:false}))},steps:{count:0,goal:10000,date:''},water:{glasses:0,goal:2000,glassSize:250,date:'',history:{}},log:{},trackers:DEFAULT_TRACKERS.map(t=>({...t})),meds:[],selected:[],tab:'today'};
+  return{tasks:[],goals:[],yearlyGoals:[],monthlyGoals:[],weeklyGoals:[],habits:[],beauty:{morning:DEFAULT_BEAUTY.morning.map(s=>({...s,done:false})),evening:DEFAULT_BEAUTY.evening.map(s=>({...s,done:false}))},steps:{count:0,goal:10000,date:''},water:{glasses:0,goal:2000,glassSize:250,date:'',history:{}},log:{},trackers:DEFAULT_TRACKERS.map(t=>({...t})),meds:[],selected:[],tab:'today'};
 }
 function save(){try{localStorage.setItem('dp_v4',JSON.stringify(S));gdAutoSave();}catch(e){}}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -643,10 +787,11 @@ function init(){
   // check gd token from localStorage
   const gt=localStorage.getItem('gd_token');if(gt){gdToken=gt;gdUpdateUI();}
   setInterval(()=>{renderMeds();},60000);
+  initNotifs();
 }
 
 function sw(name,sv=true){
-  document.querySelectorAll('.ttab').forEach((t,i)=>{t.classList.toggle('active',['today','water','log','meds','goals','habits','beauty','drive'][i]===name);});
+  document.querySelectorAll('.ttab').forEach((t,i)=>{t.classList.toggle('active',['today','water','log','meds','goals','habits','beauty','notifs','drive'][i]===name);});
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.getElementById('sa').scrollTop=0;
@@ -656,9 +801,10 @@ function sw(name,sv=true){
   if(name==='water')renderWater();
   if(name==='log'){renderCal();renderTrackerList();}
   if(name==='meds')renderMeds();
-  if(name==='goals')renderGoals();
+  if(name==='goals'){renderGoals();}
   if(name==='habits'){renderHabits();renderSuggests();}
   if(name==='beauty')renderBeauty();
+  if(name==='notifs')renderNotifs();
   if(name==='drive')renderDrive();
   updateHeader();
 }
@@ -905,7 +1051,10 @@ function openTaskModal(){
   stopMic();document.getElementById('tIn').value='';document.getElementById('tTime').value='';
   document.getElementById('tMicSt').textContent='';document.getElementById('tMicSt').className='mic-st';
   const sel=document.getElementById('tGoal');
-  sel.innerHTML='<option value="">-- no goal --</option>'+S.goals.map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('');
+  const yg=(S.yearlyGoals||[]).map(g=>`<option value="${g.id}">[Y] ${esc(g.name)}</option>`).join('');
+  const mg=(S.monthlyGoals||[]).map(g=>`<option value="${g.id}">[M] ${esc(g.name)}</option>`).join('');
+  const wg=(S.weeklyGoals||[]).map(g=>`<option value="${g.id}">[W] ${esc(g.name)}</option>`).join('');
+  sel.innerHTML='<option value="">-- no goal --</option>'+yg+mg+wg;
   document.getElementById('taskModal').classList.add('open');setTimeout(()=>document.getElementById('tIn').focus(),300);
 }
 function saveTask(){
@@ -917,32 +1066,236 @@ function saveTask(){
 /* ═══════════════════════════════════════
    GOALS
 ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   GOALS SYSTEM (yearly/monthly/weekly)
+═══════════════════════════════════════ */
+let currentGoalType='yearly';
+
+function swGoal(type){
+  currentGoalType=type;
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('gtab-'+type).classList.add('active');
+  document.querySelectorAll('.gsection').forEach(s=>s.classList.remove('active'));
+  document.getElementById('gsec-'+type).classList.add('active');
+  if(type==='yearly')renderYearlyGoals();
+  if(type==='monthly')renderMonthlyGoals();
+  if(type==='weekly')renderWeeklyGoals();
+  if(type==='map')renderGoalMap();
+}
+
 function renderGoals(){
-  const el=document.getElementById('goalList');
-  if(!S.goals.length){el.innerHTML='<div class="empty">no goals yet~</div>';return;}
-  el.innerHTML=S.goals.map(g=>{
-    const c=COLORS[g.color];const all=S.tasks.filter(t=>t.goalId===g.id);
-    const done=all.filter(t=>t.done).length;const pct=all.length?Math.round(done/all.length*100):0;
+  if(!S.yearlyGoals)S.yearlyGoals=[];
+  if(!S.monthlyGoals)S.monthlyGoals=[];
+  if(!S.weeklyGoals)S.weeklyGoals=[];
+  const d=new Date();
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('yearLabel').textContent=d.getFullYear();
+  document.getElementById('monthLabel').textContent=months[d.getMonth()]+' '+d.getFullYear();
+  document.getElementById('weekLabel').textContent='Week of '+getWeekStart();
+  renderYearlyGoals();
+}
+
+function getWeekStart(){
+  const d=new Date();const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);
+  const mon=new Date(d.setDate(diff));return mon.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function getWeekKey(){
+  const d=new Date();const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);
+  const mon=new Date(new Date().setDate(diff));return mon.toISOString().slice(0,10);
+}
+function getMonthKey(){return new Date().toISOString().slice(0,7);}
+
+function goalProgress(gId,type){
+  // count tasks linked to this goal
+  let tasks=[];
+  if(type==='yearly'){
+    // count all monthly+weekly+daily tasks linked to this or its children
+    const mGoals=(S.monthlyGoals||[]).filter(m=>m.yearlyId===gId).map(m=>m.id);
+    const wGoals=(S.weeklyGoals||[]).filter(w=>mGoals.includes(w.monthlyId)||w.yearlyId===gId).map(w=>w.id);
+    tasks=S.tasks.filter(t=>t.goalId===gId||mGoals.includes(t.goalId)||wGoals.includes(t.goalId));
+  } else if(type==='monthly'){
+    const wGoals=(S.weeklyGoals||[]).filter(w=>w.monthlyId===gId).map(w=>w.id);
+    tasks=S.tasks.filter(t=>t.goalId===gId||wGoals.includes(t.goalId));
+  } else {
+    tasks=S.tasks.filter(t=>t.goalId===gId);
+  }
+  const done=tasks.filter(t=>t.done).length;
+  return{total:tasks.length,done,pct:tasks.length?Math.round(done/tasks.length*100):0};
+}
+
+function renderYearlyGoals(){
+  if(!S.yearlyGoals)S.yearlyGoals=[];
+  const el=document.getElementById('yearlyGoalList');
+  if(!el)return;
+  if(!S.yearlyGoals.length){el.innerHTML='<div class="empty">no yearly goals~<br>set your big dreams ♡</div>';return;}
+  el.innerHTML=S.yearlyGoals.map(g=>{
+    const c=COLORS[g.color||'pink'];
+    const p=goalProgress(g.id,'yearly');
+    const mCount=(S.monthlyGoals||[]).filter(m=>m.yearlyId===g.id).length;
+    const wCount=(S.weeklyGoals||[]).filter(w=>w.yearlyId===g.id).length;
     return`<div class="goal-item">
       <div class="goal-row">
         <div class="goal-name"><div class="gdot" style="background:${c.dot}"></div>${esc(g.name)}</div>
-        <button class="tdel" onclick="deleteGoal('${g.id}')">✕</button>
+        <button class="tdel" onclick="deleteGoalById('yearly','${g.id}')">✕</button>
       </div>
-      <div class="prog-lbl"><span>${done} of ${all.length} tasks</span><span>${pct}%</span></div>
-      <div class="prog-wrap"><div class="prog98" style="width:${pct}%"></div></div>
+      ${g.deadline?`<div style="font-size:12px;color:var(--text3);margin-bottom:3px">deadline: ${g.deadline}</div>`:''}
+      <div class="prog-lbl"><span>${p.done}/${p.total} tasks done</span><span>${p.pct}%</span></div>
+      <div class="prog-wrap"><div class="prog98" style="width:${p.pct}%"></div></div>
+      <div style="display:flex;gap:8px;margin-top:5px;font-size:13px;color:var(--text3)">
+        <span>📅 ${mCount} monthly goals</span>
+        <span>📋 ${wCount} weekly goals</span>
+      </div>
     </div>`;
   }).join('');
 }
-function deleteGoal(id){S.goals=S.goals.filter(g=>g.id!==id);S.tasks.forEach(t=>{if(t.goalId===id)t.goalId=null;});save();renderGoals();}
+
+function renderMonthlyGoals(){
+  if(!S.monthlyGoals)S.monthlyGoals=[];
+  const el=document.getElementById('monthlyGoalList');if(!el)return;
+  const thisMonth=getMonthKey();
+  const goals=S.monthlyGoals.filter(g=>!g.month||g.month===thisMonth);
+  if(!goals.length){el.innerHTML='<div class="empty">no monthly goals~<br>what do you want to achieve this month? ♡</div>';return;}
+  el.innerHTML=goals.map(g=>{
+    const c=COLORS[g.color||'purple'];
+    const p=goalProgress(g.id,'monthly');
+    const parent=(S.yearlyGoals||[]).find(y=>y.id===g.yearlyId);
+    const wCount=(S.weeklyGoals||[]).filter(w=>w.monthlyId===g.id).length;
+    return`<div class="goal-item">
+      <div class="goal-row">
+        <div class="goal-name"><div class="gdot" style="background:${c.dot}"></div>${esc(g.name)}</div>
+        <button class="tdel" onclick="deleteGoalById('monthly','${g.id}')">✕</button>
+      </div>
+      ${parent?`<div style="font-size:12px;color:${c.dot};margin-bottom:3px">⭐ ${esc(parent.name)}</div>`:''}
+      ${g.deadline?`<div style="font-size:12px;color:var(--text3);margin-bottom:3px">deadline: ${g.deadline}</div>`:''}
+      <div class="prog-lbl"><span>${p.done}/${p.total} tasks done</span><span>${p.pct}%</span></div>
+      <div class="prog-wrap"><div class="prog98" style="width:${p.pct}%;background:${c.dot}"></div></div>
+      <div style="font-size:13px;color:var(--text3);margin-top:5px">📋 ${wCount} weekly goals linked</div>
+    </div>`;
+  }).join('');
+}
+
+function renderWeeklyGoals(){
+  if(!S.weeklyGoals)S.weeklyGoals=[];
+  const el=document.getElementById('weeklyGoalList');if(!el)return;
+  const thisWeek=getWeekKey();
+  const goals=S.weeklyGoals.filter(g=>!g.week||g.week===thisWeek);
+  if(!goals.length){el.innerHTML='<div class="empty">no weekly goals~<br>what will you focus on this week? ♡</div>';return;}
+  el.innerHTML=goals.map(g=>{
+    const c=COLORS[g.color||'teal'];
+    const p=goalProgress(g.id,'weekly');
+    const monthly=(S.monthlyGoals||[]).find(m=>m.id===g.monthlyId);
+    const yearly=(S.yearlyGoals||[]).find(y=>y.id===g.yearlyId);
+    return`<div class="goal-item">
+      <div class="goal-row">
+        <div class="goal-name"><div class="gdot" style="background:${c.dot}"></div>${esc(g.name)}</div>
+        <button class="tdel" onclick="deleteGoalById('weekly','${g.id}')">✕</button>
+      </div>
+      <div style="font-size:12px;margin-bottom:4px;display:flex;flex-direction:column;gap:1px">
+        ${monthly?`<span style="color:var(--acc)">📅 ${esc(monthly.name)}</span>`:''}
+        ${yearly?`<span style="color:var(--text3)">⭐ ${esc(yearly.name)}</span>`:''}
+      </div>
+      <div class="prog-lbl"><span>${p.done}/${p.total} tasks done</span><span>${p.pct}%</span></div>
+      <div class="prog-wrap"><div class="prog98" style="width:${p.pct}%;background:${c.dot}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderGoalMap(){
+  const el=document.getElementById('goalMap');if(!el)return;
+  if(!(S.yearlyGoals||[]).length){el.innerHTML='<div class="empty">add yearly goals first to see the map ♡</div>';return;}
+  el.innerHTML=(S.yearlyGoals||[]).map(y=>{
+    const c=COLORS[y.color||'pink'];
+    const yp=goalProgress(y.id,'yearly');
+    const mGoals=(S.monthlyGoals||[]).filter(m=>m.yearlyId===y.id);
+    return`<div style="margin-bottom:16px;padding:10px;background:${c.bg};border-top:2px solid ${c.dot};border-left:2px solid ${c.dot};border-right:1px solid ${c.dot};border-bottom:1px solid ${c.dot}">
+      <div style="font-size:16px;font-weight:500;color:${c.text};margin-bottom:5px">⭐ ${esc(y.name)}</div>
+      <div class="prog-lbl" style="color:${c.text}"><span>${yp.pct}% overall</span><span>${yp.done}/${yp.total}</span></div>
+      <div class="prog-wrap"><div class="prog98" style="width:${yp.pct}%;background:${c.dot}"></div></div>
+      ${mGoals.length?`<div style="margin-top:8px;padding-left:8px;border-left:2px dashed ${c.dot}">
+        ${mGoals.map(m=>{
+          const mc=COLORS[m.color||'purple'];
+          const mp=goalProgress(m.id,'monthly');
+          const wGoals=(S.weeklyGoals||[]).filter(w=>w.monthlyId===m.id);
+          return`<div style="margin-bottom:8px">
+            <div style="font-size:14px;color:${mc.dot};margin-bottom:3px">📅 ${esc(m.name)} — ${mp.pct}%</div>
+            <div class="prog-wrap" style="margin-bottom:4px"><div class="prog98" style="width:${mp.pct}%;background:${mc.dot}"></div></div>
+            ${wGoals.map(w=>{
+              const wp=goalProgress(w.id,'weekly');
+              const wc=COLORS[w.color||'teal'];
+              return`<div style="padding-left:8px;border-left:2px dashed ${wc.dot};margin-bottom:4px">
+                <div style="font-size:13px;color:${wc.dot}">📋 ${esc(w.name)} — ${wp.pct}%</div>
+              </div>`;
+            }).join('')}
+          </div>`;
+        }).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function openGoalModal(type){
+  currentGoalType=type;
+  const titles={yearly:'⭐ NEW_YEARLY_GOAL.EXE',monthly:'📅 NEW_MONTHLY_GOAL.EXE',weekly:'📋 NEW_WEEKLY_GOAL.EXE'};
+  document.getElementById('goalModalTitle').innerHTML=`<span>${type==='yearly'?'⭐':type==='monthly'?'📅':'📋'}</span> ${titles[type].split(' ')[1]}`;
+  document.getElementById('gIn').value='';
+  document.getElementById('gMicSt').textContent='';
+  document.getElementById('gDeadline').value='';
+  // show/hide parent fields
+  document.getElementById('parentGoalField').style.display=type==='monthly'?'block':'';
+  document.getElementById('parentMonthField').style.display=type==='weekly'?'block':'';
+  if(type==='monthly'){
+    const sel=document.getElementById('gParent');
+    sel.innerHTML='<option value="">-- standalone --</option>'+(S.yearlyGoals||[]).map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('');
+  }
+  if(type==='weekly'){
+    const sel=document.getElementById('gParentMonth');
+    sel.innerHTML='<option value="">-- standalone --</option>'+(S.monthlyGoals||[]).map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('');
+  }
+  buildGoalColorPicker();
+  openModal('goalModal');
+  setTimeout(()=>document.getElementById('gIn').focus(),300);
+}
+
+function deleteGoalById(type,id){
+  if(type==='yearly'){S.yearlyGoals=(S.yearlyGoals||[]).filter(g=>g.id!==id);}
+  else if(type==='monthly'){S.monthlyGoals=(S.monthlyGoals||[]).filter(g=>g.id!==id);}
+  else if(type==='weekly'){S.weeklyGoals=(S.weeklyGoals||[]).filter(g=>g.id!==id);}
+  S.tasks.forEach(t=>{if(t.goalId===id)t.goalId=null;});
+  save();renderGoals();swGoal(type);
+}
+
+function deleteGoal(id){deleteGoalById('yearly',id);}
+
 function buildGoalColorPicker(){
-  const el=document.getElementById('goalColorPicker');
-  el.innerHTML=Object.entries(COLORS).map(([k,c])=>`<div class="color-opt ${k==='pink'?'sel':''}" style="background:${c.dot}" onclick="pickColor('${k}',this)" title="${k}"></div>`).join('');
+  const el=document.getElementById('goalColorPicker');if(!el)return;
+  const defaults={yearly:'pink',monthly:'purple',weekly:'teal'};
+  const def=defaults[currentGoalType]||'pink';
+  el.innerHTML=Object.entries(COLORS).map(([k,c])=>`<div class="color-opt ${k===def?'sel':''}" style="background:${c.dot}" onclick="pickColor('${k}',this)"></div>`).join('');
+  document.getElementById('gColor').value=def;
 }
 function pickColor(k,el){document.getElementById('gColor').value=k;document.querySelectorAll('.color-opt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');}
+
 function saveGoal(){
   const name=document.getElementById('gIn').value.trim();if(!name)return;stopMic();
-  S.goals.push({id:uid(),name,color:document.getElementById('gColor').value||'pink'});
-  save();closeModals();renderGoals();
+  const color=document.getElementById('gColor').value||'pink';
+  const deadline=document.getElementById('gDeadline').value||null;
+  const id=uid();
+  if(currentGoalType==='yearly'){
+    if(!S.yearlyGoals)S.yearlyGoals=[];
+    S.yearlyGoals.push({id,name,color,deadline});
+  } else if(currentGoalType==='monthly'){
+    if(!S.monthlyGoals)S.monthlyGoals=[];
+    const yearlyId=document.getElementById('gParent').value||null;
+    // also link to yearly if selected
+    const yearlyGoal=yearlyId?(S.yearlyGoals||[]).find(y=>y.id===yearlyId):null;
+    S.monthlyGoals.push({id,name,color,deadline,yearlyId,month:getMonthKey()});
+  } else if(currentGoalType==='weekly'){
+    if(!S.weeklyGoals)S.weeklyGoals=[];
+    const monthlyId=document.getElementById('gParentMonth').value||null;
+    const monthlyGoal=monthlyId?(S.monthlyGoals||[]).find(m=>m.id===monthlyId):null;
+    const yearlyId=monthlyGoal?monthlyGoal.yearlyId:null;
+    S.weeklyGoals.push({id,name,color,deadline,monthlyId,yearlyId,week:getWeekKey()});
+  }
+  save();closeModals();renderGoals();swGoal(currentGoalType);
 }
 
 /* ═══════════════════════════════════════
@@ -971,7 +1324,7 @@ function toggleHabit(id,date){const h=S.habits.find(h=>h.id===id);if(!h)return;c
 function deleteHabit(id){S.habits=S.habits.filter(h=>h.id!==id);save();renderHabits();}
 function saveHabit(){
   const name=document.getElementById('hIn').value.trim();if(!name)return;
-  S.habits.push({id:uid(),name,goalId:document.getElementById('hGoal').value||null,checkins:[],startDate:today()});
+  S.habits.push({id:uid(),name,goalId:document.getElementById('hGoal').value||null,checkins:[today()],startDate:today()});
   save();closeModals();renderHabits();
 }
 function renderSuggests(){
@@ -987,7 +1340,7 @@ function renderSuggests(){
 function toggleSuggest(key){if(!S.selected)S.selected=[];const i=S.selected.indexOf(key);if(i>=0)S.selected.splice(i,1);else S.selected.push(key);save();renderSuggests();}
 function addSuggested(){
   if(!S.selected)S.selected=[];let added=0;
-  S.selected.forEach(key=>{const[cat,i]=key.split('_');const s=SUGGESTED[cat][parseInt(i)];if(s&&!S.habits.some(h=>h.name===s.n)){S.habits.push({id:uid(),name:s.n,goalId:null,checkins:[],startDate:today()});added++;}});
+  S.selected.forEach(key=>{const[cat,i]=key.split('_');const s=SUGGESTED[cat][parseInt(i)];if(s&&!S.habits.some(h=>h.name===s.n)){S.habits.push({id:uid(),name:s.n,goalId:null,checkins:[today()],startDate:today()});added++;}});
   S.selected=[];save();renderHabits();renderSuggests();if(added)sw('habits');
 }
 
@@ -1025,7 +1378,10 @@ function saveBeauty(){
 ═══════════════════════════════════════ */
 function openModal(id){
   stopMic();
-  if(id==='habitModal'){document.getElementById('hIn').value='';const sel=document.getElementById('hGoal');sel.innerHTML='<option value="">-- no goal --</option>'+S.goals.map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('');}
+  if(id==='habitModal'){document.getElementById('hIn').value='';const sel=document.getElementById('hGoal');const yg=(S.yearlyGoals||[]).map(g=>`<option value="${g.id}">[Y] ${esc(g.name)}</option>`).join('');
+  const mg=(S.monthlyGoals||[]).map(g=>`<option value="${g.id}">[M] ${esc(g.name)}</option>`).join('');
+  const wg=(S.weeklyGoals||[]).map(g=>`<option value="${g.id}">[W] ${esc(g.name)}</option>`).join('');
+  sel.innerHTML='<option value="">-- no goal --</option>'+yg+mg+wg;}
   if(id==='goalModal'){document.getElementById('gIn').value='';document.getElementById('gMicSt').textContent='';setTimeout(()=>document.getElementById('gIn').focus(),300);}
   document.getElementById(id).classList.add('open');
 }
@@ -1171,7 +1527,188 @@ function maybeShowInst(){const standalone=window.navigator.standalone||window.ma
 function dismissInst(){localStorage.setItem('instDismissed','1');document.getElementById('instBanner').classList.remove('show');}
 
 /* boot */
+/* ═══════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════ */
+const NOTIF_SUGGESTED=[
+  {msg:"Drink a glass of water, bestie! 💧",time:"08:00",emoji:"💧",repeat:"daily"},
+  {msg:"Time for your morning skincare ♡",time:"07:30",emoji:"🌷",repeat:"daily"},
+  {msg:"Take your vitamins, queen! 💊",time:"09:00",emoji:"💊",repeat:"daily"},
+  {msg:"Drink water!! You're probably dehydrated rn 💦",time:"11:00",emoji:"💦",repeat:"daily"},
+  {msg:"Lunch time! Eat something yummy 🍜",time:"13:00",emoji:"🍜",repeat:"weekdays"},
+  {msg:"Afternoon water check ✨ drink up!",time:"15:00",emoji:"✨",repeat:"daily"},
+  {msg:"Time for your evening skincare ritual 🌙",time:"20:00",emoji:"🌙",repeat:"daily"},
+  {msg:"No more scrolling! Put the phone down 📵",time:"22:00",emoji:"📵",repeat:"daily"},
+  {msg:"Did you log your habits today? 🌸",time:"21:00",emoji:"🌸",repeat:"daily"},
+  {msg:"Stretch it out, babe! 🧘",time:"18:00",emoji:"🧘",repeat:"daily"},
+  {msg:"You're doing amazing sweetie ★",time:"12:00",emoji:"★",repeat:"daily"},
+  {msg:"Wash your face before bed! 🫧",time:"22:30",emoji:"🫧",repeat:"daily"},
+  {msg:"How are you feeling today? Log your mood ♡",time:"19:00",emoji:"😊",repeat:"daily"},
+  {msg:"Weekend self-care time! 🛁",time:"11:00",emoji:"🛁",repeat:"weekends"},
+  {msg:"Morning walk? Touch some grass babe 🌿",time:"09:30",emoji:"🌿",repeat:"daily"},
+];
+
+let snoozeTimer=null;
+let currentSnoozeMsg=null;
+
+function initNotifs(){
+  if(!S.notifs)S.notifs=[];
+  requestNotifPermission();
+  scheduleAllNotifs();
+}
+
+function requestNotifPermission(){
+  const box=document.getElementById('notifPermBox');
+  if(!box)return;
+  if(!('Notification' in window)){
+    box.innerHTML=`<div class="empty" style="font-size:14px">notifications not supported in this browser</div>`;
+    return;
+  }
+  if(Notification.permission==='granted'){
+    box.innerHTML=`<div style="background:#e1f5ee;border:1px solid #2d6b4f;padding:7px 10px;font-size:15px;color:#085041;border-radius:4px">🔔 notifications are ON ♡</div>`;
+  } else if(Notification.permission==='denied'){
+    box.innerHTML=`<div style="background:#fcebeb;border:1px solid #a32d2d;padding:7px 10px;font-size:14px;color:#a32d2d">notifications blocked — enable in browser settings</div>`;
+  } else {
+    box.innerHTML=`<button class="w98 acc" onclick="askNotifPermission()" style="width:100%">🔔 ENABLE NOTIFICATIONS ♡</button>`;
+  }
+}
+
+function askNotifPermission(){
+  Notification.requestPermission().then(p=>{
+    requestNotifPermission();
+    if(p==='granted'){scheduleAllNotifs();}
+  });
+}
+
+function renderNotifs(){
+  requestNotifPermission();
+  renderNotifSuggestions();
+  const el=document.getElementById('notifList');
+  if(!S.notifs||!S.notifs.length){el.innerHTML='<div class="empty">no reminders yet~<br>add one above ♡</div>';return;}
+  el.innerHTML=S.notifs.map(n=>`<div class="notif-item">
+    <div style="font-size:22px;flex-shrink:0">${n.emoji||'🔔'}</div>
+    <div class="notif-body">
+      <div class="notif-msg">${esc(n.msg)}</div>
+      <div class="notif-sub">${n.time} · ${n.repeat}</div>
+    </div>
+    <div class="notif-toggle ${n.on?'on':''}" onclick="toggleNotif('${n.id}')"></div>
+    <button class="notif-del" onclick="deleteNotif('${n.id}')">✕</button>
+  </div>`).join('');
+}
+
+function renderNotifSuggestions(){
+  const el=document.getElementById('notifSuggestions');
+  el.innerHTML=NOTIF_SUGGESTED.map((s,i)=>`<button class="ns-chip" onclick="quickAddNotif(${i})">
+    <div class="ns-emoji">${s.emoji}</div>
+    <div style="flex:1">
+      <div class="ns-name">${esc(s.msg)}</div>
+      <div class="ns-time">${s.time} · ${s.repeat}</div>
+    </div>
+    <div style="font-size:18px;color:var(--acc)">+</div>
+  </button>`).join('');
+}
+
+function quickAddNotif(i){
+  const s=NOTIF_SUGGESTED[i];
+  if(!S.notifs)S.notifs=[];
+  if(S.notifs.some(n=>n.msg===s.msg))return;
+  S.notifs.push({id:uid(),msg:s.msg,time:s.time,emoji:s.emoji,repeat:s.repeat,on:true});
+  save();renderNotifs();scheduleAllNotifs();
+}
+
+function openAddNotif(){
+  document.getElementById('nfMsg').value='';
+  document.getElementById('nfTime').value='08:00';
+  document.getElementById('nfEmoji').value='🔔';
+  openModal('notifModal');
+  setTimeout(()=>document.getElementById('nfMsg').focus(),300);
+}
+
+function saveNotif(){
+  const msg=document.getElementById('nfMsg').value.trim();if(!msg)return;
+  if(!S.notifs)S.notifs=[];
+  S.notifs.push({id:uid(),msg,time:document.getElementById('nfTime').value||'08:00',emoji:document.getElementById('nfEmoji').value.trim()||'🔔',repeat:document.getElementById('nfRepeat').value,on:true});
+  save();closeModals();renderNotifs();scheduleAllNotifs();
+}
+
+function toggleNotif(id){
+  const n=S.notifs.find(n=>n.id===id);if(n){n.on=!n.on;save();renderNotifs();scheduleAllNotifs();}
+}
+function deleteNotif(id){S.notifs=S.notifs.filter(n=>n.id!==id);save();renderNotifs();}
+
+function scheduleAllNotifs(){
+  // clear existing intervals
+  if(window._notifIntervals){window._notifIntervals.forEach(clearInterval);}
+  window._notifIntervals=[];
+  if(!S.notifs)return;
+  // check every minute
+  const iv=setInterval(checkNotifs,60000);
+  window._notifIntervals.push(iv);
+  checkNotifs();
+}
+
+function checkNotifs(){
+  if(!S.notifs)return;
+  const now=new Date();
+  const hhmm=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const dow=now.getDay();// 0=sun,6=sat
+  S.notifs.forEach(n=>{
+    if(!n.on)return;
+    if(n.time!==hhmm)return;
+    const isWeekday=dow>=1&&dow<=5;
+    const isWeekend=dow===0||dow===6;
+    if(n.repeat==='weekdays'&&!isWeekday)return;
+    if(n.repeat==='weekends'&&!isWeekend)return;
+    const lastKey='notif_last_'+n.id;
+    const lastFired=localStorage.getItem(lastKey);
+    const todayStr=today();
+    if(lastFired===todayStr)return;
+    localStorage.setItem(lastKey,todayStr);
+    fireNotif(n);
+  });
+}
+
+function fireNotif(n){
+  // in-app Win98 popup
+  showWin98Notif(n.emoji||'🔔',n.msg,n.time);
+  // system notification if permitted
+  if(Notification.permission==='granted'){
+    try{new Notification('DayPlan ♡',{body:n.msg,icon:'icon-192.png'});}catch(e){}
+  }
+}
+
+function showWin98Notif(emoji,msg,time){
+  const el=document.getElementById('win98notif');
+  document.getElementById('win98notifEmoji').textContent=emoji;
+  document.getElementById('win98notifIcon').textContent=emoji;
+  document.getElementById('win98notifMsg').textContent=msg;
+  document.getElementById('win98notifTime').textContent=time;
+  el.style.display='block';
+  currentSnoozeMsg={emoji,msg,time};
+  // auto dismiss after 10s
+  setTimeout(()=>dismissWin98Notif(),10000);
+}
+
+function dismissWin98Notif(){
+  document.getElementById('win98notif').style.display='none';
+  currentSnoozeMsg=null;
+}
+
+function snoozeNotif(){
+  dismissWin98Notif();
+  if(!currentSnoozeMsg)return;
+  const snap=currentSnoozeMsg;
+  clearTimeout(snoozeTimer);
+  snoozeTimer=setTimeout(()=>{showWin98Notif(snap.emoji,snap.msg,snap.time);},10*60*1000);
+}
+
+
 init();
+
+/* service worker */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/dayplan/sw.js').catch(()=>{});
+}
 </script>
 </body>
 </html>
