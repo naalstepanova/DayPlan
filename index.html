@@ -10,13 +10,6 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>DayPlan ♡</title>
-<script>
-// stub — queues any calls made before app JS loads
-window._q=[];
-['sw','openTaskModal','openModal','openGoalModal','swGoal','addSteps','resetSteps','addWater','resetWater','saveWaterSettings','toggleGlass','calPrev','calNext','openLogDay','openAddTracker','openAddNotif','openBeautyModal','openAddMed','toggleTask','deleteTask','toggleHabit','deleteHabit','toggleBeauty','deleteBeauty','toggleMedTaken','deleteMed','deleteGoal','deleteGoalById','toggleNotif','deleteNotif','quickAddNotif','askNotifPermission','dismissInst','gdSignIn','gdSave','gdLoad','gdSignOut','exportJSON','pickColor','saveTask','saveGoal','saveHabit','saveBeauty','saveMed','saveTracker','saveNotif','saveLogDay','toggleLogIcon','toggleMic','closeModals','dismissWin98Notif','snoozeNotif','toggleSuggest','addSuggested'].forEach(fn=>{
-  window[fn]=function(){window._q.push([fn,arguments]);};
-});
-</script>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -751,6 +744,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 </div>
 
+<script>
 /* ═══════════════════════════════════════
    CONSTANTS & DATA
 ═══════════════════════════════════════ */
