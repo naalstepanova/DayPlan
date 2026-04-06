@@ -287,8 +287,33 @@ let gdToken=null,gdAutoInterval=null;
 const now=new Date();calYear=now.getFullYear();calMonth_=now.getMonth();
 
 function loadState(){
-  try{const s=localStorage.getItem('dp_v4');if(s)return JSON.parse(s);}catch(e){}
-  return{tasks:[],goals:[],yearlyGoals:[],monthlyGoals:[],weeklyGoals:[],habits:[],beauty:{morning:DEFAULT_BEAUTY.morning.map(s=>({...s,done:false})),evening:DEFAULT_BEAUTY.evening.map(s=>({...s,done:false}))},steps:{count:0,goal:10000,date:''},water:{glasses:0,goal:2000,glassSize:250,date:'',history:{}},log:{},trackers:DEFAULT_TRACKERS.map(t=>({...t})),meds:[],selected:[],tab:'today'};
+  const def={tasks:[],goals:[],yearlyGoals:[],monthlyGoals:[],weeklyGoals:[],habits:[],
+    beauty:{morning:DEFAULT_BEAUTY.morning.map(s=>({...s,done:false})),evening:DEFAULT_BEAUTY.evening.map(s=>({...s,done:false}))},
+    steps:{count:0,goal:10000,date:''},
+    water:{glasses:0,goal:2000,glassSize:250,date:'',history:{}},
+    log:{},trackers:DEFAULT_TRACKERS.map(t=>({...t})),
+    meds:[],notifs:[],selected:[],tab:'today'};
+  try{
+    const s=localStorage.getItem('dp_v4');
+    if(s){
+      const parsed=JSON.parse(s);
+      // merge with defaults so new fields never missing
+      return Object.assign({},def,parsed,{
+        beauty:parsed.beauty||def.beauty,
+        steps:Object.assign({},def.steps,parsed.steps||{}),
+        water:Object.assign({},def.water,parsed.water||{}),
+        yearlyGoals:parsed.yearlyGoals||[],
+        monthlyGoals:parsed.monthlyGoals||[],
+        weeklyGoals:parsed.weeklyGoals||[],
+        notifs:parsed.notifs||[],
+        trackers:parsed.trackers||def.trackers,
+        meds:parsed.meds||[],
+        goals:parsed.goals||[],
+        log:parsed.log||{}
+      });
+    }
+  }catch(e){console.warn('loadState error:',e);}
+  return def;
 }
 function save(){try{localStorage.setItem('dp_v4',JSON.stringify(S));gdAutoSave();}catch(e){}}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -1340,7 +1365,7 @@ function renderMoodHistory(){
   html+='</div>';
 
   // 30-day dot grid
-  html+='<div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text3);margin-bottom:6px">30-DAY MOOD MAP</div>';
+  html+='<div style="font-family:var(--font-sans);font-size:10px;color:var(--text3);margin-bottom:6px">30-DAY MOOD MAP</div>';
   html+='<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">';
   days.forEach(d=>{
     const col=d.mood?MOOD_COLORS[d.mood]:'var(--white)';
@@ -1412,7 +1437,7 @@ function renderStats(){
     return{name:g.name,pct:p.pct,done:p.done,total:p.total};
   });
 
-  let html=`<div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text3);margin-bottom:10px;letter-spacing:.05em">LAST ${days} DAYS SUMMARY</div>`;
+  let html=`<div style="font-family:var(--font-sans);font-size:10px;color:var(--text3);margin-bottom:10px;letter-spacing:.05em">LAST ${days} DAYS SUMMARY</div>`;
 
   // big stats grid
   html+=`<div class="stats-grid">
@@ -1501,7 +1526,12 @@ function renderStats(){
   el.innerHTML=html;
 }
 
-init();
+try{
+  init();
+}catch(e){
+  console.error('DayPlan init error:',e);
+  document.body.innerHTML='<div style="padding:20px;font-family:monospace;color:#c060a8;background:#f2cfe8;min-height:100vh"><h2>DayPlan Error :(</h2><p>'+e.message+'</p><p>Please clear site data in browser settings and reload.</p><button onclick="localStorage.clear();location.reload()" style="margin-top:16px;padding:10px 20px;background:#c060a8;color:white;border:none;font-size:16px;cursor:pointer">Clear & Reload</button></div>';
+}
 
 /* service worker */
 if('serviceWorker' in navigator){
