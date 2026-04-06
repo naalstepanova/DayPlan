@@ -222,6 +222,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .gd-dot.err{background:#c04040}
 .gd-dot.busy{background:#c0a000;animation:blink 1s step-start infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 .gd-log{background:var(--white);border-top:2px solid var(--bd);border-left:2px solid var(--bd);border-right:2px solid var(--bl);border-bottom:2px solid var(--bl);padding:6px 8px;font-size:13px;color:var(--text3);max-height:80px;overflow-y:auto;margin-top:6px}
 .gd-log p{margin-bottom:2px}
 
@@ -315,7 +316,7 @@ function init(){
 }
 
 function sw(name,sv=true){
-  document.querySelectorAll('.ttab').forEach((t,i)=>{t.classList.toggle('active',['today','water','log','meds','goals','habits','beauty','notifs','drive','drive'][i]===name);});
+  document.querySelectorAll('.ttab').forEach((t,i)=>{t.classList.toggle('active',['today','water','log','meds','goals','habits','beauty','mood','stats','notifs','drive','drive'][i]===name);});
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.getElementById('sa').scrollTop=0;
@@ -328,6 +329,8 @@ function sw(name,sv=true){
   if(name==='goals'){renderGoals();}
   if(name==='habits'){renderHabits();renderSuggests();}
   if(name==='beauty')renderBeauty();
+  if(name==='mood')renderMoodTab();
+  if(name==='stats')renderStats();
   if(name==='notifs')renderNotifs();
   if(name==='drive')renderDrive();
   updateHeader();
@@ -454,6 +457,10 @@ function openLogDay(ds){
     <span class="log-icon-lbl">${esc(t.name)}</span>
   </button>`).join('');
   document.getElementById('logNote').value=entry.note||'';
+  // restore mood
+  document.querySelectorAll('.mood-btn').forEach(b=>{
+    b.classList.toggle('mood-sel', entry.mood && parseInt(b.getAttribute('data-mood'))===entry.mood);
+  });
   openModal('logModal');
 }
 function toggleLogIcon(btn){btn.classList.toggle('active');}
@@ -461,9 +468,17 @@ function saveLogDay(){
   if(!logEditDate)return;
   const chosen=Array.from(document.querySelectorAll('#logIconsGrid .log-icon-btn.active')).map(b=>b.getAttribute('data-tid'));
   const note=document.getElementById('logNote').value.trim();
+  const moodBtn=document.querySelector('#moodPicker .mood-btn.mood-sel');
+  const mood=moodBtn?parseInt(moodBtn.getAttribute('data-mood')):null;
   if(!S.log)S.log={};
-  S.log[logEditDate]={trackers:chosen,note};
+  S.log[logEditDate]={trackers:chosen,note,mood};
   save();closeModals();renderCal();
+}
+
+function pickMood(val){
+  document.querySelectorAll('.mood-btn').forEach(b=>{
+    b.classList.toggle('mood-sel', parseInt(b.getAttribute('data-mood'))===val);
+  });
 }
 
 function renderTrackerList(){
@@ -932,7 +947,7 @@ function stopMic(){if(activeRec){try{activeRec.stop();}catch(e){}activeRec=null;
 /* ═══════════════════════════════════════
    GOOGLE DRIVE
 ═══════════════════════════════════════ */
-const GD_CLIENT_ID='YOUR_GOOGLE_CLIENT_ID';// ← replace with your Google OAuth client ID
+const GD_CLIENT_ID='502819867089-lsf30tpnoeofc260k4tjl2fa79qi1ohg.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
 const GD_FILE_NAME='dayplan_data.json';
 let gdFileId=localStorage.getItem('gd_file_id')||null;
@@ -1079,6 +1094,10 @@ function initNotifs(){
   if(!S.notifs)S.notifs=[];
   requestNotifPermission();
   scheduleAllNotifs();
+  // check shortly after load in case we missed a minute
+  setTimeout(checkNotifs, 2000);
+  // also check every 30s from start
+  setInterval(checkNotifs, 30000);
 }
 
 function requestNotifPermission(){
@@ -1161,71 +1180,326 @@ function toggleNotif(id){
 function deleteNotif(id){S.notifs=S.notifs.filter(n=>n.id!==id);save();renderNotifs();}
 
 function scheduleAllNotifs(){
-  // clear existing intervals
+  // clear old intervals
   if(window._notifIntervals){window._notifIntervals.forEach(clearInterval);}
   window._notifIntervals=[];
-  if(!S.notifs)return;
-  // check every minute
-  const iv=setInterval(checkNotifs,60000);
+  if(!S.notifs||!S.notifs.length)return;
+  // check every 30 seconds for better accuracy
+  const iv=setInterval(checkNotifs,30000);
   window._notifIntervals.push(iv);
-  checkNotifs();
 }
 
 function checkNotifs(){
   if(!S.notifs)return;
   const now=new Date();
   const hhmm=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const dow=now.getDay();// 0=sun,6=sat
+  const dow=now.getDay();
+  const isWeekday=dow>=1&&dow<=5;
+  const isWeekend=dow===0||dow===6;
+  const todayStr=today();
+
   S.notifs.forEach(n=>{
     if(!n.on)return;
     if(n.time!==hhmm)return;
-    const isWeekday=dow>=1&&dow<=5;
-    const isWeekend=dow===0||dow===6;
     if(n.repeat==='weekdays'&&!isWeekday)return;
     if(n.repeat==='weekends'&&!isWeekend)return;
-    const lastKey='notif_last_'+n.id;
-    const lastFired=localStorage.getItem(lastKey);
-    const todayStr=today();
-    if(lastFired===todayStr)return;
-    localStorage.setItem(lastKey,todayStr);
+    if(n.repeat==='once'){
+      if(localStorage.getItem('notif_done_'+n.id))return;
+      localStorage.setItem('notif_done_'+n.id,'1');
+    } else {
+      const lastKey='notif_last_'+n.id;
+      if(localStorage.getItem(lastKey)===todayStr)return;
+      localStorage.setItem(lastKey,todayStr);
+    }
     fireNotif(n);
   });
 }
 
 function fireNotif(n){
-  // in-app Win98 popup
-  showWin98Notif(n.emoji||'🔔',n.msg,n.time);
-  // system notification if permitted
-  if(Notification.permission==='granted'){
-    try{new Notification('DayPlan ♡',{body:n.msg,icon:'icon-192.png'});}catch(e){}
+  showWin98Notif(n.emoji||'♡',n.msg,n.time);
+  // system notification
+  if('Notification' in window && Notification.permission==='granted'){
+    try{
+      new Notification('DayPlan ♡',{
+        body:n.msg,
+        icon:'/DayPlan/icon-192.png',
+        badge:'/DayPlan/icon-192.png',
+        vibrate:[200,100,200]
+      });
+    }catch(e){}
   }
 }
 
 function showWin98Notif(emoji,msg,time){
   const el=document.getElementById('win98notif');
-  document.getElementById('win98notifEmoji').textContent=emoji;
-  document.getElementById('win98notifIcon').textContent=emoji;
+  if(!el)return;
+  // clear emoji elements since fonts may not support them
+  document.getElementById('win98notifEmoji').textContent='DayPlan';
+  document.getElementById('win98notifIcon').textContent='♡';
   document.getElementById('win98notifMsg').textContent=msg;
-  document.getElementById('win98notifTime').textContent=time;
+  document.getElementById('win98notifTime').textContent=time+' — нажми OK или отложи на 10 мин';
   el.style.display='block';
   currentSnoozeMsg={emoji,msg,time};
-  // auto dismiss after 10s
-  setTimeout(()=>dismissWin98Notif(),10000);
+  // clear old auto-dismiss
+  if(window._notifAutoDismiss)clearTimeout(window._notifAutoDismiss);
+  window._notifAutoDismiss=setTimeout(()=>dismissWin98Notif(),15000);
 }
 
 function dismissWin98Notif(){
-  document.getElementById('win98notif').style.display='none';
+  const el=document.getElementById('win98notif');
+  if(el)el.style.display='none';
   currentSnoozeMsg=null;
 }
 
 function snoozeNotif(){
-  dismissWin98Notif();
-  if(!currentSnoozeMsg)return;
   const snap=currentSnoozeMsg;
+  dismissWin98Notif();
+  if(!snap)return;
   clearTimeout(snoozeTimer);
   snoozeTimer=setTimeout(()=>{showWin98Notif(snap.emoji,snap.msg,snap.time);},10*60*1000);
 }
 
+// TEST function — call testNotif() in console to verify popup works
+window.testNotif=function(){
+  showWin98Notif('♡','Тест уведомления! Всё работает ♡','сейчас');
+};
+
+
+/* ═══════════════════════════════════════
+   MOOD TRACKER
+═══════════════════════════════════════ */
+const MOOD_LABELS={5:'amazing 😄',4:'good 😊',3:'okay 😐',2:'bad 😔',1:'awful 😢'};
+const MOOD_COLORS={5:'#1d9e75',4:'#639922',3:'#ba7517',2:'#d85a30',1:'#e24b4a'};
+
+function renderMoodTab(){
+  renderMoodToday();
+  renderMoodHistory();
+}
+
+function renderMoodToday(){
+  const el=document.getElementById('moodToday');if(!el)return;
+  const entry=S.log&&S.log[today()]?S.log[today()]:{};
+  const mood=entry.mood||null;
+  const moodBtns=['😄 amazing','😊 good','😐 okay','😔 bad','😢 awful'].map((label,i)=>{
+    const val=5-i;
+    const sel=mood===val;
+    return`<button class="mood-btn ${sel?'mood-sel':''}" data-mood="${val}" onclick="setMoodToday(${val})" style="${sel?'background:'+MOOD_COLORS[val]+';color:white;border-color:'+MOOD_COLORS[val]:''}">${label}</button>`;
+  }).join('');
+  el.innerHTML=`
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${moodBtns}</div>
+    ${mood?`<div style="margin-top:6px;font-size:16px;color:var(--text2)">today: <b style="color:${MOOD_COLORS[mood]}">${MOOD_LABELS[mood]}</b></div>`:'<div style="font-size:15px;color:var(--text3)">tap to log your mood ♡</div>'}
+    ${entry.note?`<div style="font-size:15px;color:var(--text3);margin-top:4px;font-style:italic">"${esc(entry.note)}"</div>`:''}
+  `;
+}
+
+function setMoodToday(val){
+  if(!S.log)S.log={};
+  if(!S.log[today()])S.log[today()]={trackers:[],medsTaken:[]};
+  S.log[today()].mood=val;
+  save();renderMoodToday();renderMoodHistory();
+}
+
+function renderMoodHistory(){
+  const el=document.getElementById('moodHistory');if(!el)return;
+  // last 30 days
+  const days=[];
+  for(let i=29;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const entry=(S.log&&S.log[ds])||{};
+    days.push({ds,mood:entry.mood||null,d});
+  }
+  const withMood=days.filter(d=>d.mood);
+  if(!withMood.length){el.innerHTML='<div class="empty">no mood data yet~<br>log your mood daily ♡</div>';return;}
+
+  // avg mood
+  const avg=(withMood.reduce((s,d)=>s+d.mood,0)/withMood.length).toFixed(1);
+  const best=Math.max(...withMood.map(d=>d.mood));
+  const worst=Math.min(...withMood.map(d=>d.mood));
+
+  // mini stats
+  let html=`<div class="stats-grid">
+    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[Math.round(avg)]||'var(--acc)'}">${avg}</div><div class="stat-label">avg mood</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[best]}">${best}</div><div class="stat-label">best</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[worst]}">${worst}</div><div class="stat-label">worst</div></div>
+  </div>`;
+
+  // bar chart per mood level
+  html+='<div style="margin-bottom:10px">';
+  for(let v=5;v>=1;v--){
+    const cnt=withMood.filter(d=>d.mood===v).length;
+    const pct=withMood.length?Math.round(cnt/withMood.length*100):0;
+    html+=`<div class="mood-bar-row">
+      <span style="width:80px;flex-shrink:0;color:${MOOD_COLORS[v]}">${MOOD_LABELS[v]}</span>
+      <div style="flex:1;background:var(--white);border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl);height:16px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${MOOD_COLORS[v]};transition:width .4s"></div>
+      </div>
+      <span style="width:30px;text-align:right;color:var(--text3);font-size:14px">${cnt}</span>
+    </div>`;
+  }
+  html+='</div>';
+
+  // 30-day dot grid
+  html+='<div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text3);margin-bottom:6px">30-DAY MOOD MAP</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">';
+  days.forEach(d=>{
+    const col=d.mood?MOOD_COLORS[d.mood]:'var(--white)';
+    const label=d.mood?MOOD_LABELS[d.mood]:'no data';
+    html+=`<div title="${d.ds}: ${label}" style="aspect-ratio:1;background:${col};border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl)"></div>`;
+  });
+  html+='</div>';
+  html+=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:13px">`;
+  for(let v=5;v>=1;v--){
+    html+=`<span><span style="display:inline-block;width:10px;height:10px;background:${MOOD_COLORS[v]};vertical-align:middle;margin-right:3px"></span>${MOOD_LABELS[v]}</span>`;
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+/* ═══════════════════════════════════════
+   STATS SUMMARY
+═══════════════════════════════════════ */
+function renderStats(){
+  const el=document.getElementById('statsContent');if(!el)return;
+  const days=parseInt(document.getElementById('statsPeriod')?.value||30);
+  const dateList=[];
+  for(let i=days-1;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    dateList.push(d.toISOString().slice(0,10));
+  }
+
+  // ── tasks ──
+  const allTasks=S.tasks.filter(t=>dateList.includes(t.date));
+  const doneTasks=allTasks.filter(t=>t.done);
+  const taskPct=allTasks.length?Math.round(doneTasks.length/allTasks.length*100):0;
+
+  // ── habits ──
+  const habitCheckins=(S.habits||[]).reduce((s,h)=>s+h.checkins.filter(c=>dateList.includes(c)).length,0);
+  const maxCheckins=(S.habits||[]).length*days;
+  const habitPct=maxCheckins?Math.round(habitCheckins/maxCheckins*100):0;
+
+  // ── water ──
+  const waterHist=S.water&&S.water.history?S.water.history:{};
+  const waterDays=dateList.filter(d=>waterHist[d]&&waterHist[d]>0).length;
+  const waterGoal=S.water&&S.water.goal?S.water.goal:2000;
+  const waterGs=S.water&&S.water.glassSize?S.water.glassSize:250;
+  const waterGoalMet=dateList.filter(d=>waterHist[d]&&(waterHist[d]*waterGs)>=waterGoal).length;
+
+  // ── mood ──
+  const moodEntries=dateList.map(d=>S.log&&S.log[d]?S.log[d].mood:null).filter(Boolean);
+  const avgMood=moodEntries.length?(moodEntries.reduce((s,m)=>s+m,0)/moodEntries.length).toFixed(1):null;
+
+  // ── steps ──
+  // steps only stored for today so skip historical
+
+  // ── meds ──
+  const medDaysTaken=dateList.filter(d=>{
+    const log=S.log&&S.log[d]?S.log[d]:{};
+    return(log.medsTaken||[]).length>0;
+  }).length;
+
+  // ── trackers ──
+  const trackerCounts={};
+  (S.trackers||[]).forEach(t=>{trackerCounts[t.id]={name:t.name,emoji:t.emoji,count:0};});
+  dateList.forEach(d=>{
+    const log=S.log&&S.log[d]?S.log[d]:{};
+    (log.trackers||[]).forEach(tid=>{if(trackerCounts[tid])trackerCounts[tid].count++;});
+  });
+
+  // ── weekly goals progress ──
+  const wgProgress=(S.weeklyGoals||[]).map(g=>{
+    const p=goalProgress(g.id,'weekly');
+    return{name:g.name,pct:p.pct,done:p.done,total:p.total};
+  });
+
+  let html=`<div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text3);margin-bottom:10px;letter-spacing:.05em">LAST ${days} DAYS SUMMARY</div>`;
+
+  // big stats grid
+  html+=`<div class="stats-grid">
+    <div class="stats-card"><div class="stat-big">${doneTasks.length}</div><div class="stat-label">tasks done</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${taskPct>=70?'#1d9e75':taskPct>=40?'#ba7517':'#e24b4a'}">${taskPct}%</div><div class="stat-label">completion</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:#1d9e75">${habitCheckins}</div><div class="stat-label">habit days</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:#1860a0">${waterDays}</div><div class="stat-label">days tracked</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:#1860a0">${waterGoalMet}</div><div class="stat-label">water goals met</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${avgMood?MOOD_COLORS[Math.round(avgMood)]:'var(--text3)'}">
+      ${avgMood||'—'}</div><div class="stat-label">avg mood</div></div>
+  </div>`;
+
+  // habits breakdown
+  if((S.habits||[]).length){
+    html+=`<div class="slabel">HABIT STREAKS</div>`;
+    html+=`<div style="margin-bottom:10px">`;
+    (S.habits||[]).forEach(h=>{
+      const streak=calcStreak(h);
+      const periodCheckins=h.checkins.filter(c=>dateList.includes(c)).length;
+      const pct=Math.round(periodCheckins/days*100);
+      html+=`<div style="margin-bottom:6px">
+        <div class="prog-lbl"><span>${esc(h.name)}</span><span style="color:var(--acc)">${streak}d streak · ${pct}% this period</span></div>
+        <div class="prog-wrap"><div class="prog98" style="width:${pct}%"></div></div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+
+  // mood chart
+  if(moodEntries.length){
+    html+=`<div class="slabel">MOOD BREAKDOWN</div>`;
+    for(let v=5;v>=1;v--){
+      const cnt=moodEntries.filter(m=>m===v).length;
+      const pct=moodEntries.length?Math.round(cnt/moodEntries.length*100):0;
+      if(!cnt)continue;
+      html+=`<div class="mood-bar-row">
+        <span style="width:70px;flex-shrink:0;font-size:13px;color:${MOOD_COLORS[v]}">${MOOD_LABELS[v]}</span>
+        <div style="flex:1;background:var(--white);border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl);height:14px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${MOOD_COLORS[v]}"></div>
+        </div>
+        <span style="width:28px;text-align:right;font-size:13px;color:var(--text3)">${cnt}</span>
+      </div>`;
+    }
+  }
+
+  // life log top trackers
+  const topTrackers=Object.values(trackerCounts).filter(t=>t.count>0).sort((a,b)=>b.count-a.count);
+  if(topTrackers.length){
+    html+=`<div class="slabel">LIFE LOG TOP EVENTS</div>`;
+    html+=`<div style="margin-bottom:10px">`;
+    topTrackers.slice(0,8).forEach(t=>{
+      const pct=Math.round(t.count/days*100);
+      html+=`<div class="tracker-row">
+        <span>${t.emoji} ${esc(t.name)}</span>
+        <span style="color:var(--acc)">${t.count}x (${pct}% of days)</span>
+      </div>`;
+    });
+    html+='</div>';
+  }
+
+  // goals progress
+  if(wgProgress.length){
+    html+=`<div class="slabel">WEEKLY GOALS</div>`;
+    wgProgress.forEach(g=>{
+      html+=`<div style="margin-bottom:6px">
+        <div class="prog-lbl"><span>${esc(g.name)}</span><span>${g.pct}%</span></div>
+        <div class="prog-wrap"><div class="prog98" style="width:${g.pct}%"></div></div>
+      </div>`;
+    });
+  }
+
+  // beauty completion
+  const morningDone=(S.beauty&&S.beauty.morning?S.beauty.morning.filter(s=>s.done).length:0);
+  const morningTotal=(S.beauty&&S.beauty.morning?S.beauty.morning.length:0);
+  const eveningDone=(S.beauty&&S.beauty.evening?S.beauty.evening.filter(s=>s.done).length:0);
+  const eveningTotal=(S.beauty&&S.beauty.evening?S.beauty.evening.length:0);
+  if(morningTotal||eveningTotal){
+    html+=`<div class="slabel">TODAY'S BEAUTY ROUTINE</div>`;
+    html+=`<div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
+      <div class="stats-card"><div class="stat-big">${morningDone}/${morningTotal}</div><div class="stat-label">morning done</div></div>
+      <div class="stats-card"><div class="stat-big">${eveningDone}/${eveningTotal}</div><div class="stat-label">evening done</div></div>
+    </div>`;
+  }
+
+  html+=`<div style="font-size:13px;color:var(--text3);text-align:center;margin-top:8px">you're doing amazing ★</div>`;
+  el.innerHTML=html;
+}
 
 init();
 
@@ -1270,6 +1544,8 @@ if('serviceWorker' in navigator){
   <button class="ttab" onclick="sw('goals')">GOALS</button>
   <button class="ttab" onclick="sw('habits')">HABITS</button>
   <button class="ttab" onclick="sw('beauty')">BEAUTY</button>
+  <button class="ttab" onclick="sw('mood')">MOOD</button>
+  <button class="ttab" onclick="sw('stats')">STATS ★</button>
   <button class="ttab" onclick="sw('notifs')">NOTIFS 🔔</button>
 </div>
 
@@ -1476,6 +1752,39 @@ if('serviceWorker' in navigator){
     <div class="pbody">
       <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyModal('evening')">+ STEP</button></div>
       <div id="beautyEvening"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOOD -->
+<div class="section" id="tab-mood">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>😊</span> MOOD_TRACKER.EXE</div></div>
+    <div class="pbody">
+      <div style="font-size:14px;color:var(--text3);margin-bottom:10px">how are you feeling today? ♡</div>
+      <div id="moodToday"></div>
+    </div>
+  </div>
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>📅</span> MOOD_HISTORY</div></div>
+    <div class="pbody"><div id="moodHistory"></div></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="section" id="tab-stats">
+  <div class="win-panel">
+    <div class="tbar"><div class="tbar-l"><span>★</span> STATS.EXE</div>
+      <div class="wbtns">
+        <select id="statsPeriod" onchange="renderStats()" style="font-family:'VT323',monospace;font-size:13px;background:var(--bf);border:1px solid var(--bs);color:var(--text);padding:1px 4px">
+          <option value="7">7 days</option>
+          <option value="30" selected>30 days</option>
+          <option value="90">90 days</option>
+        </select>
+      </div>
+    </div>
+    <div class="pbody">
+      <div id="statsContent"></div>
     </div>
   </div>
 </div>
@@ -1689,7 +1998,7 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- WIN98 NOTIFICATION POPUP -->
-<div id="win98notif" style="display:none;position:fixed;bottom:16px;right:12px;left:12px;z-index:9000;max-width:340px;margin:0 auto">
+<div id="win98notif" style="display:none;position:fixed;bottom:20px;left:12px;right:12px;z-index:99999;max-width:380px;margin:0 auto;animation:slideUp .3s ease">
   <div style="background:#f5d0ea;border-top:2px solid #ffb8f0;border-left:2px solid #ffb8f0;border-right:2px solid #8030a0;border-bottom:2px solid #8030a0;box-shadow:3px 3px 0 rgba(128,48,160,0.3)">
     <div style="background:linear-gradient(90deg,#c060a8,#9040a0);padding:4px 8px;display:flex;align-items:center;justify-content:space-between">
       <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#fff8fe;text-shadow:1px 1px 0 rgba(0,0,0,.3);display:flex;align-items:center;gap:5px">
