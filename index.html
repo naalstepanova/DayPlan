@@ -294,7 +294,7 @@ function loadState(){
     log:{},trackers:DEFAULT_TRACKERS.map(t=>({...t})),
     meds:[],notifs:[],selected:[],tab:'today'};
   try{
-    const s=localStorage.getItem('dp_v4');
+    const s=localStorage.getItem('dp_v4')||sessionStorage.getItem('dp_v4_session');
     if(s){
       const parsed=JSON.parse(s);
       // merge with defaults so new fields never missing
@@ -315,7 +315,14 @@ function loadState(){
   }catch(e){console.warn('loadState error:',e);}
   return def;
 }
-function save(){try{localStorage.setItem('dp_v4',JSON.stringify(S));gdAutoSave();}catch(e){}}
+function save(){
+  try{
+    const data=JSON.stringify(S);
+    localStorage.setItem('dp_v4',data);
+    sessionStorage.setItem('dp_v4_session',data);
+  }catch(e){console.warn('save error',e);}
+  gdAutoSave();
+}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function today(){return new Date().toISOString().slice(0,10);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -337,6 +344,12 @@ function init(){
   // check gd token from localStorage
   const gt=localStorage.getItem('gd_token');if(gt){gdToken=gt;gdUpdateUI();}
   setInterval(()=>{renderMeds();},60000);
+  // auto-save every 30 seconds
+  setInterval(()=>{save();},30000);
+  // save before page unloads
+  window.addEventListener('beforeunload',()=>{save();});
+  window.addEventListener('pagehide',()=>{save();});
+  window.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();});
   initNotifs();
 }
 
