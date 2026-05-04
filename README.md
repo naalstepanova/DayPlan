@@ -19,7 +19,7 @@ HTML, CSS, JavaScript. No framework. Hosted on GitHub Pages.
 [naalstepanova.github.io/DayPlan](https://naalstepanova.github.io/DayPlan)
 
 ## Screenshots
-[add a screenshot or GIF here]
+![DayPlan main interface](dayplan-main.jpeg)
 
 ## Why Y2K
 Because I wanted it to feel like a tool, not a productivity app. The early-2000s aesthetic makes me actually want to open it every morning.
