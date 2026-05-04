@@ -1,6 +1,6 @@
 # DayPlan
 
-A personal daily planner I built for myself, with a Y2K interface and voice input in Russian.
+A personal daily planner I built for myself, with a Y2K interface and voice input.
 
 I tried a lot of planner apps and none of them quite worked the way I wanted, so I built my own. It is not meant to compete with anything — it is just my planner, made public in case anyone else likes how it works.
 
