@@ -6,7 +6,7 @@ I tried a lot of planner apps and none of them quite worked the way I wanted, so
 
 ## What it does
 - Daily planning with tasks and time blocks
-- Voice input (Russian)
+- Voice input 
 - Habit tracking
 - Mood tracking
 - Goals
