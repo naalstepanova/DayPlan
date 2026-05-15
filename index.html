@@ -288,15 +288,365 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 /* dose tags */
 .dose-tag{display:inline-block;padding:0 6px;font-size:13px;border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl);background:var(--white);margin:1px}
+
+.lang-toggle{display:flex;gap:2px;margin-left:auto;padding:2px}
+.lang-toggle button{font-family:'Press Start 2P',monospace;font-size:7px;padding:3px 5px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);color:var(--text2);cursor:pointer;letter-spacing:.5px}
+.lang-toggle button.active{background:var(--white);color:var(--acc);border-style:inset;border-color:var(--bs)}
 </style>
 <script defer>
 /* ═══════════════════════════════════════
    CONSTANTS & DATA
 ═══════════════════════════════════════ */
 const COLORS={pink:{bg:'#fce0f0',text:'#8a0050',dot:'#d060a0'},purple:{bg:'#ede0f8',text:'#5a0090',dot:'#9040a0'},teal:{bg:'#d8f4ec',text:'#005040',dot:'#2d8060'},coral:{bg:'#fde8e0',text:'#8a2010',dot:'#c84020'},amber:{bg:'#fdf0d0',text:'#7a4000',dot:'#c07000'},blue:{bg:'#dceef8',text:'#00306a',dot:'#1860a0'}};
-const SUGGESTED={wellness:[{n:'Walk 10,000 steps',d:'move daily'},{n:'Drink 2L water',d:'hydrate'},{n:'Sleep by 10 PM',d:'rest'},{n:'Stretch 10 min',d:'mobility'}],mind:[{n:'Meditate 5 min',d:'breathe'},{n:'Journal daily',d:'reflect'},{n:'No screen before bed',d:'sleep'},{n:'Read 20 pages',d:'learn'}],beauty:[{n:'SPF every morning',d:'protect'},{n:'Gua sha / jade roll',d:'lymph'},{n:'Hair mask weekly',d:'hair'},{n:'Hand & nail care',d:'nails'}],growth:[{n:'Learn something new',d:'15min'},{n:'No social media AM',d:'focus'},{n:'Gratitude list',d:'3 things'},{n:'Cold shower',d:'resilience'}]};
+function getSuggested(){return{
+  wellness:[{n:T('sug_walk'),d:T('sug_walk_d')},{n:T('sug_water'),d:T('sug_water_d')},{n:T('sug_sleep'),d:T('sug_sleep_d')},{n:T('sug_stretch'),d:T('sug_stretch_d')}],
+  mind:[{n:T('sug_meditate'),d:T('sug_meditate_d')},{n:T('sug_journal'),d:T('sug_journal_d')},{n:T('sug_screen'),d:T('sug_screen_d')},{n:T('sug_read'),d:T('sug_read_d')}],
+  beauty:[{n:T('sug_spf'),d:T('sug_spf_d')},{n:T('sug_gua'),d:T('sug_gua_d')},{n:T('sug_hair'),d:T('sug_hair_d')},{n:T('sug_nails'),d:T('sug_nails_d')}],
+  growth:[{n:T('sug_learn'),d:T('sug_learn_d')},{n:T('sug_social'),d:T('sug_social_d')},{n:T('sug_grat'),d:T('sug_grat_d')},{n:T('sug_cold'),d:T('sug_cold_d')}]
+};}
+const SUGGESTED = new Proxy({}, {get:(_,k)=>getSuggested()[k]});
 /* old DEFAULT_BEAUTY removed — beauty is now calendar-based */
-const DEFAULT_TRACKERS=[{id:'t1',name:'Drank alcohol',emoji:'🍹'},{id:'t2',name:'Did sport',emoji:'🏃'},{id:'t3',name:'Read a book',emoji:'📚'},{id:'t4',name:'Pooped',emoji:'💩'},{id:'t5',name:'Went outside',emoji:'🌿'},{id:'t6',name:'Good sleep',emoji:'😴'},{id:'t7',name:'Cooked',emoji:'🍳'},{id:'t8',name:'Meditated',emoji:'🧘'},{id:'t9',name:'Period',emoji:'🌸'},{id:'t10',name:'Mood: great',emoji:'😊'},{id:'t11',name:'Mood: bad',emoji:'😔'},{id:'t12',name:'Social time',emoji:'👫'}];
+function getDefaultTrackers(){return [
+  {id:'t1',name:T('tr_alcohol'),emoji:'🍹'},{id:'t2',name:T('tr_sport'),emoji:'🏃'},
+  {id:'t3',name:T('tr_book'),emoji:'📚'},{id:'t4',name:T('tr_poop'),emoji:'💩'},
+  {id:'t5',name:T('tr_outside'),emoji:'🌿'},{id:'t6',name:T('tr_sleep'),emoji:'😴'},
+  {id:'t7',name:T('tr_cook'),emoji:'🍳'},{id:'t8',name:T('tr_meditate'),emoji:'🧘'},
+  {id:'t9',name:T('tr_period'),emoji:'🌸'},{id:'t10',name:T('tr_mood_great'),emoji:'😊'},
+  {id:'t11',name:T('tr_mood_bad'),emoji:'😔'},{id:'t12',name:T('tr_social'),emoji:'👫'}
+];}
+const DEFAULT_TRACKERS = new Proxy([], {
+  get:(_,k)=>{
+    if(k==='map'||k==='filter'||k==='length'||k==='forEach'||(typeof k==='string' && !isNaN(k))){
+      const arr = getDefaultTrackers();
+      return typeof arr[k]==='function' ? arr[k].bind(arr) : arr[k];
+    }
+    return getDefaultTrackers()[k];
+  }
+});
+
+
+/* ═══════════════════════════════════════
+   I18N — bilingual EN/RU support
+═══════════════════════════════════════ */
+const I18N = {
+  en: {
+    // header
+    title_my: 'my', title_day: 'day', title_planner: 'planner ♡',
+    login: 'LOGIN', logout: 'LOGOUT', add_to_home: '♡ add to home screen for best experience',
+    // tabs
+    tab_today: 'TODAY', tab_water: 'WATER', tab_log: 'LOG ♡', tab_meds: 'MEDS',
+    tab_goals: 'GOALS', tab_habits: 'HABITS', tab_beauty: 'BEAUTY',
+    tab_mood: 'MOOD', tab_stats: 'STATS ★', tab_notifs: 'NOTIFS 🔔',
+    // panel titles
+    p_steps: 'STEPS.EXE', p_tasks: 'TASKS_TODAY.TXT', p_water: 'WATER_TRACKER.EXE',
+    p_water_history: 'WATER_HISTORY', p_life_log: 'LIFE_LOG.EXE',
+    p_manage_trackers: 'MANAGE_TRACKERS', p_today_log: 'TODAY_LOG',
+    p_yearly: 'YEARLY_GOALS.EXE', p_monthly: 'MONTHLY_GOALS.EXE', p_weekly: 'WEEKLY_GOALS.EXE',
+    p_goal_map: 'GOAL_MAP', p_habits: 'HABITS_21DAY.EXE',
+    p_beauty_today: 'TODAY', p_beauty_upcoming: 'UPCOMING_7_DAYS', p_beauty_all: 'ALL_PROCEDURES.EXE',
+    p_mood: 'MOOD_TRACKER.EXE', p_mood_history: 'MOOD_HISTORY',
+    p_stats: 'STATS.EXE', p_drive: 'GOOGLE_DRIVE.EXE',
+    p_meds_sched: 'MEDS_SCHEDULE.EXE', p_meds_today: 'TODAY_DOSES',
+    p_notifs: 'NOTIFICATIONS.EXE', p_notifs_suggest: 'SUGGESTED_REMINDERS',
+    p_export: 'EXPORT_IMPORT.EXE',
+    // buttons
+    btn_new_task: '✦ NEW TASK', btn_add_steps: '+', btn_reset: 'rst', btn_reset_full: 'reset',
+    btn_glass: 'glass', btn_glass_p: '+ 1 glass', btn_glass_m: '- 1 glass',
+    btn_save: 'SAVE ♡', btn_save_drive: '💾 SAVE TO DRIVE', btn_load_drive: '📂 LOAD FROM DRIVE',
+    btn_signin: '🔐 SIGN IN WITH GOOGLE', btn_signout: 'SIGN OUT',
+    btn_export: '📤 export JSON', btn_import: '📥 import JSON',
+    btn_add_tracker: '✦ ADD TRACKER', btn_add_med: '✦ ADD MED',
+    btn_cancel: 'CANCEL', btn_ok: 'OK ♡', btn_add: 'ADD ♡', btn_start: 'START ♡', btn_save_alt: 'SAVE ♡',
+    btn_add_procedure: '+ ADD PROCEDURE', btn_add_reminder: '+ ADD REMINDER',
+    btn_enable_notifs: '🔔 ENABLE NOTIFICATIONS ♡',
+    btn_add_to_today: '+ ADD TO TODAY',
+    // section labels
+    sl_legend: 'LEGEND', sl_suggested_habits: 'SUGGESTED_HABITS.TXT',
+    sl_mood_breakdown: 'MOOD BREAKDOWN', sl_weekly_goals: 'WEEKLY GOALS',
+    sl_today_beauty: "TODAY'S BEAUTY PROCEDURES", sl_habit_streaks: 'HABIT STREAKS',
+    sl_top_events: 'LIFE LOG TOP EVENTS',
+    // empty states
+    e_no_history: 'no history yet~',
+    e_no_meds: 'no meds yet~', e_no_meds_sub: 'add one above ♡',
+    e_no_tasks: 'no tasks yet~', e_no_tasks_sub: 'add one ♡',
+    e_no_yearly: 'no yearly goals~', e_no_yearly_sub: 'set your big dreams ♡',
+    e_no_monthly: 'no monthly goals~', e_no_monthly_sub: 'what do you want to achieve this month? ♡',
+    e_no_weekly: 'no weekly goals~', e_no_weekly_sub: 'what will you focus on this week? ♡',
+    e_no_map: 'add yearly goals first to see the map ♡',
+    e_no_habits: 'no habits yet~', e_no_habits_sub: '21 days to stick ♡',
+    e_no_procs_today: 'no procedures today ♡',
+    e_no_procs: 'no procedures yet — tap + to add one ♡',
+    e_no_mood: 'no mood data yet~', e_no_mood_sub: 'log your mood daily ♡',
+    e_no_notifs: 'no reminders yet~', e_no_notifs_sub: 'add one above ♡',
+    e_notifs_unsupported: 'notifications not supported in this browser',
+    e_tap_mood: 'tap to log your mood ♡',
+    // moods
+    mood_5: 'amazing 😄', mood_4: 'good 😊', mood_3: 'okay 😐', mood_2: 'bad 😔', mood_1: 'awful 😢',
+    mood_today_prefix: 'today:', mood_no_data: 'no data',
+    mood_30d: '30-DAY MOOD MAP',
+    stat_avg_mood: 'avg mood', stat_best: 'best', stat_worst: 'worst',
+    // labels
+    l_task_name: 'TASK NAME', l_time: 'TIME', l_link_goal: 'LINK TO GOAL',
+    l_goal_name: 'GOAL NAME', l_color: 'COLOR', l_links_yearly: 'LINKS TO YEARLY GOAL',
+    l_links_monthly: 'LINKS TO MONTHLY GOAL', l_deadline: 'DEADLINE (OPTIONAL)',
+    l_habit_name: 'HABIT NAME', l_goal_opt: 'GOAL (OPTIONAL)', l_no_goal: '-- no goal --',
+    l_name: 'NAME', l_emoji_opt: 'EMOJI (OPTIONAL)', l_type: 'TYPE',
+    l_every_n_days: 'EVERY HOW MANY DAYS?', l_first_day: 'FIRST DAY', l_date: 'DATE',
+    l_note_opt: 'NOTE (OPTIONAL)',
+    l_tracker_name: 'TRACKER NAME', l_emoji_icon: 'EMOJI ICON',
+    l_dose: 'DOSE', l_times_day: 'TIMES PER DAY', l_reminder_time: 'REMINDER TIME',
+    l_supply: 'SUPPLY (PILLS LEFT)', l_notes: 'NOTES',
+    l_message: 'MESSAGE', l_repeat: 'REPEAT', l_emoji: 'EMOJI',
+    // placeholders
+    ph_task: 'what to do...', ph_goal: 'your goal...',
+    ph_habit: 'e.g. drink 2L water...', ph_beauty: 'e.g. Hair toner',
+    ph_note: 'e.g. brand, notes...', ph_log_note: 'how was your day?',
+    ph_tracker: 'e.g. Went for a walk...', ph_tracker_emoji: 'e.g. 🚶',
+    ph_med_name: 'e.g. Vitamin D, Aspirin...', ph_med_dose: 'e.g. 1 tablet, 500mg...',
+    ph_med_supply: 'e.g. 30', ph_med_notes: 'with food, before bed...',
+    ph_notif_msg: 'e.g. Drink a glass of water! 💧',
+    // hints
+    h_recurring_help: 'e.g. 7 = weekly, 14 = every two weeks, 30 = monthly',
+    // type buttons
+    type_recurring: '🔁 RECURRING', type_oneoff: '📅 ONE-OFF',
+    // repeats
+    rep_daily: 'every day', rep_weekdays: 'weekdays only', rep_weekends: 'weekends only', rep_once: 'just once',
+    // misc
+    sign_in_cancelled: 'sign-in cancelled',
+    encouragement: "you're doing amazing ★",
+    done_today: 'done today',
+    morning_done: 'morning done',
+    evening_done: 'evening done',
+    // alerts (used by JS code)
+    a_name_pls: 'name pls ♡',
+    a_pick_date: 'pick a date ♡',
+    a_how_many_days: 'how many days? ♡',
+    a_pick_start: 'pick a start date ♡',
+    a_confirm_del_proc: 'delete this procedure? ♡',
+    // SUGGESTED habit names + categories
+    cat_wellness: 'WELLNESS', cat_mind: 'MIND', cat_beauty_cat: 'BEAUTY', cat_growth: 'GROWTH',
+    sug_walk: 'Walk 10,000 steps', sug_walk_d: 'move daily',
+    sug_water: 'Drink 2L water', sug_water_d: 'hydrate',
+    sug_sleep: 'Sleep by 10 PM', sug_sleep_d: 'rest',
+    sug_stretch: 'Stretch 10 min', sug_stretch_d: 'mobility',
+    sug_meditate: 'Meditate 5 min', sug_meditate_d: 'breathe',
+    sug_journal: 'Journal daily', sug_journal_d: 'reflect',
+    sug_screen: 'No screen before bed', sug_screen_d: 'sleep',
+    sug_read: 'Read 20 pages', sug_read_d: 'learn',
+    sug_spf: 'SPF every morning', sug_spf_d: 'protect',
+    sug_gua: 'Gua sha / jade roll', sug_gua_d: 'lymph',
+    sug_hair: 'Hair mask weekly', sug_hair_d: 'hair',
+    sug_nails: 'Hand & nail care', sug_nails_d: 'nails',
+    sug_learn: 'Learn something new', sug_learn_d: '15min',
+    sug_social: 'No social media AM', sug_social_d: 'focus',
+    sug_grat: 'Gratitude list', sug_grat_d: '3 things',
+    sug_cold: 'Cold shower', sug_cold_d: 'resilience',
+    // default trackers
+    tr_alcohol: 'Drank alcohol', tr_sport: 'Did sport', tr_book: 'Read a book',
+    tr_poop: 'Pooped', tr_outside: 'Went outside', tr_sleep: 'Good sleep',
+    tr_cook: 'Cooked', tr_meditate: 'Meditated', tr_period: 'Period',
+    tr_mood_great: 'Mood: great', tr_mood_bad: 'Mood: bad', tr_social: 'Social time',
+    // notif preset texts
+    np_water: 'Drink a glass of water, bestie! 💧',
+    np_morning_skin: 'Time for your morning skincare ♡',
+    np_vitamins: 'Take your vitamins, queen! 💊',
+    np_water2: "Drink water!! You're probably dehydrated rn 💦",
+    np_lunch: 'Lunch time! Eat something yummy 🍜',
+    np_water_pm: 'Afternoon water check ✨ drink up!',
+    np_evening_skin: 'Time for your evening skincare ritual 🌙',
+    np_phone: 'No more scrolling! Put the phone down 📵',
+    np_log_habits: 'Did you log your habits today? 🌸',
+    np_stretch: 'Stretch it out, babe! 🧘',
+    np_encourage: "You're doing amazing sweetie ★",
+    np_wash_face: 'Wash your face before bed! 🫧',
+    np_mood_check: 'How are you feeling today? Log your mood ♡',
+    np_self_care: 'Weekend self-care time! 🛁',
+    np_walk: 'Morning walk? Touch some grass babe 🌿',
+  },
+  ru: {
+    title_my: 'мой', title_day: 'дневной', title_planner: 'планер ♡',
+    login: 'ВОЙТИ', logout: 'ВЫЙТИ', add_to_home: '♡ добавь на главный экран для удобства',
+    tab_today: 'СЕГОДНЯ', tab_water: 'ВОДА', tab_log: 'ЛОГ ♡', tab_meds: 'ЛЕКАРСТВА',
+    tab_goals: 'ЦЕЛИ', tab_habits: 'ПРИВЫЧКИ', tab_beauty: 'БЬЮТИ',
+    tab_mood: 'НАСТРОЕНИЕ', tab_stats: 'СТАТЫ ★', tab_notifs: 'УВЕДОМЛЕНИЯ 🔔',
+    p_steps: 'ШАГИ.EXE', p_tasks: 'ЗАДАЧИ_СЕГОДНЯ.TXT', p_water: 'ВОДА_ТРЕКЕР.EXE',
+    p_water_history: 'ИСТОРИЯ_ВОДЫ', p_life_log: 'ДНЕВНИК.EXE',
+    p_manage_trackers: 'УПР_ТРЕКЕРЫ', p_today_log: 'ЛОГ_СЕГОДНЯ',
+    p_yearly: 'ГОДОВЫЕ_ЦЕЛИ.EXE', p_monthly: 'МЕСЯЧНЫЕ_ЦЕЛИ.EXE', p_weekly: 'НЕДЕЛЬНЫЕ_ЦЕЛИ.EXE',
+    p_goal_map: 'КАРТА_ЦЕЛЕЙ', p_habits: 'ПРИВЫЧКИ_21ДЕНЬ.EXE',
+    p_beauty_today: 'СЕГОДНЯ', p_beauty_upcoming: 'СЛЕДУЮЩИЕ_7_ДНЕЙ', p_beauty_all: 'ВСЕ_ПРОЦЕДУРЫ.EXE',
+    p_mood: 'НАСТРОЕНИЕ_ТРЕКЕР.EXE', p_mood_history: 'ИСТОРИЯ_НАСТРОЕНИЯ',
+    p_stats: 'СТАТИСТИКА.EXE', p_drive: 'GOOGLE_DRIVE.EXE',
+    p_meds_sched: 'ГРАФИК_ЛЕКАРСТВ.EXE', p_meds_today: 'ДОЗЫ_СЕГОДНЯ',
+    p_notifs: 'УВЕДОМЛЕНИЯ.EXE', p_notifs_suggest: 'ГОТОВЫЕ_НАПОМИНАНИЯ',
+    p_export: 'ЭКСПОРТ_ИМПОРТ.EXE',
+    btn_new_task: '✦ НОВАЯ ЗАДАЧА', btn_add_steps: '+', btn_reset: 'сбр', btn_reset_full: 'сбросить',
+    btn_glass: 'стакан', btn_glass_p: '+ 1 стакан', btn_glass_m: '- 1 стакан',
+    btn_save: 'СОХРАНИТЬ ♡', btn_save_drive: '💾 СОХРАНИТЬ В DRIVE', btn_load_drive: '📂 ЗАГРУЗИТЬ ИЗ DRIVE',
+    btn_signin: '🔐 ВОЙТИ ЧЕРЕЗ GOOGLE', btn_signout: 'ВЫЙТИ',
+    btn_export: '📤 экспорт JSON', btn_import: '📥 импорт JSON',
+    btn_add_tracker: '✦ НОВЫЙ ТРЕКЕР', btn_add_med: '✦ НОВОЕ ЛЕКАРСТВО',
+    btn_cancel: 'ОТМЕНА', btn_ok: 'ОК ♡', btn_add: 'ДОБАВИТЬ ♡', btn_start: 'НАЧАТЬ ♡', btn_save_alt: 'СОХРАНИТЬ ♡',
+    btn_add_procedure: '+ ДОБАВИТЬ ПРОЦЕДУРУ', btn_add_reminder: '+ ДОБАВИТЬ НАПОМИНАНИЕ',
+    btn_enable_notifs: '🔔 ВКЛЮЧИТЬ УВЕДОМЛЕНИЯ ♡',
+    btn_add_to_today: '+ ДОБАВИТЬ НА СЕГОДНЯ',
+    sl_legend: 'ЛЕГЕНДА', sl_suggested_habits: 'ИДЕИ_ПРИВЫЧЕК.TXT',
+    sl_mood_breakdown: 'НАСТРОЕНИЕ ПО ДНЯМ', sl_weekly_goals: 'НЕДЕЛЬНЫЕ ЦЕЛИ',
+    sl_today_beauty: 'БЬЮТИ-ПРОЦЕДУРЫ СЕГОДНЯ', sl_habit_streaks: 'СЕРИИ ПРИВЫЧЕК',
+    sl_top_events: 'ТОП СОБЫТИЙ ДНЕВНИКА',
+    e_no_history: 'пока нет истории~',
+    e_no_meds: 'нет лекарств~', e_no_meds_sub: 'добавь выше ♡',
+    e_no_tasks: 'нет задач~', e_no_tasks_sub: 'добавь одну ♡',
+    e_no_yearly: 'нет годовых целей~', e_no_yearly_sub: 'поставь большие мечты ♡',
+    e_no_monthly: 'нет месячных целей~', e_no_monthly_sub: 'что хочешь достичь в этом месяце? ♡',
+    e_no_weekly: 'нет недельных целей~', e_no_weekly_sub: 'на чём сфокусируешься на неделе? ♡',
+    e_no_map: 'добавь годовые цели чтобы увидеть карту ♡',
+    e_no_habits: 'нет привычек~', e_no_habits_sub: '21 день чтобы закрепить ♡',
+    e_no_procs_today: 'процедур на сегодня нет ♡',
+    e_no_procs: 'процедур пока нет — нажми + чтобы добавить ♡',
+    e_no_mood: 'нет данных о настроении~', e_no_mood_sub: 'отмечай каждый день ♡',
+    e_no_notifs: 'нет напоминаний~', e_no_notifs_sub: 'добавь одно выше ♡',
+    e_notifs_unsupported: 'уведомления не поддерживаются в этом браузере',
+    e_tap_mood: 'нажми чтобы отметить настроение ♡',
+    mood_5: 'отлично 😄', mood_4: 'хорошо 😊', mood_3: 'нормально 😐', mood_2: 'плохо 😔', mood_1: 'ужасно 😢',
+    mood_today_prefix: 'сегодня:', mood_no_data: 'нет данных',
+    mood_30d: 'НАСТРОЕНИЕ ЗА 30 ДНЕЙ',
+    stat_avg_mood: 'среднее', stat_best: 'лучшее', stat_worst: 'худшее',
+    l_task_name: 'НАЗВАНИЕ ЗАДАЧИ', l_time: 'ВРЕМЯ', l_link_goal: 'СВЯЗАТЬ С ЦЕЛЬЮ',
+    l_goal_name: 'НАЗВАНИЕ ЦЕЛИ', l_color: 'ЦВЕТ', l_links_yearly: 'СВЯЗАТЬ С ГОДОВОЙ ЦЕЛЬЮ',
+    l_links_monthly: 'СВЯЗАТЬ С МЕСЯЧНОЙ ЦЕЛЬЮ', l_deadline: 'ДЕДЛАЙН (ОПЦ.)',
+    l_habit_name: 'НАЗВАНИЕ ПРИВЫЧКИ', l_goal_opt: 'ЦЕЛЬ (ОПЦ.)', l_no_goal: '-- без цели --',
+    l_name: 'НАЗВАНИЕ', l_emoji_opt: 'ЭМОДЗИ (ОПЦ.)', l_type: 'ТИП',
+    l_every_n_days: 'КАЖДЫЕ СКОЛЬКО ДНЕЙ?', l_first_day: 'ПЕРВЫЙ ДЕНЬ', l_date: 'ДАТА',
+    l_note_opt: 'ЗАМЕТКА (ОПЦ.)',
+    l_tracker_name: 'НАЗВАНИЕ ТРЕКЕРА', l_emoji_icon: 'ЭМОДЗИ',
+    l_dose: 'ДОЗА', l_times_day: 'РАЗ В ДЕНЬ', l_reminder_time: 'ВРЕМЯ НАПОМИНАНИЯ',
+    l_supply: 'ОСТАТОК (ТАБЛЕТОК)', l_notes: 'ЗАМЕТКИ',
+    l_message: 'СООБЩЕНИЕ', l_repeat: 'ПОВТОР', l_emoji: 'ЭМОДЗИ',
+    ph_task: 'что нужно сделать...', ph_goal: 'твоя цель...',
+    ph_habit: 'напр. пить 2л воды...', ph_beauty: 'напр. тоник для волос',
+    ph_note: 'напр. бренд, заметки...', ph_log_note: 'как прошёл день?',
+    ph_tracker: 'напр. сходила на прогулку...', ph_tracker_emoji: 'напр. 🚶',
+    ph_med_name: 'напр. Витамин D, Аспирин...', ph_med_dose: 'напр. 1 таблетка, 500мг...',
+    ph_med_supply: 'напр. 30', ph_med_notes: 'с едой, перед сном...',
+    ph_notif_msg: 'напр. Выпей стакан воды! 💧',
+    h_recurring_help: 'напр. 7 = еженедельно, 14 = раз в две недели, 30 = ежемесячно',
+    type_recurring: '🔁 ПОВТОР', type_oneoff: '📅 ОДНОКРАТНО',
+    rep_daily: 'каждый день', rep_weekdays: 'будни', rep_weekends: 'выходные', rep_once: 'один раз',
+    sign_in_cancelled: 'вход отменён',
+    encouragement: 'ты молодец ★',
+    done_today: 'сделано сегодня',
+    morning_done: 'утром сделано',
+    evening_done: 'вечером сделано',
+    a_name_pls: 'введи название ♡',
+    a_pick_date: 'выбери дату ♡',
+    a_how_many_days: 'сколько дней? ♡',
+    a_pick_start: 'выбери дату начала ♡',
+    a_confirm_del_proc: 'удалить эту процедуру? ♡',
+    cat_wellness: 'ЗДОРОВЬЕ', cat_mind: 'РАЗУМ', cat_beauty_cat: 'БЬЮТИ', cat_growth: 'РОСТ',
+    sug_walk: 'Пройти 10 000 шагов', sug_walk_d: 'движение',
+    sug_water: 'Пить 2л воды', sug_water_d: 'гидрация',
+    sug_sleep: 'Спать до 22:00', sug_sleep_d: 'отдых',
+    sug_stretch: 'Растяжка 10 мин', sug_stretch_d: 'подвижность',
+    sug_meditate: 'Медитация 5 мин', sug_meditate_d: 'дыхание',
+    sug_journal: 'Вести дневник', sug_journal_d: 'рефлексия',
+    sug_screen: 'Без экрана перед сном', sug_screen_d: 'сон',
+    sug_read: 'Читать 20 страниц', sug_read_d: 'учиться',
+    sug_spf: 'SPF каждое утро', sug_spf_d: 'защита',
+    sug_gua: 'Гуаша / нефритовый ролик', sug_gua_d: 'лимфа',
+    sug_hair: 'Маска для волос раз в неделю', sug_hair_d: 'волосы',
+    sug_nails: 'Уход за руками и ногтями', sug_nails_d: 'ногти',
+    sug_learn: 'Узнать что-то новое', sug_learn_d: '15 мин',
+    sug_social: 'Без соцсетей утром', sug_social_d: 'фокус',
+    sug_grat: 'Список благодарности', sug_grat_d: '3 вещи',
+    sug_cold: 'Холодный душ', sug_cold_d: 'устойчивость',
+    tr_alcohol: 'Пила алкоголь', tr_sport: 'Занималась спортом', tr_book: 'Читала книгу',
+    tr_poop: 'Покакала', tr_outside: 'Гуляла', tr_sleep: 'Хороший сон',
+    tr_cook: 'Готовила', tr_meditate: 'Медитировала', tr_period: 'Менструация',
+    tr_mood_great: 'Настроение: супер', tr_mood_bad: 'Настроение: плохое', tr_social: 'Время с близкими',
+    np_water: 'Выпей стакан воды, душечка! 💧',
+    np_morning_skin: 'Утренний уход за лицом ♡',
+    np_vitamins: 'Прими витамины, королева! 💊',
+    np_water2: 'Пей воду!! Ты наверное обезвожена 💦',
+    np_lunch: 'Время обеда! Съешь что-нибудь вкусное 🍜',
+    np_water_pm: 'Дневная проверка воды ✨ пей!',
+    np_evening_skin: 'Вечерний ритуал ухода 🌙',
+    np_phone: 'Хватит скроллить! Положи телефон 📵',
+    np_log_habits: 'Отметила привычки за сегодня? 🌸',
+    np_stretch: 'Потянись, малышка! 🧘',
+    np_encourage: 'Ты молодец, солнышко ★',
+    np_wash_face: 'Умойся перед сном! 🫧',
+    np_mood_check: 'Как настроение? Отметь ♡',
+    np_self_care: 'Время заботы о себе! 🛁',
+    np_walk: 'Утренняя прогулка? Подыши воздухом 🌿',
+  }
+};
+
+let LANG = (function(){
+  try {
+    const saved = localStorage.getItem('dp_lang');
+    if(saved && I18N[saved]) return saved;
+  }catch(e){}
+  // detect from browser
+  const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+  if(nav.startsWith('ru')) return 'ru';
+  return 'en';
+})();
+
+function T(key){
+  return (I18N[LANG] && I18N[LANG][key]) || I18N.en[key] || key;
+}
+
+function setLang(l){
+  if(!I18N[l]) return;
+  LANG = l;
+  try{ localStorage.setItem('dp_lang', l); }catch(e){}
+  applyLangToDOM();
+  // re-render all dynamic content
+  try{
+    if(typeof renderTasks==='function') renderTasks();
+    if(typeof renderWater==='function') renderWater();
+    if(typeof renderWaterHistory==='function') renderWaterHistory();
+    if(typeof renderMeds==='function') renderMeds();
+    if(typeof renderYearlyGoals==='function') renderYearlyGoals();
+    if(typeof renderMonthlyGoals==='function') renderMonthlyGoals();
+    if(typeof renderWeeklyGoals==='function') renderWeeklyGoals();
+    if(typeof renderGoalMap==='function') renderGoalMap();
+    if(typeof renderHabits==='function') renderHabits();
+    if(typeof renderSuggests==='function') renderSuggests();
+    if(typeof renderBeauty==='function') renderBeauty();
+    if(typeof renderMoodToday==='function') renderMoodToday();
+    if(typeof renderMoodHistory==='function') renderMoodHistory();
+    if(typeof renderStats==='function') renderStats();
+    if(typeof renderNotifs==='function') renderNotifs();
+    if(typeof renderNotifSuggests==='function') renderNotifSuggests();
+    if(typeof renderLog==='function') renderLog();
+    if(typeof renderTodayPanel==='function') renderTodayPanel();
+  }catch(e){console.warn('re-render after lang change:',e);}
+  // update toggle button visual
+  document.querySelectorAll('.lang-toggle button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.lang===LANG);
+  });
+}
+
+function applyLangToDOM(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    el.textContent = T(el.dataset.t);
+  });
+  document.querySelectorAll('[data-tp]').forEach(el=>{
+    el.setAttribute('placeholder', T(el.dataset.tp));
+  });
+  document.querySelectorAll('[data-th]').forEach(el=>{
+    el.innerHTML = T(el.dataset.th);
+  });
+}
+
+/* helper to localize MOOD labels */
+function moodLabel(v){ return T('mood_'+v); }
+/* helper to localize repeat options */
+function repLabel(r){ return T('rep_'+r); }
+
 
 /* ═══════════════════════════════════════
    STATE
@@ -353,6 +703,8 @@ function fmtDate(ds){const d=new Date(ds+'T12:00:00');return d.toLocaleDateStrin
    INIT
 ═══════════════════════════════════════ */
 function init(){
+  applyLangToDOM();
+  setTimeout(()=>{document.querySelectorAll(".lang-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.lang===LANG));},10);
   const d=new Date();
   const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -447,7 +799,7 @@ function renderWater(){
     const ml=(hist[k]||0)*(S.water.glassSize||250);
     const p=Math.min(100,Math.round(ml/goal*100));
     return`<div style="margin-bottom:7px"><div class="prog-lbl"><span>${fmtDate(k)}</span><span>${ml}ml (${p}%)</span></div><div class="prog-wrap"><div class="prog98" style="width:${p}%"></div></div></div>`;
-  }).join(''):'<div class="empty">no history yet~</div>';
+  }).join(''):`<div class="empty">${T('e_no_history')}</div>`;
 }
 function toggleGlass(i){
   if(!S.water)S.water={glasses:0,goal:2000,glassSize:250,date:today(),history:{}};
@@ -566,7 +918,7 @@ function renderMeds(){
   if(!S.meds)S.meds=[];
   const el=document.getElementById('medList');
   const todayLog=S.log[today()]||{};const takenToday=todayLog.medsTaken||[];
-  if(!S.meds.length){el.innerHTML='<div class="empty">no meds yet~<br>add one above ♡</div>';document.getElementById('medTodayLog').innerHTML='';return;}
+  if(!S.meds.length){el.innerHTML=`<div class="empty">${T('e_no_meds')}<br>${T('e_no_meds_sub')}</div>`;document.getElementById('medTodayLog').innerHTML='';return;}
   el.innerHTML=S.meds.map(m=>{
     const taken=takenToday.includes(m.id);
     const warn=m.supply!=null&&m.supply<=7?`<div class="refill-warn">⚠ only ${m.supply} left — refill soon!</div>`:'';
@@ -628,7 +980,7 @@ function renderTasks(){
   document.getElementById('sLeft').textContent=tt.length-done;
   document.getElementById('sPct').textContent=tt.length?Math.round(done/tt.length*100)+'%':'0%';
   const el=document.getElementById('taskList');
-  if(!tt.length){el.innerHTML='<div class="empty">no tasks yet~<br>add one ♡</div>';return;}
+  if(!tt.length){el.innerHTML=`<div class="empty">${T('e_no_tasks')}<br>${T('e_no_tasks_sub')}</div>`;return;}
   tt.sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
   el.innerHTML=tt.map(t=>{
     const g=S.goals.find(g=>g.id===t.goalId);const c=g?COLORS[g.color]:null;
@@ -652,7 +1004,7 @@ function openTaskModal(){
   const yg=(S.yearlyGoals||[]).map(g=>`<option value="${g.id}">[Y] ${esc(g.name)}</option>`).join('');
   const mg=(S.monthlyGoals||[]).map(g=>`<option value="${g.id}">[M] ${esc(g.name)}</option>`).join('');
   const wg=(S.weeklyGoals||[]).map(g=>`<option value="${g.id}">[W] ${esc(g.name)}</option>`).join('');
-  sel.innerHTML='<option value="">-- no goal --</option>'+yg+mg+wg;
+  sel.innerHTML='<option value="" data-t="l_no_goal">-- no goal --</option>'+yg+mg+wg;
   document.getElementById('taskModal').classList.add('open');setTimeout(()=>document.getElementById('tIn').focus(),300);
 }
 function saveTask(){
@@ -725,7 +1077,7 @@ function renderYearlyGoals(){
   if(!S.yearlyGoals)S.yearlyGoals=[];
   const el=document.getElementById('yearlyGoalList');
   if(!el)return;
-  if(!S.yearlyGoals.length){el.innerHTML='<div class="empty">no yearly goals~<br>set your big dreams ♡</div>';return;}
+  if(!S.yearlyGoals.length){el.innerHTML=`<div class="empty">${T('e_no_yearly')}<br>${T('e_no_yearly_sub')}</div>`;return;}
   el.innerHTML=S.yearlyGoals.map(g=>{
     const c=COLORS[g.color||'pink'];
     const p=goalProgress(g.id,'yearly');
@@ -752,7 +1104,7 @@ function renderMonthlyGoals(){
   const el=document.getElementById('monthlyGoalList');if(!el)return;
   const thisMonth=getMonthKey();
   const goals=S.monthlyGoals.filter(g=>!g.month||g.month===thisMonth);
-  if(!goals.length){el.innerHTML='<div class="empty">no monthly goals~<br>what do you want to achieve this month? ♡</div>';return;}
+  if(!goals.length){el.innerHTML=`<div class="empty">${T('e_no_monthly')}<br>${T('e_no_monthly_sub')}</div>`;return;}
   el.innerHTML=goals.map(g=>{
     const c=COLORS[g.color||'purple'];
     const p=goalProgress(g.id,'monthly');
@@ -777,7 +1129,7 @@ function renderWeeklyGoals(){
   const el=document.getElementById('weeklyGoalList');if(!el)return;
   const thisWeek=getWeekKey();
   const goals=S.weeklyGoals.filter(g=>!g.week||g.week===thisWeek);
-  if(!goals.length){el.innerHTML='<div class="empty">no weekly goals~<br>what will you focus on this week? ♡</div>';return;}
+  if(!goals.length){el.innerHTML=`<div class="empty">${T('e_no_weekly')}<br>${T('e_no_weekly_sub')}</div>`;return;}
   el.innerHTML=goals.map(g=>{
     const c=COLORS[g.color||'teal'];
     const p=goalProgress(g.id,'weekly');
@@ -800,7 +1152,7 @@ function renderWeeklyGoals(){
 
 function renderGoalMap(){
   const el=document.getElementById('goalMap');if(!el)return;
-  if(!(S.yearlyGoals||[]).length){el.innerHTML='<div class="empty">add yearly goals first to see the map ♡</div>';return;}
+  if(!(S.yearlyGoals||[]).length){el.innerHTML=`<div class="empty">${T('e_no_map')}</div>`;return;}
   el.innerHTML=(S.yearlyGoals||[]).map(y=>{
     const c=COLORS[y.color||'pink'];
     const yp=goalProgress(y.id,'yearly');
@@ -901,7 +1253,7 @@ function saveGoal(){
 ═══════════════════════════════════════ */
 function renderHabits(){
   const el=document.getElementById('habitList');
-  if(!S.habits.length){el.innerHTML='<div class="empty">no habits yet~<br>21 days to stick ♡</div>';return;}
+  if(!S.habits.length){el.innerHTML=`<div class="empty">${T('e_no_habits')}<br>${T('e_no_habits_sub')}</div>`;return;}
   el.innerHTML=S.habits.map(h=>{
     const streak=calcStreak(h);const pct=Math.min(100,Math.round(h.checkins.length/21*100));
     const dots=Array.from({length:21},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(20-i));const ds=d.toISOString().slice(0,10);return`<button class="hdot ${h.checkins.includes(ds)?'done':''} ${ds===today()?'today':''}" onclick="toggleHabit('${h.id}','${ds}')"></button>`;}).join('');
@@ -1008,7 +1360,7 @@ function renderBeauty(){
   const todayEl=document.getElementById('b2Today');
   if(todayEl){
     if(!todayList.length){
-      todayEl.innerHTML='<div class="empty" style="padding:10px">no procedures today ♡</div>';
+      todayEl.innerHTML=`<div class="empty" style="padding:10px">${T('e_no_procs_today')}</div>`;
     }else{
       todayEl.innerHTML=todayList.map(p=>{
         const done=b2IsDone(p.id,iso);
@@ -1048,7 +1400,7 @@ function renderBeauty(){
   if(allEl){
     const procs=S.beauty.procedures;
     if(!procs.length){
-      allEl.innerHTML='<div class="empty" style="padding:10px">no procedures yet — tap + to add one ♡</div>';
+      allEl.innerHTML=`<div class="empty" style="padding:10px">${T('e_no_procs')}</div>`;
     }else{
       allEl.innerHTML=procs.map(p=>`
         <div class="b2-all-item">
@@ -1103,19 +1455,19 @@ function editBeautyProcedure(id){
 }
 function saveBeautyProcedure(){
   const name=document.getElementById('b2Name').value.trim();
-  if(!name){alert('name pls ♡');return;}
+  if(!name){alert(T('a_name_pls'));return;}
   const emoji=document.getElementById('b2Emoji').value.trim()||'💗';
   const note=document.getElementById('b2Note').value.trim();
   let proc;
   if(b2Type==='oneoff'){
     const date=document.getElementById('b2Date').value;
-    if(!date){alert('pick a date ♡');return;}
+    if(!date){alert(T('a_pick_date'));return;}
     proc={type:'oneoff',name,emoji,note,date};
   }else{
     const every=parseInt(document.getElementById('b2Every').value,10);
     const start=document.getElementById('b2Start').value;
-    if(!every||every<1){alert('how many days? ♡');return;}
-    if(!start){alert('pick a start date ♡');return;}
+    if(!every||every<1){alert(T('a_how_many_days'));return;}
+    if(!start){alert(T('a_pick_start'));return;}
     proc={type:'recurring',name,emoji,note,everyDays:every,startDate:start};
   }
   if(!S.beauty)S.beauty={procedures:[],log:{}};
@@ -1130,7 +1482,7 @@ function saveBeautyProcedure(){
   save();closeModals();renderBeauty();
 }
 function deleteBeautyProcedure(id){
-  if(!confirm('delete this procedure? ♡'))return;
+  if(!confirm(T('a_confirm_del_proc')))return;
   S.beauty.procedures=S.beauty.procedures.filter(p=>p.id!==id);
   Object.keys(S.beauty.log||{}).forEach(d=>{
     S.beauty.log[d]=(S.beauty.log[d]||[]).filter(x=>x!==id);
@@ -1147,7 +1499,7 @@ function openModal(id){
   if(id==='habitModal'){document.getElementById('hIn').value='';const sel=document.getElementById('hGoal');const yg=(S.yearlyGoals||[]).map(g=>`<option value="${g.id}">[Y] ${esc(g.name)}</option>`).join('');
   const mg=(S.monthlyGoals||[]).map(g=>`<option value="${g.id}">[M] ${esc(g.name)}</option>`).join('');
   const wg=(S.weeklyGoals||[]).map(g=>`<option value="${g.id}">[W] ${esc(g.name)}</option>`).join('');
-  sel.innerHTML='<option value="">-- no goal --</option>'+yg+mg+wg;}
+  sel.innerHTML='<option value="" data-t="l_no_goal">-- no goal --</option>'+yg+mg+wg;}
   if(id==='goalModal'){document.getElementById('gIn').value='';document.getElementById('gMicSt').textContent='';setTimeout(()=>document.getElementById('gIn').focus(),300);}
   document.getElementById(id).classList.add('open');
 }
@@ -1216,7 +1568,7 @@ function gdSignIn(){
         if(token){gdToken=token;localStorage.setItem('gd_token',token);gdUpdateUI();gdLog('signed in ♡');gdSave();}
       }
     }catch(e){}
-    if(popup.closed){clearInterval(check);if(!gdToken){gdSetStatus('sign-in cancelled','err');}}
+    if(popup.closed){clearInterval(check);if(!gdToken){gdSetStatus(T('sign_in_cancelled'),'err');}}
   },500);
 }
 function gdSignOut(){gdToken=null;gdFileId=null;localStorage.removeItem('gd_token');localStorage.removeItem('gd_file_id');gdUpdateUI();gdLog('signed out');renderDrive();}
@@ -1296,23 +1648,32 @@ function dismissInst(){localStorage.setItem('instDismissed','1');document.getEle
 /* ═══════════════════════════════════════
    NOTIFICATIONS
 ═══════════════════════════════════════ */
-const NOTIF_SUGGESTED=[
-  {msg:"Drink a glass of water, bestie! 💧",time:"08:00",emoji:"💧",repeat:"daily"},
-  {msg:"Time for your morning skincare ♡",time:"07:30",emoji:"🌷",repeat:"daily"},
-  {msg:"Take your vitamins, queen! 💊",time:"09:00",emoji:"💊",repeat:"daily"},
-  {msg:"Drink water!! You're probably dehydrated rn 💦",time:"11:00",emoji:"💦",repeat:"daily"},
-  {msg:"Lunch time! Eat something yummy 🍜",time:"13:00",emoji:"🍜",repeat:"weekdays"},
-  {msg:"Afternoon water check ✨ drink up!",time:"15:00",emoji:"✨",repeat:"daily"},
-  {msg:"Time for your evening skincare ritual 🌙",time:"20:00",emoji:"🌙",repeat:"daily"},
-  {msg:"No more scrolling! Put the phone down 📵",time:"22:00",emoji:"📵",repeat:"daily"},
-  {msg:"Did you log your habits today? 🌸",time:"21:00",emoji:"🌸",repeat:"daily"},
-  {msg:"Stretch it out, babe! 🧘",time:"18:00",emoji:"🧘",repeat:"daily"},
-  {msg:"You're doing amazing sweetie ★",time:"12:00",emoji:"★",repeat:"daily"},
-  {msg:"Wash your face before bed! 🫧",time:"22:30",emoji:"🫧",repeat:"daily"},
-  {msg:"How are you feeling today? Log your mood ♡",time:"19:00",emoji:"😊",repeat:"daily"},
-  {msg:"Weekend self-care time! 🛁",time:"11:00",emoji:"🛁",repeat:"weekends"},
-  {msg:"Morning walk? Touch some grass babe 🌿",time:"09:30",emoji:"🌿",repeat:"daily"},
-];
+function getNotifSuggested(){return [
+  {msg:T('np_water'),time:"08:00",emoji:"💧",repeat:"daily"},
+  {msg:T('np_morning_skin'),time:"07:30",emoji:"🌷",repeat:"daily"},
+  {msg:T('np_vitamins'),time:"09:00",emoji:"💊",repeat:"daily"},
+  {msg:T('np_water2'),time:"11:00",emoji:"💦",repeat:"daily"},
+  {msg:T('np_lunch'),time:"13:00",emoji:"🍜",repeat:"weekdays"},
+  {msg:T('np_water_pm'),time:"15:00",emoji:"✨",repeat:"daily"},
+  {msg:T('np_evening_skin'),time:"20:00",emoji:"🌙",repeat:"daily"},
+  {msg:T('np_phone'),time:"22:00",emoji:"📵",repeat:"daily"},
+  {msg:T('np_log_habits'),time:"21:00",emoji:"🌸",repeat:"daily"},
+  {msg:T('np_stretch'),time:"18:00",emoji:"🧘",repeat:"daily"},
+  {msg:T('np_encourage'),time:"12:00",emoji:"★",repeat:"daily"},
+  {msg:T('np_wash_face'),time:"22:30",emoji:"🫧",repeat:"daily"},
+  {msg:T('np_mood_check'),time:"19:00",emoji:"😊",repeat:"daily"},
+  {msg:T('np_self_care'),time:"11:00",emoji:"🛁",repeat:"weekends"},
+  {msg:T('np_walk'),time:"09:30",emoji:"🌿",repeat:"daily"},
+];}
+const NOTIF_SUGGESTED = new Proxy([], {
+  get:(_,k)=>{
+    if(k==='map'||k==='filter'||k==='length'||k==='forEach'||(typeof k==='string' && !isNaN(k))){
+      const arr = getNotifSuggested();
+      return typeof arr[k]==='function' ? arr[k].bind(arr) : arr[k];
+    }
+    return getNotifSuggested()[k];
+  }
+});
 
 let snoozeTimer=null;
 let currentSnoozeMsg=null;
@@ -1331,7 +1692,7 @@ function requestNotifPermission(){
   const box=document.getElementById('notifPermBox');
   if(!box)return;
   if(!('Notification' in window)){
-    box.innerHTML=`<div class="empty" style="font-size:14px">notifications not supported in this browser</div>`;
+    box.innerHTML=`<div class="empty" style="font-size:14px">${T('e_notifs_unsupported')}</div>`;
     return;
   }
   if(Notification.permission==='granted'){
@@ -1339,7 +1700,7 @@ function requestNotifPermission(){
   } else if(Notification.permission==='denied'){
     box.innerHTML=`<div style="background:#fcebeb;border:1px solid #a32d2d;padding:7px 10px;font-size:14px;color:#a32d2d">notifications blocked — enable in browser settings</div>`;
   } else {
-    box.innerHTML=`<button class="w98 acc" onclick="askNotifPermission()" style="width:100%">🔔 ENABLE NOTIFICATIONS ♡</button>`;
+    box.innerHTML=`<button class="w98 acc" onclick="askNotifPermission()" style="width:100%">${T('btn_enable_notifs')}</button>`;
   }
 }
 
@@ -1354,7 +1715,7 @@ function renderNotifs(){
   requestNotifPermission();
   renderNotifSuggestions();
   const el=document.getElementById('notifList');
-  if(!S.notifs||!S.notifs.length){el.innerHTML='<div class="empty">no reminders yet~<br>add one above ♡</div>';return;}
+  if(!S.notifs||!S.notifs.length){el.innerHTML=`<div class="empty">${T('e_no_notifs')}<br>${T('e_no_notifs_sub')}</div>`;return;}
   el.innerHTML=S.notifs.map(n=>`<div class="notif-item">
     <div style="font-size:22px;flex-shrink:0">${n.emoji||'🔔'}</div>
     <div class="notif-body">
@@ -1495,7 +1856,7 @@ window.testNotif=function(){
 /* ═══════════════════════════════════════
    MOOD TRACKER
 ═══════════════════════════════════════ */
-const MOOD_LABELS={5:'amazing 😄',4:'good 😊',3:'okay 😐',2:'bad 😔',1:'awful 😢'};
+const MOOD_LABELS = new Proxy({}, {get:(_,k)=>T('mood_'+k)});
 const MOOD_COLORS={5:'#1d9e75',4:'#639922',3:'#ba7517',2:'#d85a30',1:'#e24b4a'};
 
 function renderMoodTab(){
@@ -1514,7 +1875,7 @@ function renderMoodToday(){
   }).join('');
   el.innerHTML=`
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${moodBtns}</div>
-    ${mood?`<div style="margin-top:6px;font-size:16px;color:var(--text2)">today: <b style="color:${MOOD_COLORS[mood]}">${MOOD_LABELS[mood]}</b></div>`:'<div style="font-size:15px;color:var(--text3)">tap to log your mood ♡</div>'}
+    ${mood?`<div style="margin-top:6px;font-size:16px;color:var(--text2)">today: <b style="color:${MOOD_COLORS[mood]}">${MOOD_LABELS[mood]}</b></div>`:`<div style="font-size:15px;color:var(--text3)">${T('e_tap_mood')}</div>`}
     ${entry.note?`<div style="font-size:15px;color:var(--text3);margin-top:4px;font-style:italic">"${esc(entry.note)}"</div>`:''}
   `;
 }
@@ -1537,7 +1898,7 @@ function renderMoodHistory(){
     days.push({ds,mood:entry.mood||null,d});
   }
   const withMood=days.filter(d=>d.mood);
-  if(!withMood.length){el.innerHTML='<div class="empty">no mood data yet~<br>log your mood daily ♡</div>';return;}
+  if(!withMood.length){el.innerHTML=`<div class="empty">${T('e_no_mood')}<br>${T('e_no_mood_sub')}</div>`;return;}
 
   // avg mood
   const avg=(withMood.reduce((s,d)=>s+d.mood,0)/withMood.length).toFixed(1);
@@ -1567,7 +1928,7 @@ function renderMoodHistory(){
   html+='</div>';
 
   // 30-day dot grid
-  html+='<div style="font-family:var(--font-sans);font-size:10px;color:var(--text3);margin-bottom:6px">30-DAY MOOD MAP</div>';
+  html+=`<div style="font-family:var(--font-sans);font-size:10px;color:var(--text3);margin-bottom:6px">${T('mood_30d')}</div>`;
   html+='<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">';
   days.forEach(d=>{
     const col=d.mood?MOOD_COLORS[d.mood]:'var(--white)';
@@ -1654,7 +2015,7 @@ function renderStats(){
 
   // habits breakdown
   if((S.habits||[]).length){
-    html+=`<div class="slabel">HABIT STREAKS</div>`;
+    html+=`<div class="slabel">${T('sl_habit_streaks')}</div>`;
     html+=`<div style="margin-bottom:10px">`;
     (S.habits||[]).forEach(h=>{
       const streak=calcStreak(h);
@@ -1670,7 +2031,7 @@ function renderStats(){
 
   // mood chart
   if(moodEntries.length){
-    html+=`<div class="slabel">MOOD BREAKDOWN</div>`;
+    html+=`<div class="slabel">${T('sl_mood_breakdown')}</div>`;
     for(let v=5;v>=1;v--){
       const cnt=moodEntries.filter(m=>m===v).length;
       const pct=moodEntries.length?Math.round(cnt/moodEntries.length*100):0;
@@ -1688,7 +2049,7 @@ function renderStats(){
   // life log top trackers
   const topTrackers=Object.values(trackerCounts).filter(t=>t.count>0).sort((a,b)=>b.count-a.count);
   if(topTrackers.length){
-    html+=`<div class="slabel">LIFE LOG TOP EVENTS</div>`;
+    html+=`<div class="slabel">${T('sl_top_events')}</div>`;
     html+=`<div style="margin-bottom:10px">`;
     topTrackers.slice(0,8).forEach(t=>{
       const pct=Math.round(t.count/days*100);
@@ -1702,7 +2063,7 @@ function renderStats(){
 
   // goals progress
   if(wgProgress.length){
-    html+=`<div class="slabel">WEEKLY GOALS</div>`;
+    html+=`<div class="slabel">${T('sl_weekly_goals')}</div>`;
     wgProgress.forEach(g=>{
       html+=`<div style="margin-bottom:6px">
         <div class="prog-lbl"><span>${esc(g.name)}</span><span>${g.pct}%</span></div>
@@ -1716,7 +2077,7 @@ function renderStats(){
   const todayProcs=(S.beauty&&Array.isArray(S.beauty.procedures))?S.beauty.procedures.filter(p=>b2IsScheduled(p,todayIso)):[];
   const todayDone=todayProcs.filter(p=>b2IsDone(p.id,todayIso)).length;
   if(todayProcs.length){
-    html+=`<div class="slabel">TODAY'S BEAUTY PROCEDURES</div>`;
+    html+=`<div class="slabel">${T('sl_today_beauty')}</div>`;
     html+=`<div class="stats-grid" style="grid-template-columns:1fr;margin-bottom:12px">
       <div class="stats-card"><div class="stat-big">${todayDone}/${todayProcs.length}</div><div class="stat-label">done today</div></div>
     </div>`;
@@ -1750,33 +2111,37 @@ if('serviceWorker' in navigator){
       <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn">✕</div></div>
     </div>
     <div class="hbody">
-      <div class="htitle">my <span>day</span><br>planner ♡</div>
+      <div class="htitle"><span data-t="title_my">my</span> <span data-t="title_day">day</span><br><span data-t="title_planner">planner ♡</span></div>
       <div class="hright">
         <div class="hdate" id="hDateFull"></div>
         <div class="hstats" id="hStats"></div>
         <div id="gdStatusMini" style="font-size:12px;color:#40c040;margin-top:2px"></div>
-        <button onclick="sw('drive')" style="margin-top:4px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);padding:3px 8px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px" id="loginHeaderBtn">💾 LOGIN</button>
+        <button onclick="sw('drive')" style="margin-top:4px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);padding:3px 8px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px" id="loginHeaderBtn">💾 <span data-t="login">LOGIN</span></button>
       </div>
     </div>
   </div>
 </div>
 
 <div class="inst" id="instBanner">
-  <span>♡ add to home screen for best experience</span>
+  <span data-t="add_to_home">♡ add to home screen for best experience</span>
   <button class="ix" onclick="dismissInst()">✕</button>
 </div>
 
 <div class="taskbar">
-  <button class="ttab active" onclick="sw('today')">TODAY</button>
-  <button class="ttab" onclick="sw('water')">WATER</button>
-  <button class="ttab" onclick="sw('log')">LOG ♡</button>
-  <button class="ttab" onclick="sw('meds')">MEDS</button>
-  <button class="ttab" onclick="sw('goals')">GOALS</button>
-  <button class="ttab" onclick="sw('habits')">HABITS</button>
-  <button class="ttab" onclick="sw('beauty')">BEAUTY</button>
-  <button class="ttab" onclick="sw('mood')">MOOD</button>
-  <button class="ttab" onclick="sw('stats')">STATS ★</button>
-  <button class="ttab" onclick="sw('notifs')">NOTIFS 🔔</button>
+  <button class="ttab active" onclick="sw('today')" data-t="tab_today">TODAY</button>
+  <button class="ttab" onclick="sw('water')" data-t="tab_water">WATER</button>
+  <button class="ttab" onclick="sw('log')" data-t="tab_log">LOG ♡</button>
+  <button class="ttab" onclick="sw('meds')" data-t="tab_meds">MEDS</button>
+  <button class="ttab" onclick="sw('goals')" data-t="tab_goals">GOALS</button>
+  <button class="ttab" onclick="sw('habits')" data-t="tab_habits">HABITS</button>
+  <button class="ttab" onclick="sw('beauty')" data-t="tab_beauty">BEAUTY</button>
+  <button class="ttab" onclick="sw('mood')" data-t="tab_mood">MOOD</button>
+  <button class="ttab" onclick="sw('stats')" data-t="tab_stats">STATS ★</button>
+  <button class="ttab" onclick="sw('notifs')" data-t="tab_notifs">NOTIFS 🔔</button>
+  <div class="lang-toggle">
+    <button data-lang="en" onclick="setLang('en')">EN</button>
+    <button data-lang="ru" onclick="setLang('ru')">RU</button>
+  </div>
 </div>
 
 <div class="scroll-area" id="sa">
@@ -1789,7 +2154,7 @@ if('serviceWorker' in navigator){
     <div class="stat-win"><div class="stat-n" id="sPct">0%</div><div class="stat-l">complete</div></div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>👟</span> STEPS.EXE</div><div class="wbtns"><div class="wbtn">_</div><div class="wbtn">✕</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>👟</span> <span data-t="p_steps">STEPS.EXE</span></div><div class="wbtns"><div class="wbtn">_</div><div class="wbtn">✕</div></div></div>
     <div class="steps-body">
       <div class="sring">
         <svg width="76" height="76" viewBox="0 0 76 76"><circle class="rt" cx="38" cy="38" r="32"/><circle class="rf" cx="38" cy="38" r="32" id="sRing" stroke-dasharray="201.06" stroke-dashoffset="201.06"/></svg>
@@ -1803,16 +2168,16 @@ if('serviceWorker' in navigator){
           <button class="w98 sm" onclick="addSteps(1000)">+1k</button>
           <button class="w98 sm" onclick="addSteps(2000)">+2k</button>
           <button class="w98 sm" onclick="addSteps(5000)">+5k</button>
-          <button class="w98 sm" onclick="resetSteps()" style="color:var(--text3)">rst</button>
+          <button class="w98 sm" onclick="resetSteps()" style="color:var(--text3)" data-t="btn_reset">rst</button>
         </div>
       </div>
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📋</span> TASKS_TODAY.TXT</div><div class="wbtns"><div class="wbtn" onclick="openTaskModal()">+</div><div class="wbtn">✕</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>📋</span> <span data-t="p_tasks">TASKS_TODAY.TXT</span></div><div class="wbtns"><div class="wbtn" onclick="openTaskModal()">+</div><div class="wbtn">✕</div></div></div>
     <div class="pbody">
       <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
-        <button class="w98" onclick="openTaskModal()">✦ NEW TASK</button>
+        <button class="w98" onclick="openTaskModal()" data-t="btn_new_task">✦ NEW TASK</button>
       </div>
       <div id="taskList"></div>
     </div>
@@ -1822,7 +2187,7 @@ if('serviceWorker' in navigator){
 <!-- WATER -->
 <div class="section" id="tab-water">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💧</span> WATER_TRACKER.EXE</div><div class="wbtns"><div class="wbtn">✕</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>💧</span> <span data-t="p_water">WATER_TRACKER.EXE</span></div><div class="wbtns"><div class="wbtn">✕</div></div></div>
     <div class="water-body">
       <div class="prog-lbl"><span id="wDrunk">0 ml</span><span id="wGoalLbl">/ 2000 ml</span></div>
       <div class="prog-wrap"><div class="prog98" id="wProg" style="width:0%"></div></div>
@@ -1839,14 +2204,14 @@ if('serviceWorker' in navigator){
         <span>ml</span>
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-        <button class="w98 sm" onclick="addWater(1)">+ 1 glass</button>
-        <button class="w98 sm" onclick="addWater(-1)">- 1 glass</button>
-        <button class="w98 sm" onclick="resetWater()" style="color:var(--text3)">reset</button>
+        <button class="w98 sm" onclick="addWater(1)" data-t="btn_glass_p">+ 1 glass</button>
+        <button class="w98 sm" onclick="addWater(-1)" data-t="btn_glass_m">- 1 glass</button>
+        <button class="w98 sm" onclick="resetWater()" style="color:var(--text3)" data-t="btn_reset_full">reset</button>
       </div>
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📅</span> WATER_HISTORY</div></div>
+    <div class="tbar"><div class="tbar-l"><span>📅</span> <span data-t="p_water_history">WATER_HISTORY</span></div></div>
     <div class="pbody"><div id="wHistory"></div></div>
   </div>
 </div>
@@ -1854,7 +2219,7 @@ if('serviceWorker' in navigator){
 <!-- LIFE LOG -->
 <div class="section" id="tab-log">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📅</span> LIFE_LOG.EXE</div><div class="wbtns"><div class="wbtn">✕</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>📅</span> <span data-t="p_life_log">LIFE_LOG.EXE</span></div><div class="wbtns"><div class="wbtn">✕</div></div></div>
     <div class="pbody">
       <div class="cal-nav">
         <button class="cal-nav-btn" onclick="calPrev()">◄</button>
@@ -1862,14 +2227,14 @@ if('serviceWorker' in navigator){
         <button class="cal-nav-btn" onclick="calNext()">►</button>
       </div>
       <div class="cal-grid" id="calGrid"></div>
-      <div class="slabel">LEGEND</div>
+      <div class="slabel" data-t="sl_legend">LEGEND</div>
       <div id="logLegend" style="display:flex;flex-wrap:wrap;gap:5px;font-size:14px;color:var(--text2)"></div>
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>⚙</span> MANAGE_TRACKERS</div><div class="wbtns"><div class="wbtn" onclick="openAddTracker()">+</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>⚙</span> <span data-t="p_manage_trackers">MANAGE_TRACKERS</span></div><div class="wbtns"><div class="wbtn" onclick="openAddTracker()">+</div></div></div>
     <div class="pbody"><div id="trackerList"></div>
-      <button class="w98" onclick="openAddTracker()" style="margin-top:8px">✦ ADD TRACKER</button>
+      <button class="w98" onclick="openAddTracker()" style="margin-top:8px" data-t="btn_add_tracker">✦ ADD TRACKER</button>
     </div>
   </div>
 </div>
@@ -1886,7 +2251,7 @@ if('serviceWorker' in navigator){
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📋</span> TODAY_LOG</div></div>
+    <div class="tbar"><div class="tbar-l"><span>📋</span> <span data-t="p_today_log">TODAY_LOG</span></div></div>
     <div class="pbody"><div id="medTodayLog" style="font-size:15px;color:var(--text2)"></div></div>
   </div>
 </div>
@@ -1904,7 +2269,7 @@ if('serviceWorker' in navigator){
   <!-- YEARLY -->
   <div class="gsection active" id="gsec-yearly">
     <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>⭐</span> YEARLY_GOALS.EXE — <span id="yearLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('yearly')">+</div></div></div>
+      <div class="tbar"><div class="tbar-l"><span>⭐</span> <span data-t="p_yearly">YEARLY_GOALS.EXE</span> — <span id="yearLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('yearly')">+</div></div></div>
       <div class="pbody">
         <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('yearly')">✦ ADD YEARLY GOAL</button></div>
         <div id="yearlyGoalList"></div>
@@ -1915,7 +2280,7 @@ if('serviceWorker' in navigator){
   <!-- MONTHLY -->
   <div class="gsection" id="gsec-monthly">
     <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>📅</span> MONTHLY_GOALS.EXE — <span id="monthLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('monthly')">+</div></div></div>
+      <div class="tbar"><div class="tbar-l"><span>📅</span> <span data-t="p_monthly">MONTHLY_GOALS.EXE</span> — <span id="monthLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('monthly')">+</div></div></div>
       <div class="pbody">
         <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('monthly')">✦ ADD MONTHLY GOAL</button></div>
         <div id="monthlyGoalList"></div>
@@ -1926,7 +2291,7 @@ if('serviceWorker' in navigator){
   <!-- WEEKLY -->
   <div class="gsection" id="gsec-weekly">
     <div class="win-panel">
-      <div class="tbar"><div class="tbar-l"><span>📋</span> WEEKLY_GOALS.EXE — <span id="weekLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('weekly')">+</div></div></div>
+      <div class="tbar"><div class="tbar-l"><span>📋</span> <span data-t="p_weekly">WEEKLY_GOALS.EXE</span> — <span id="weekLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('weekly')">+</div></div></div>
       <div class="pbody">
         <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('weekly')">✦ ADD WEEKLY GOAL</button></div>
         <div id="weeklyGoalList"></div>
@@ -1949,13 +2314,13 @@ if('serviceWorker' in navigator){
 <!-- HABITS -->
 <div class="section" id="tab-habits">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>🌸</span> HABITS_21DAY.EXE</div><div class="wbtns"><div class="wbtn" onclick="openModal('habitModal')">+</div><div class="wbtn">✕</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>🌸</span> <span data-t="p_habits">HABITS_21DAY.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="openModal('habitModal')">+</div><div class="wbtn">✕</div></div></div>
     <div class="pbody">
       <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openModal('habitModal')">✦ NEW HABIT</button></div>
       <div id="habitList"></div>
     </div>
   </div>
-  <div class="slabel">SUGGESTED_HABITS.TXT</div>
+  <div class="slabel" data-t="sl_suggested_habits">SUGGESTED_HABITS.TXT</div>
   <div class="win-panel">
     <div class="tbar"><div class="tbar-l"><span>💡</span> HABIT_SUGGESTIONS</div></div>
     <div class="pbody">
@@ -1971,21 +2336,21 @@ if('serviceWorker' in navigator){
 <!-- BEAUTY -->
 <div class="section" id="tab-beauty">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>★</span> TODAY <span id="b2TodayDate" style="color:#ffccf0;font-size:6px;margin-left:6px"></span></div></div>
+    <div class="tbar"><div class="tbar-l"><span>★</span> <span data-t="p_beauty_today">TODAY</span> <span id="b2TodayDate" style="color:#ffccf0;font-size:6px;margin-left:6px"></span></div></div>
     <div class="pbody">
       <div id="b2Today"></div>
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📅</span> UPCOMING_7_DAYS</div></div>
+    <div class="tbar"><div class="tbar-l"><span>📅</span> <span data-t="p_beauty_upcoming">UPCOMING_7_DAYS</span></div></div>
     <div class="pbody">
       <div id="b2Upcoming"></div>
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💗</span> ALL_PROCEDURES.EXE</div><div class="wbtns"><div class="wbtn" onclick="openBeautyAdd()">+</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>💗</span> <span data-t="p_beauty_all">ALL_PROCEDURES.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="openBeautyAdd()">+</div></div></div>
     <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyAdd()">+ ADD PROCEDURE</button></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98 sm" onclick="openBeautyAdd()" data-t="btn_add_procedure">+ ADD PROCEDURE</button></div>
       <div id="b2All"></div>
     </div>
   </div>
@@ -1994,14 +2359,14 @@ if('serviceWorker' in navigator){
 <!-- MOOD -->
 <div class="section" id="tab-mood">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>😊</span> MOOD_TRACKER.EXE</div></div>
+    <div class="tbar"><div class="tbar-l"><span>😊</span> <span data-t="p_mood">MOOD_TRACKER.EXE</span></div></div>
     <div class="pbody">
       <div style="font-size:14px;color:var(--text3);margin-bottom:10px">how are you feeling today? ♡</div>
       <div id="moodToday"></div>
     </div>
   </div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>📅</span> MOOD_HISTORY</div></div>
+    <div class="tbar"><div class="tbar-l"><span>📅</span> <span data-t="p_mood_history">MOOD_HISTORY</span></div></div>
     <div class="pbody"><div id="moodHistory"></div></div>
   </div>
 </div>
@@ -2009,7 +2374,7 @@ if('serviceWorker' in navigator){
 <!-- STATS -->
 <div class="section" id="tab-stats">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>★</span> STATS.EXE</div>
+    <div class="tbar"><div class="tbar-l"><span>★</span> <span data-t="p_stats">STATS.EXE</span></div>
       <div class="wbtns">
         <select id="statsPeriod" onchange="renderStats()" style="font-family:'VT323',monospace;font-size:13px;background:var(--bf);border:1px solid var(--bs);color:var(--text);padding:1px 4px">
           <option value="7">7 days</option>
@@ -2049,13 +2414,13 @@ if('serviceWorker' in navigator){
 <!-- DRIVE -->
 <div class="section" id="tab-drive">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💾</span> GOOGLE_DRIVE.EXE</div></div>
+    <div class="tbar"><div class="tbar-l"><span>💾</span> <span data-t="p_drive">GOOGLE_DRIVE.EXE</span></div></div>
     <div class="pbody">
       <div class="gd-status"><div class="gd-dot" id="gdDot"></div><span id="gdStatusTxt">not connected</span></div>
       <div style="display:flex;flex-direction:column;gap:7px">
         <button class="w98 gd" onclick="gdSignIn()">♡ SIGN IN WITH GOOGLE</button>
-        <button class="w98 sm" onclick="gdSave()" id="gdSaveBtn" style="display:none">💾 SAVE TO DRIVE</button>
-        <button class="w98 sm" onclick="gdLoad()" id="gdLoadBtn" style="display:none">📂 LOAD FROM DRIVE</button>
+        <button class="w98 sm" onclick="gdSave()" id="gdSaveBtn" style="display:none" data-th="btn_save_drive">💾 SAVE TO DRIVE</button>
+        <button class="w98 sm" onclick="gdLoad()" id="gdLoadBtn" style="display:none" data-th="btn_load_drive">📂 LOAD FROM DRIVE</button>
         <button class="w98 sm" onclick="gdSignOut()" id="gdOutBtn" style="display:none" style="color:var(--text3)">sign out</button>
       </div>
       <div class="slabel">INFO</div>
@@ -2089,17 +2454,17 @@ if('serviceWorker' in navigator){
     <div class="mtbar"><div class="mtitle"><span>📋</span> NEW_TASK.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
       <div class="voice-hint">♡ tap mic & speak your task!</div>
-      <div class="field"><label>TASK NAME</label>
-        <div class="iwrap"><input type="text" id="tIn" placeholder="what to do..."/>
+      <div class="field"><label data-t="l_task_name">TASK NAME</label>
+        <div class="iwrap"><input type="text" id="tIn" placeholder="what to do..." data-tp="ph_task"/>
           <button class="mic-btn" id="tMic" onclick="toggleMic('tIn','tMic','tMicSt')">🎤</button></div>
         <div class="mic-st" id="tMicSt"></div>
       </div>
-      <div class="field"><label>TIME</label><input type="time" id="tTime"/></div>
-      <div class="field"><label>LINK TO GOAL</label>
-      <select id="tGoal"><option value="">-- no goal --</option></select>
+      <div class="field"><label data-t="l_time">TIME</label><input type="time" id="tTime"/></div>
+      <div class="field"><label data-t="l_link_goal">LINK TO GOAL</label>
+      <select id="tGoal"><option value="" data-t="l_no_goal">-- no goal --</option></select>
       <div style="font-size:12px;color:var(--text3);margin-top:3px">links to yearly/monthly/weekly goals ♡</div>
     </div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTask()">OK ♡</button></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveTask()" data-t="btn_ok">OK ♡</button></div>
     </div>
   </div>
 </div>
@@ -2110,23 +2475,23 @@ if('serviceWorker' in navigator){
     <div class="mtbar"><div class="mtitle" id="goalModalTitle"><span>⭐</span> NEW_GOAL.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
       <div class="voice-hint">♡ tap mic & say your goal!</div>
-      <div class="field"><label>GOAL NAME</label>
-        <div class="iwrap"><input type="text" id="gIn" placeholder="your goal..."/>
+      <div class="field"><label data-t="l_goal_name">GOAL NAME</label>
+        <div class="iwrap"><input type="text" id="gIn" placeholder="your goal..." data-tp="ph_goal"/>
           <button class="mic-btn" id="gMic" onclick="toggleMic('gIn','gMic','gMicSt')">🎤</button></div>
         <div class="mic-st" id="gMicSt"></div>
       </div>
-      <div class="field"><label>COLOR</label>
+      <div class="field"><label data-t="l_color">COLOR</label>
         <div class="color-opts" id="goalColorPicker"></div>
         <input type="hidden" id="gColor" value="pink"/>
       </div>
-      <div class="field" id="parentGoalField" style="display:none"><label>LINKS TO YEARLY GOAL</label>
+      <div class="field" id="parentGoalField" style="display:none"><label data-t="l_links_yearly">LINKS TO YEARLY GOAL</label>
         <select id="gParent"><option value="">-- standalone --</option></select>
       </div>
-      <div class="field" id="parentMonthField" style="display:none"><label>LINKS TO MONTHLY GOAL</label>
+      <div class="field" id="parentMonthField" style="display:none"><label data-t="l_links_monthly">LINKS TO MONTHLY GOAL</label>
         <select id="gParentMonth"><option value="">-- standalone --</option></select>
       </div>
-      <div class="field"><label>DEADLINE (OPTIONAL)</label><input type="date" id="gDeadline"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveGoal()">OK ♡</button></div>
+      <div class="field"><label data-t="l_deadline">DEADLINE (OPTIONAL)</label><input type="date" id="gDeadline"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveGoal()" data-t="btn_ok">OK ♡</button></div>
     </div>
   </div>
 </div>
@@ -2136,9 +2501,9 @@ if('serviceWorker' in navigator){
   <div class="mwin">
     <div class="mtbar"><div class="mtitle"><span>🌸</span> NEW_HABIT.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
-      <div class="field"><label>HABIT NAME</label><input type="text" id="hIn" placeholder="e.g. drink 2L water..."/></div>
-      <div class="field"><label>GOAL (OPTIONAL)</label><select id="hGoal"><option value="">-- no goal --</option></select></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveHabit()">START ♡</button></div>
+      <div class="field"><label data-t="l_habit_name">HABIT NAME</label><input type="text" id="hIn" placeholder="e.g. drink 2L water..." data-tp="ph_habit"/></div>
+      <div class="field"><label data-t="l_goal_opt">GOAL (OPTIONAL)</label><select id="hGoal"><option value="" data-t="l_no_goal">-- no goal --</option></select></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveHabit()" data-t="btn_start">START ♡</button></div>
     </div>
   </div>
 </div>
@@ -2148,24 +2513,24 @@ if('serviceWorker' in navigator){
   <div class="mwin">
     <div class="mtbar"><div class="mtitle" id="b2ModalTitle"><span>💗</span> NEW_PROCEDURE.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
-      <div class="field"><label>NAME</label><input type="text" id="b2Name" placeholder="e.g. Hair toner"/></div>
-      <div class="field"><label>EMOJI (OPTIONAL)</label><input type="text" id="b2Emoji" maxlength="4" placeholder="💗" style="width:80px;text-align:center;font-size:18px"/></div>
+      <div class="field"><label data-t="l_name">NAME</label><input type="text" id="b2Name" placeholder="e.g. Hair toner" data-tp="ph_beauty"/></div>
+      <div class="field"><label data-t="l_emoji_opt">EMOJI (OPTIONAL)</label><input type="text" id="b2Emoji" maxlength="4" placeholder="💗" style="width:80px;text-align:center;font-size:18px"/></div>
       <div class="field">
-        <label>TYPE</label>
+        <label data-t="l_type">TYPE</label>
         <div class="b2-type-toggle">
-          <button type="button" class="b2-type-btn active" data-type="recurring" onclick="b2SetType('recurring')">🔁 RECURRING</button>
-          <button type="button" class="b2-type-btn" data-type="oneoff" onclick="b2SetType('oneoff')">📅 ONE-OFF</button>
+          <button type="button" class="b2-type-btn active" data-type="recurring" onclick="b2SetType('recurring')" data-t="type_recurring">🔁 RECURRING</button>
+          <button type="button" class="b2-type-btn" data-type="oneoff" onclick="b2SetType('oneoff')" data-t="type_oneoff">📅 ONE-OFF</button>
         </div>
       </div>
       <div id="b2RecurringFields">
-        <div class="field"><label>EVERY HOW MANY DAYS?</label><input type="number" id="b2Every" min="1" max="365" value="7" style="width:80px"/><div style="font-size:12px;color:var(--text3);margin-top:4px;font-style:italic">e.g. 7 = weekly, 14 = every two weeks, 30 = monthly</div></div>
-        <div class="field"><label>FIRST DAY</label><input type="date" id="b2Start"/></div>
+        <div class="field"><label data-t="l_every_n_days">EVERY HOW MANY DAYS?</label><input type="number" id="b2Every" min="1" max="365" value="7" style="width:80px"/><div style="font-size:12px;color:var(--text3);margin-top:4px;font-style:italic" data-t="h_recurring_help">e.g. 7 = weekly, 14 = every two weeks, 30 = monthly</div></div>
+        <div class="field"><label data-t="l_first_day">FIRST DAY</label><input type="date" id="b2Start"/></div>
       </div>
       <div id="b2OneoffFields" style="display:none">
-        <div class="field"><label>DATE</label><input type="date" id="b2Date"/></div>
+        <div class="field"><label data-t="l_date">DATE</label><input type="date" id="b2Date"/></div>
       </div>
-      <div class="field"><label>NOTE (OPTIONAL)</label><input type="text" id="b2Note" placeholder="e.g. brand, notes..."/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveBeautyProcedure()">SAVE ♡</button></div>
+      <div class="field"><label data-t="l_note_opt">NOTE (OPTIONAL)</label><input type="text" id="b2Note" placeholder="e.g. brand, notes..." data-tp="ph_note"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveBeautyProcedure()" data-t="btn_save">SAVE ♡</button></div>
     </div>
   </div>
 </div>
@@ -2178,9 +2543,9 @@ if('serviceWorker' in navigator){
       <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--text2);margin-bottom:10px" id="logModalDate"></div>
       <div class="log-icons-grid" id="logIconsGrid"></div>
       <div class="log-note-row">
-        <div class="field"><label>NOTE (OPTIONAL)</label><textarea id="logNote" placeholder="how was your day?"></textarea></div>
+        <div class="field"><label data-t="l_note_opt">NOTE (OPTIONAL)</label><textarea id="logNote" placeholder="how was your day?" data-tp="ph_log_note"></textarea></div>
       </div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveLogDay()">SAVE ♡</button></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveLogDay()" data-t="btn_save">SAVE ♡</button></div>
     </div>
   </div>
 </div>
@@ -2190,9 +2555,9 @@ if('serviceWorker' in navigator){
   <div class="mwin">
     <div class="mtbar"><div class="mtitle"><span>⚙</span> ADD_TRACKER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
-      <div class="field"><label>TRACKER NAME</label><input type="text" id="trName" placeholder="e.g. Went for a walk..."/></div>
-      <div class="field"><label>EMOJI ICON</label><input type="text" id="trEmoji" placeholder="e.g. 🚶" maxlength="2"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveTracker()">ADD ♡</button></div>
+      <div class="field"><label data-t="l_tracker_name">TRACKER NAME</label><input type="text" id="trName" placeholder="e.g. Went for a walk..." data-tp="ph_tracker"/></div>
+      <div class="field"><label data-t="l_emoji_icon">EMOJI ICON</label><input type="text" id="trEmoji" placeholder="e.g. 🚶" data-tp="ph_tracker_emoji" maxlength="2"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveTracker()" data-t="btn_add">ADD ♡</button></div>
     </div>
   </div>
 </div>
@@ -2202,26 +2567,26 @@ if('serviceWorker' in navigator){
   <div class="mwin">
     <div class="mtbar"><div class="mtitle"><span>💊</span> ADD_MED.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
-      <div class="field"><label>NAME</label><input type="text" id="mIn" placeholder="e.g. Vitamin D, Aspirin..."/></div>
-      <div class="field"><label>DOSE</label><input type="text" id="mDose" placeholder="e.g. 1 tablet, 500mg..."/></div>
-      <div class="field"><label>TIMES PER DAY</label><select id="mFreq">
+      <div class="field"><label data-t="l_name">NAME</label><input type="text" id="mIn" placeholder="e.g. Vitamin D, Aspirin..." data-tp="ph_med_name"/></div>
+      <div class="field"><label data-t="l_dose">DOSE</label><input type="text" id="mDose" placeholder="e.g. 1 tablet, 500mg..." data-tp="ph_med_dose"/></div>
+      <div class="field"><label data-t="l_times_day">TIMES PER DAY</label><select id="mFreq">
         <option value="1">Once a day</option>
         <option value="2">Twice a day</option>
         <option value="3">3x a day</option>
         <option value="4">4x a day</option>
         <option value="0">As needed</option>
       </select></div>
-      <div class="field"><label>REMINDER TIME</label><input type="time" id="mTime"/></div>
-      <div class="field"><label>TYPE</label><select id="mType">
+      <div class="field"><label data-t="l_reminder_time">REMINDER TIME</label><input type="time" id="mTime"/></div>
+      <div class="field"><label data-t="l_type">TYPE</label><select id="mType">
         <option value="💊">💊 Medicine</option>
         <option value="🌿">🌿 Vitamin / supplement</option>
         <option value="💉">💉 Injection</option>
         <option value="💧">💧 Drops</option>
         <option value="🧴">🧴 Topical</option>
       </select></div>
-      <div class="field"><label>SUPPLY (PILLS LEFT)</label><input type="number" id="mSupply" placeholder="e.g. 30" min="0"/></div>
-      <div class="field"><label>NOTES</label><input type="text" id="mNotes" placeholder="with food, before bed..."/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveMed()">SAVE ♡</button></div>
+      <div class="field"><label data-t="l_supply">SUPPLY (PILLS LEFT)</label><input type="number" id="mSupply" placeholder="e.g. 30" data-tp="ph_med_supply" min="0"/></div>
+      <div class="field"><label data-t="l_notes">NOTES</label><input type="text" id="mNotes" placeholder="with food, before bed..." data-tp="ph_med_notes"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveMed()" data-t="btn_save">SAVE ♡</button></div>
     </div>
   </div>
 </div>
@@ -2231,9 +2596,9 @@ if('serviceWorker' in navigator){
   <div class="mwin">
     <div class="mtbar"><div class="mtitle"><span>🔔</span> ADD_REMINDER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
-      <div class="field"><label>MESSAGE</label><input type="text" id="nfMsg" placeholder="e.g. Drink a glass of water! 💧"/></div>
-      <div class="field"><label>TIME</label><input type="time" id="nfTime"/></div>
-      <div class="field"><label>REPEAT</label>
+      <div class="field"><label data-t="l_message">MESSAGE</label><input type="text" id="nfMsg" placeholder="e.g. Drink a glass of water! 💧" data-tp="ph_notif_msg"/></div>
+      <div class="field"><label data-t="l_time">TIME</label><input type="time" id="nfTime"/></div>
+      <div class="field"><label data-t="l_repeat">REPEAT</label>
         <select id="nfRepeat">
           <option value="daily">Every day</option>
           <option value="weekdays">Weekdays only</option>
@@ -2241,8 +2606,8 @@ if('serviceWorker' in navigator){
           <option value="once">Just once</option>
         </select>
       </div>
-      <div class="field"><label>EMOJI</label><input type="text" id="nfEmoji" placeholder="💊" maxlength="2"/></div>
-      <div class="mbtns"><button class="w98" onclick="closeModals()">CANCEL</button><button class="w98 acc" onclick="saveNotif()">SAVE ♡</button></div>
+      <div class="field"><label data-t="l_emoji">EMOJI</label><input type="text" id="nfEmoji" placeholder="💊" maxlength="2"/></div>
+      <div class="mbtns"><button class="w98" onclick="closeModals()" data-t="btn_cancel">CANCEL</button><button class="w98 acc" onclick="saveNotif()" data-t="btn_save">SAVE ♡</button></div>
     </div>
   </div>
 </div>
