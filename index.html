@@ -1449,8 +1449,8 @@ function fireNotif(n){
     try{
       new Notification('DayPlan ♡',{
         body:n.msg,
-        icon:'/DayPlan/icon-192.png',
-        badge:'/DayPlan/icon-192.png',
+        icon:'icon-192.png',
+        badge:'icon-192.png',
         vibrate:[200,100,200]
       });
     }catch(e){}
@@ -1735,7 +1735,7 @@ try{
 
 /* service worker */
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/dayplan/sw.js').catch(()=>{});
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 </script>
 </head>
