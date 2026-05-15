@@ -289,8 +289,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 /* dose tags */
 .dose-tag{display:inline-block;padding:0 6px;font-size:13px;border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl);background:var(--white);margin:1px}
 
-.lang-toggle{display:flex;gap:2px;margin-left:auto;padding:2px}
-.lang-toggle button{font-family:'Press Start 2P',monospace;font-size:7px;padding:3px 5px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);color:var(--text2);cursor:pointer;letter-spacing:.5px}
+.lang-toggle{display:flex;gap:2px}
+.lang-toggle button{font-family:'Press Start 2P',monospace;font-size:7px;padding:3px 6px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);color:var(--text2);cursor:pointer;letter-spacing:.5px}
 .lang-toggle button.active{background:var(--white);color:var(--acc);border-style:inset;border-color:var(--bs)}
 </style>
 <script defer>
@@ -2117,6 +2117,10 @@ if('serviceWorker' in navigator){
         <div class="hstats" id="hStats"></div>
         <div id="gdStatusMini" style="font-size:12px;color:#40c040;margin-top:2px"></div>
         <button onclick="sw('drive')" style="margin-top:4px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);padding:3px 8px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px" id="loginHeaderBtn">💾 <span data-t="login">LOGIN</span></button>
+        <div class="lang-toggle" style="margin-top:4px">
+          <button data-lang="en" onclick="setLang('en')">EN</button>
+          <button data-lang="ru" onclick="setLang('ru')">RU</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2138,10 +2142,6 @@ if('serviceWorker' in navigator){
   <button class="ttab" onclick="sw('mood')" data-t="tab_mood">MOOD</button>
   <button class="ttab" onclick="sw('stats')" data-t="tab_stats">STATS ★</button>
   <button class="ttab" onclick="sw('notifs')" data-t="tab_notifs">NOTIFS 🔔</button>
-  <div class="lang-toggle">
-    <button data-lang="en" onclick="setLang('en')">EN</button>
-    <button data-lang="ru" onclick="setLang('ru')">RU</button>
-  </div>
 </div>
 
 <div class="scroll-area" id="sa">
