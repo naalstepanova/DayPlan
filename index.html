@@ -357,7 +357,7 @@ const I18N = {
     btn_export: '📤 export JSON', btn_import: '📥 import JSON',
     btn_add_tracker: '✦ ADD TRACKER', btn_add_med: '✦ ADD MED',
     btn_cancel: 'CANCEL', btn_ok: 'OK ♡', btn_add: 'ADD ♡', btn_start: 'START ♡', btn_save_alt: 'SAVE ♡',
-    btn_add_procedure: '+ ADD PROCEDURE', btn_add_reminder: '+ ADD REMINDER',
+    btn_add_procedure: '+ ADD PROCEDURE', btn_add_reminder: '✦ ADD REMINDER',
     btn_enable_notifs: '🔔 ENABLE NOTIFICATIONS ♡',
     btn_add_to_today: '+ ADD TO TODAY',
     // section labels
@@ -417,6 +417,64 @@ const I18N = {
     done_today: 'done today',
     morning_done: 'morning done',
     evening_done: 'evening done',
+    // steps panel
+    steps_h: 'DAILY STEPS',
+    steps_unit: 'steps',
+    steps_goal_pref: 'Goal:',
+    steps_reached: 'GOAL REACHED ★',
+    steps_to_go: 'to go',
+    // today stats
+    td_done: 'done ♡', td_left: 'left...', td_complete: 'complete',
+    // water messages
+    w_hydrated: 'hydrated! ★', w_halfway: 'halfway there ♡', w_keep: 'keep drinking! ♡',
+    // tasks done line
+    tasks_done_lbl: 'tasks done',
+    // goal sub-tabs
+    g_yearly: '⭐ YEARLY', g_monthly: '📅 MONTHLY', g_weekly: '📋 WEEKLY', g_map: '🗺 MAP',
+    btn_add_yearly: '✦ ADD YEARLY GOAL', btn_add_monthly: '✦ ADD MONTHLY GOAL', btn_add_weekly: '✦ ADD WEEKLY GOAL',
+    // goal year suffix used in panel title
+    goal_year_for: '',
+    // misc panel labels
+    p_medsched_title: 'MEDICINE_SCHEDULE.EXE',
+    p_notifs_full: 'NOTIFICATIONS.EXE',
+    p_quick_add: 'QUICK_ADD',
+    p_habit_suggest: 'HABIT_SUGGESTIONS',
+    btn_add_med_vit: '✦ ADD MED/VITAMIN',
+    btn_new_habit: '✦ NEW HABIT',
+    btn_add_selected: '✦ ADD SELECTED',
+    // habits sl_suggested_habits already exists -- but value 'SUGGESTED_HABITS.TXT' needs ru
+    sl_suggested_reminders: 'SUGGESTED_REMINDERS.TXT',
+    // notif page
+    notifs_blocked: 'notifications blocked — enable in browser settings',
+    quick_add_hint: 'tap to add a girly reminder ♡',
+    // mood prompt
+    mood_q: 'how are you feeling today? ♡',
+    // stats panel
+    stats_30day: 'LAST 30 DAYS SUMMARY',
+    stats_completion: 'completion',
+    stats_habit_days: 'habit days',
+    stats_days_tracked: 'days tracked',
+    stats_water_met: 'water goals met',
+    // mini days/months for header & beauty
+    dow_sun: 'SUN', dow_mon: 'MON', dow_tue: 'TUE', dow_wed: 'WED', dow_thu: 'THU', dow_fri: 'FRI', dow_sat: 'SAT',
+    mon_jan: 'JAN', mon_feb: 'FEB', mon_mar: 'MAR', mon_apr: 'APR', mon_may: 'MAY', mon_jun: 'JUN',
+    mon_jul: 'JUL', mon_aug: 'AUG', mon_sep: 'SEP', mon_oct: 'OCT', mon_nov: 'NOV', mon_dec: 'DEC',
+    mon_long_jan: 'January', mon_long_feb: 'February', mon_long_mar: 'March', mon_long_apr: 'April',
+    mon_long_may: 'May', mon_long_jun: 'June', mon_long_jul: 'July', mon_long_aug: 'August',
+    mon_long_sep: 'September', mon_long_oct: 'October', mon_long_nov: 'November', mon_long_dec: 'December',
+    cal_hdr_m: 'M', cal_hdr_t: 'T', cal_hdr_w: 'W', cal_hdr_t2: 'T', cal_hdr_f: 'F', cal_hdr_s: 'S', cal_hdr_s2: 'S',
+    upc_tomorrow: 'TOMORROW',
+    mtitle_log: 'LOG_DAY.EXE',
+    mtitle_tracker: 'ADD_TRACKER.EXE',
+    mtitle_med: 'ADD_MED.EXE',
+    mtitle_notif: 'NEW_REMINDER.EXE',
+    mtitle_habit: 'NEW_HABIT.EXE',
+    mtitle_task: 'NEW_TASK.EXE',
+    mtitle_goal: 'NEW_GOAL.EXE',
+    // water UI bits
+    w_ml: 'ml', w_glass_eq: 'glass =', w_ml_goal: 'ml  |  goal:',
+    // repeat labels for notifs
+    rep_short_daily: 'daily', rep_short_weekdays: 'weekdays', rep_short_weekends: 'weekends', rep_short_once: 'once',
     // alerts (used by JS code)
     a_name_pls: 'name pls ♡',
     a_pick_date: 'pick a date ♡',
@@ -466,18 +524,18 @@ const I18N = {
   ru: {
     title_my: 'мой', title_day: 'дневной', title_planner: 'планер ♡',
     login: 'ВОЙТИ', logout: 'ВЫЙТИ', add_to_home: '♡ добавь на главный экран для удобства',
-    tab_today: 'СЕГОДНЯ', tab_water: 'ВОДА', tab_log: 'ЛОГ ♡', tab_meds: 'ЛЕКАРСТВА',
+    tab_today: 'СЕГОДНЯ', tab_water: 'H₂O', tab_log: 'КАЛЕНДАРЬ ♡', tab_meds: 'ВИТАМИНЫ',
     tab_goals: 'ЦЕЛИ', tab_habits: 'ПРИВЫЧКИ', tab_beauty: 'БЬЮТИ',
-    tab_mood: 'НАСТРОЕНИЕ', tab_stats: 'СТАТЫ ★', tab_notifs: 'УВЕДОМЛЕНИЯ 🔔',
+    tab_mood: 'НАСТРОЕНИЕ', tab_stats: 'ОБЗОР ★', tab_notifs: 'УВЕДОМЛЕНИЯ 🔔',
     p_steps: 'ШАГИ.EXE', p_tasks: 'ЗАДАЧИ_СЕГОДНЯ.TXT', p_water: 'ВОДА_ТРЕКЕР.EXE',
-    p_water_history: 'ИСТОРИЯ_ВОДЫ', p_life_log: 'ДНЕВНИК.EXE',
-    p_manage_trackers: 'УПР_ТРЕКЕРЫ', p_today_log: 'ЛОГ_СЕГОДНЯ',
+    p_water_history: 'ИСТОРИЯ_ВОДЫ', p_life_log: 'КАЛЕНДАРЬ.EXE',
+    p_manage_trackers: 'УПРАВЛЕНИЕ_ТРЕКЕРАМИ', p_today_log: 'СЕГОДНЯ',
     p_yearly: 'ГОДОВЫЕ_ЦЕЛИ.EXE', p_monthly: 'МЕСЯЧНЫЕ_ЦЕЛИ.EXE', p_weekly: 'НЕДЕЛЬНЫЕ_ЦЕЛИ.EXE',
     p_goal_map: 'КАРТА_ЦЕЛЕЙ', p_habits: 'ПРИВЫЧКИ_21ДЕНЬ.EXE',
     p_beauty_today: 'СЕГОДНЯ', p_beauty_upcoming: 'СЛЕДУЮЩИЕ_7_ДНЕЙ', p_beauty_all: 'ВСЕ_ПРОЦЕДУРЫ.EXE',
     p_mood: 'НАСТРОЕНИЕ_ТРЕКЕР.EXE', p_mood_history: 'ИСТОРИЯ_НАСТРОЕНИЯ',
     p_stats: 'СТАТИСТИКА.EXE', p_drive: 'GOOGLE_DRIVE.EXE',
-    p_meds_sched: 'ГРАФИК_ЛЕКАРСТВ.EXE', p_meds_today: 'ДОЗЫ_СЕГОДНЯ',
+    p_meds_sched: 'ГРАФИК_ВИТАМИНОВ.EXE', p_meds_today: 'ДОЗЫ_СЕГОДНЯ',
     p_notifs: 'УВЕДОМЛЕНИЯ.EXE', p_notifs_suggest: 'ГОТОВЫЕ_НАПОМИНАНИЯ',
     p_export: 'ЭКСПОРТ_ИМПОРТ.EXE',
     btn_new_task: '✦ НОВАЯ ЗАДАЧА', btn_add_steps: '+', btn_reset: 'сбр', btn_reset_full: 'сбросить',
@@ -487,13 +545,13 @@ const I18N = {
     btn_export: '📤 экспорт JSON', btn_import: '📥 импорт JSON',
     btn_add_tracker: '✦ НОВЫЙ ТРЕКЕР', btn_add_med: '✦ НОВОЕ ЛЕКАРСТВО',
     btn_cancel: 'ОТМЕНА', btn_ok: 'ОК ♡', btn_add: 'ДОБАВИТЬ ♡', btn_start: 'НАЧАТЬ ♡', btn_save_alt: 'СОХРАНИТЬ ♡',
-    btn_add_procedure: '+ ДОБАВИТЬ ПРОЦЕДУРУ', btn_add_reminder: '+ ДОБАВИТЬ НАПОМИНАНИЕ',
+    btn_add_procedure: '+ ДОБАВИТЬ ПРОЦЕДУРУ', btn_add_reminder: '✦ ДОБАВИТЬ НАПОМИНАНИЕ',
     btn_enable_notifs: '🔔 ВКЛЮЧИТЬ УВЕДОМЛЕНИЯ ♡',
     btn_add_to_today: '+ ДОБАВИТЬ НА СЕГОДНЯ',
     sl_legend: 'ЛЕГЕНДА', sl_suggested_habits: 'ИДЕИ_ПРИВЫЧЕК.TXT',
     sl_mood_breakdown: 'НАСТРОЕНИЕ ПО ДНЯМ', sl_weekly_goals: 'НЕДЕЛЬНЫЕ ЦЕЛИ',
     sl_today_beauty: 'БЬЮТИ-ПРОЦЕДУРЫ СЕГОДНЯ', sl_habit_streaks: 'СЕРИИ ПРИВЫЧЕК',
-    sl_top_events: 'ТОП СОБЫТИЙ ДНЕВНИКА',
+    sl_top_events: 'ТОП СОБЫТИЙ КАЛЕНДАРЯ',
     e_no_history: 'пока нет истории~',
     e_no_meds: 'нет лекарств~', e_no_meds_sub: 'добавь выше ♡',
     e_no_tasks: 'нет задач~', e_no_tasks_sub: 'добавь одну ♡',
@@ -538,6 +596,51 @@ const I18N = {
     done_today: 'сделано сегодня',
     morning_done: 'утром сделано',
     evening_done: 'вечером сделано',
+    // steps panel
+    steps_h: 'ШАГИ ЗА ДЕНЬ',
+    steps_unit: 'шагов',
+    steps_goal_pref: 'Цель:',
+    steps_reached: 'ЦЕЛЬ ДОСТИГНУТА ★',
+    steps_to_go: 'осталось',
+    td_done: 'сделано ♡', td_left: 'осталось...', td_complete: 'готово',
+    w_hydrated: 'отлично! ★', w_halfway: 'половина ♡', w_keep: 'пей ещё! ♡',
+    tasks_done_lbl: 'задач сделано',
+    g_yearly: '⭐ ГОД', g_monthly: '📅 МЕСЯЦ', g_weekly: '📋 НЕДЕЛЯ', g_map: '🗺 КАРТА',
+    btn_add_yearly: '✦ НОВАЯ ЦЕЛЬ НА ГОД', btn_add_monthly: '✦ НОВАЯ ЦЕЛЬ НА МЕСЯЦ', btn_add_weekly: '✦ НОВАЯ ЦЕЛЬ НА НЕДЕЛЮ',
+    goal_year_for: '',
+    p_medsched_title: 'ГРАФИК_ВИТАМИНОВ.EXE',
+    p_notifs_full: 'УВЕДОМЛЕНИЯ.EXE',
+    p_quick_add: 'БЫСТРОЕ_ДОБАВЛЕНИЕ',
+    p_habit_suggest: 'ИДЕИ_ПРИВЫЧЕК',
+    btn_add_med_vit: '✦ ДОБАВИТЬ ВИТАМИН',
+    btn_new_habit: '✦ НОВАЯ ПРИВЫЧКА',
+    btn_add_selected: '✦ ДОБАВИТЬ ВЫБРАННОЕ',
+    sl_suggested_reminders: 'ГОТОВЫЕ_НАПОМИНАНИЯ.TXT',
+    notifs_blocked: 'уведомления заблокированы — включи в настройках браузера',
+    quick_add_hint: 'нажми чтобы добавить милое напоминание ♡',
+    mood_q: 'как ты сегодня себя чувствуешь? ♡',
+    stats_30day: 'СВОДКА ЗА 30 ДНЕЙ',
+    stats_completion: 'выполнено',
+    stats_habit_days: 'дней с привычками',
+    stats_days_tracked: 'дней с трекером',
+    stats_water_met: 'дней с нормой воды',
+    dow_sun: 'ВС', dow_mon: 'ПН', dow_tue: 'ВТ', dow_wed: 'СР', dow_thu: 'ЧТ', dow_fri: 'ПТ', dow_sat: 'СБ',
+    mon_jan: 'ЯНВ', mon_feb: 'ФЕВ', mon_mar: 'МАР', mon_apr: 'АПР', mon_may: 'МАЙ', mon_jun: 'ИЮН',
+    mon_jul: 'ИЮЛ', mon_aug: 'АВГ', mon_sep: 'СЕН', mon_oct: 'ОКТ', mon_nov: 'НОЯ', mon_dec: 'ДЕК',
+    mon_long_jan: 'Январь', mon_long_feb: 'Февраль', mon_long_mar: 'Март', mon_long_apr: 'Апрель',
+    mon_long_may: 'Май', mon_long_jun: 'Июнь', mon_long_jul: 'Июль', mon_long_aug: 'Август',
+    mon_long_sep: 'Сентябрь', mon_long_oct: 'Октябрь', mon_long_nov: 'Ноябрь', mon_long_dec: 'Декабрь',
+    cal_hdr_m: 'П', cal_hdr_t: 'В', cal_hdr_w: 'С', cal_hdr_t2: 'Ч', cal_hdr_f: 'П', cal_hdr_s: 'С', cal_hdr_s2: 'В',
+    upc_tomorrow: 'ЗАВТРА',
+    mtitle_log: 'ЗАПИСЬ_ДНЯ.EXE',
+    mtitle_tracker: 'ДОБАВИТЬ_ТРЕКЕР.EXE',
+    mtitle_med: 'ДОБАВИТЬ_ВИТАМИН.EXE',
+    mtitle_notif: 'НОВОЕ_НАПОМИНАНИЕ.EXE',
+    mtitle_habit: 'НОВАЯ_ПРИВЫЧКА.EXE',
+    mtitle_task: 'НОВАЯ_ЗАДАЧА.EXE',
+    mtitle_goal: 'НОВАЯ_ЦЕЛЬ.EXE',
+    w_ml: 'мл', w_glass_eq: 'стакан =', w_ml_goal: 'мл  |  цель:',
+    rep_short_daily: 'каждый день', rep_short_weekdays: 'будни', rep_short_weekends: 'выходные', rep_short_once: 'один раз',
     a_name_pls: 'введи название ♡',
     a_pick_date: 'выбери дату ♡',
     a_how_many_days: 'сколько дней? ♡',
@@ -605,6 +708,7 @@ function setLang(l){
   // re-render all dynamic content
   try{
     if(typeof renderTasks==='function') renderTasks();
+    if(typeof renderSteps==='function') renderSteps();
     if(typeof renderWater==='function') renderWater();
     if(typeof renderWaterHistory==='function') renderWaterHistory();
     if(typeof renderMeds==='function') renderMeds();
@@ -620,7 +724,8 @@ function setLang(l){
     if(typeof renderStats==='function') renderStats();
     if(typeof renderNotifs==='function') renderNotifs();
     if(typeof renderNotifSuggests==='function') renderNotifSuggests();
-    if(typeof renderLog==='function') renderLog();
+    if(typeof renderCal==='function') renderCal();
+    if(typeof renderTrackerList==='function') renderTrackerList();
     if(typeof renderTodayPanel==='function') renderTodayPanel();
   }catch(e){console.warn('re-render after lang change:',e);}
   // update toggle button visual
@@ -629,8 +734,43 @@ function setLang(l){
   });
 }
 
+
+function dayName(idx){
+  const k=['dow_sun','dow_mon','dow_tue','dow_wed','dow_thu','dow_fri','dow_sat'];
+  return T(k[idx]);
+}
+function monthName(idx){
+  const k=['mon_jan','mon_feb','mon_mar','mon_apr','mon_may','mon_jun','mon_jul','mon_aug','mon_sep','mon_oct','mon_nov','mon_dec'];
+  return T(k[idx]);
+}
+function repShort(r){
+  const m={daily:'rep_short_daily',weekdays:'rep_short_weekdays',weekends:'rep_short_weekends',once:'rep_short_once'};
+  return m[r]?T(m[r]):r;
+}
+
 function applyLangToDOM(){
   document.documentElement.lang = LANG;
+  // re-translate default trackers (only if user hasn't customized them)
+  try {
+    if (S && Array.isArray(S.trackers)) {
+      const enMap = {t1:'tr_alcohol',t2:'tr_sport',t3:'tr_book',t4:'tr_poop',t5:'tr_outside',t6:'tr_sleep',
+                     t7:'tr_cook',t8:'tr_meditate',t9:'tr_period',t10:'tr_mood_great',t11:'tr_mood_bad',t12:'tr_social'};
+      // names in either language that mark "this is still the default"
+      const knownNames = new Set();
+      Object.values(enMap).forEach(k=>{
+        if(I18N.en[k]) knownNames.add(I18N.en[k]);
+        if(I18N.ru[k]) knownNames.add(I18N.ru[k]);
+      });
+      let changed = false;
+      S.trackers.forEach(t=>{
+        if(enMap[t.id] && knownNames.has(t.name)){
+          const newName = T(enMap[t.id]);
+          if(t.name !== newName){ t.name = newName; changed = true; }
+        }
+      });
+      if(changed && typeof save === 'function') save();
+    }
+  } catch(e){ console.warn('tracker retranslate:',e); }
   document.querySelectorAll('[data-t]').forEach(el=>{
     el.textContent = T(el.dataset.t);
   });
@@ -697,7 +837,7 @@ function save(){
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function today(){return new Date().toISOString().slice(0,10);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function fmtDate(ds){const d=new Date(ds+'T12:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+function fmtDate(ds){const d=new Date(ds+'T12:00:00');return d.getDate()+' '+monthName(d.getMonth())+' '+d.getFullYear();}
 
 /* ═══════════════════════════════════════
    INIT
@@ -706,10 +846,8 @@ function init(){
   applyLangToDOM();
   setTimeout(()=>{document.querySelectorAll(".lang-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.lang===LANG));},10);
   const d=new Date();
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  document.getElementById('hDate').textContent=days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
-  document.getElementById('hDateFull').textContent=days[d.getDay()]+' '+months[d.getMonth()]+' '+d.getDate();
+  document.getElementById('hDate').textContent=dayName(d.getDay())+' '+d.getDate()+' '+monthName(d.getMonth())+' '+d.getFullYear();
+  document.getElementById('hDateFull').textContent=dayName(d.getDay())+' '+monthName(d.getMonth())+' '+d.getDate();
   buildGoalColorPicker();
   sw(S.tab||'today',false);
   maybeShowInst();
@@ -762,7 +900,7 @@ function renderSteps(){
   document.getElementById('sRing').style.strokeDashoffset=(201.06-201.06*pct).toFixed(2);
   const n=S.steps.count;
   document.getElementById('sNum').textContent=n>=1000?(n/1000).toFixed(1)+'k':n;
-  document.getElementById('sGoalTxt').textContent=S.steps.count>=S.steps.goal?'GOAL REACHED ★':Math.max(0,S.steps.goal-S.steps.count).toLocaleString()+' to go';
+  document.getElementById('sGoalTxt').textContent=S.steps.count>=S.steps.goal?T('steps_reached'):Math.max(0,S.steps.goal-S.steps.count).toLocaleString()+' '+T('steps_to_go');
 }
 function addSteps(n){if(S.steps.date!==today()){S.steps.count=0;S.steps.date=today();}S.steps.count=Math.min(S.steps.count+n,99999);save();renderSteps();}
 function resetSteps(){S.steps.count=0;S.steps.date=today();save();renderSteps();}
@@ -779,18 +917,18 @@ function renderWater(){
   const goal=S.water.goal||2000;const gs=S.water.glassSize||250;
   const numGlasses=Math.ceil(goal/gs);const drunk=S.water.glasses*gs;
   const pct=Math.min(100,Math.round(drunk/goal*100));
-  document.getElementById('wDrunk').textContent=drunk+' ml';
-  document.getElementById('wGoalLbl').textContent='/ '+goal+' ml';
+  document.getElementById('wDrunk').textContent=drunk+' '+T('w_ml');
+  document.getElementById('wGoalLbl').textContent='/ '+goal+' '+T('w_ml');
   document.getElementById('wProg').style.width=pct+'%';
   document.getElementById('wPct').textContent=pct+'%';
-  document.getElementById('wMsg').textContent=pct>=100?'hydrated! ★':pct>=50?'halfway there ♡':'keep drinking! ♡';
+  document.getElementById('wMsg').textContent=pct>=100?T('w_hydrated'):pct>=50?T('w_halfway'):T('w_keep');
   document.getElementById('wGlassSize').value=gs;
   document.getElementById('wGoalInput').value=goal;
   // glasses
   const el=document.getElementById('wGlasses');
   el.innerHTML=Array.from({length:numGlasses},(_,i)=>{
     const filled=i<S.water.glasses;
-    return`<button class="wglass ${filled?'filled':''}" onclick="toggleGlass(${i})">${filled?'🥛':'🫙'}</button>`;
+    return`<button class="wglass ${filled?'filled':''}" onclick="toggleGlass(${i})">${filled?'🥛':'🥃'}</button>`;
   }).join('');
   // history
   const hist=S.water.history||{};
@@ -827,12 +965,16 @@ function saveWaterSettings(){
 /* ═══════════════════════════════════════
    LIFE LOG CALENDAR
 ═══════════════════════════════════════ */
-const MONTHS_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function monthLong(idx){
+  const k=['mon_long_jan','mon_long_feb','mon_long_mar','mon_long_apr','mon_long_may','mon_long_jun',
+           'mon_long_jul','mon_long_aug','mon_long_sep','mon_long_oct','mon_long_nov','mon_long_dec'];
+  return T(k[idx]);
+}
 
 function renderCal(){
-  document.getElementById('calMonth').textContent=MONTHS_LONG[calMonth_]+' '+calYear;
+  document.getElementById('calMonth').textContent=monthLong(calMonth_)+' '+calYear;
   const grid=document.getElementById('calGrid');
-  const hdrs=['M','T','W','T','F','S','S'];
+  const hdrs=[T('cal_hdr_m'),T('cal_hdr_t'),T('cal_hdr_w'),T('cal_hdr_t2'),T('cal_hdr_f'),T('cal_hdr_s'),T('cal_hdr_s2')];
   let html=hdrs.map(h=>`<div class="cal-day-hdr">${h}</div>`).join('');
   const first=new Date(calYear,calMonth_,1);
   const lastDay=new Date(calYear,calMonth_+1,0).getDate();
@@ -1047,7 +1189,7 @@ function renderGoals(){
 
 function getWeekStart(){
   const d=new Date();const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);
-  const mon=new Date(d.setDate(diff));return mon.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const mon=new Date(d.setDate(diff));return mon.getDate()+' '+monthName(mon.getMonth());
 }
 function getWeekKey(){
   const d=new Date();const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);
@@ -1089,7 +1231,7 @@ function renderYearlyGoals(){
         <button class="tdel" onclick="deleteGoalById('yearly','${g.id}')">✕</button>
       </div>
       ${g.deadline?`<div style="font-size:12px;color:var(--text3);margin-bottom:3px">deadline: ${g.deadline}</div>`:''}
-      <div class="prog-lbl"><span>${p.done}/${p.total} tasks done</span><span>${p.pct}%</span></div>
+      <div class="prog-lbl"><span>${p.done}/${p.total} ${T('tasks_done_lbl')}</span><span>${p.pct}%</span></div>
       <div class="prog-wrap"><div class="prog98" style="width:${p.pct}%"></div></div>
       <div style="display:flex;gap:8px;margin-top:5px;font-size:13px;color:var(--text3)">
         <span>📅 ${mCount} monthly goals</span>
@@ -1117,7 +1259,7 @@ function renderMonthlyGoals(){
       </div>
       ${parent?`<div style="font-size:12px;color:${c.dot};margin-bottom:3px">⭐ ${esc(parent.name)}</div>`:''}
       ${g.deadline?`<div style="font-size:12px;color:var(--text3);margin-bottom:3px">deadline: ${g.deadline}</div>`:''}
-      <div class="prog-lbl"><span>${p.done}/${p.total} tasks done</span><span>${p.pct}%</span></div>
+      <div class="prog-lbl"><span>${p.done}/${p.total} ${T('tasks_done_lbl')}</span><span>${p.pct}%</span></div>
       <div class="prog-wrap"><div class="prog98" style="width:${p.pct}%;background:${c.dot}"></div></div>
       <div style="font-size:13px;color:var(--text3);margin-top:5px">📋 ${wCount} weekly goals linked</div>
     </div>`;
@@ -1144,7 +1286,7 @@ function renderWeeklyGoals(){
         ${monthly?`<span style="color:var(--acc)">📅 ${esc(monthly.name)}</span>`:''}
         ${yearly?`<span style="color:var(--text3)">⭐ ${esc(yearly.name)}</span>`:''}
       </div>
-      <div class="prog-lbl"><span>${p.done}/${p.total} tasks done</span><span>${p.pct}%</span></div>
+      <div class="prog-lbl"><span>${p.done}/${p.total} ${T('tasks_done_lbl')}</span><span>${p.pct}%</span></div>
       <div class="prog-wrap"><div class="prog98" style="width:${p.pct}%;background:${c.dot}"></div></div>
     </div>`;
   }).join('');
@@ -1328,16 +1470,12 @@ function toggleBeautyDone(procId){
 }
 function b2DayLabel(iso,offset){
   const d=new Date(iso+'T12:00:00');
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  if(offset===1)return 'TOMORROW';
-  return days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+  if(offset===1)return T('upc_tomorrow');
+  return dayName(d.getDay())+' '+d.getDate()+' '+monthName(d.getMonth());
 }
 function b2HeaderDate(){
   const d=new Date();
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  return days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+  return dayName(d.getDay())+' '+d.getDate()+' '+monthName(d.getMonth());
 }
 function b2ScheduleDesc(p){
   if(p.type==='oneoff')return '📅 once on '+p.date;
@@ -1698,7 +1836,7 @@ function requestNotifPermission(){
   if(Notification.permission==='granted'){
     box.innerHTML=`<div style="background:#e1f5ee;border:1px solid #2d6b4f;padding:7px 10px;font-size:15px;color:#085041;border-radius:4px">🔔 notifications are ON ♡</div>`;
   } else if(Notification.permission==='denied'){
-    box.innerHTML=`<div style="background:#fcebeb;border:1px solid #a32d2d;padding:7px 10px;font-size:14px;color:#a32d2d">notifications blocked — enable in browser settings</div>`;
+    box.innerHTML=`<div style="background:#fcebeb;border:1px solid #a32d2d;padding:7px 10px;font-size:14px;color:#a32d2d">${T('notifs_blocked')}</div>`;
   } else {
     box.innerHTML=`<button class="w98 acc" onclick="askNotifPermission()" style="width:100%">${T('btn_enable_notifs')}</button>`;
   }
@@ -1720,7 +1858,7 @@ function renderNotifs(){
     <div style="font-size:22px;flex-shrink:0">${n.emoji||'🔔'}</div>
     <div class="notif-body">
       <div class="notif-msg">${esc(n.msg)}</div>
-      <div class="notif-sub">${n.time} · ${n.repeat}</div>
+      <div class="notif-sub">${n.time} · ${repShort(n.repeat)}</div>
     </div>
     <div class="notif-toggle ${n.on?'on':''}" onclick="toggleNotif('${n.id}')"></div>
     <button class="notif-del" onclick="deleteNotif('${n.id}')">✕</button>
@@ -1733,7 +1871,7 @@ function renderNotifSuggestions(){
     <div class="ns-emoji">${s.emoji}</div>
     <div style="flex:1">
       <div class="ns-name">${esc(s.msg)}</div>
-      <div class="ns-time">${s.time} · ${s.repeat}</div>
+      <div class="ns-time">${s.time} · ${repShort(s.repeat)}</div>
     </div>
     <div style="font-size:18px;color:var(--acc)">+</div>
   </button>`).join('');
@@ -1907,9 +2045,9 @@ function renderMoodHistory(){
 
   // mini stats
   let html=`<div class="stats-grid">
-    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[Math.round(avg)]||'var(--acc)'}">${avg}</div><div class="stat-label">avg mood</div></div>
-    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[best]}">${best}</div><div class="stat-label">best</div></div>
-    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[worst]}">${worst}</div><div class="stat-label">worst</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[Math.round(avg)]||'var(--acc)'}">${avg}</div><div class="stat-label">${T('stat_avg_mood')}</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[best]}">${best}</div><div class="stat-label">${T('stat_best')}</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${MOOD_COLORS[worst]}">${worst}</div><div class="stat-label">${T('stat_worst')}</div></div>
   </div>`;
 
   // bar chart per mood level
@@ -2000,17 +2138,17 @@ function renderStats(){
     return{name:g.name,pct:p.pct,done:p.done,total:p.total};
   });
 
-  let html=`<div style="font-family:var(--font-sans);font-size:10px;color:var(--text3);margin-bottom:10px;letter-spacing:.05em">LAST ${days} DAYS SUMMARY</div>`;
+  let html=`<div style="font-family:var(--font-sans);font-size:10px;color:var(--text3);margin-bottom:10px;letter-spacing:.05em">${T('stats_30day')}</div>`;
 
   // big stats grid
   html+=`<div class="stats-grid">
-    <div class="stats-card"><div class="stat-big">${doneTasks.length}</div><div class="stat-label">tasks done</div></div>
-    <div class="stats-card"><div class="stat-big" style="color:${taskPct>=70?'#1d9e75':taskPct>=40?'#ba7517':'#e24b4a'}">${taskPct}%</div><div class="stat-label">completion</div></div>
-    <div class="stats-card"><div class="stat-big" style="color:#1d9e75">${habitCheckins}</div><div class="stat-label">habit days</div></div>
-    <div class="stats-card"><div class="stat-big" style="color:#1860a0">${waterDays}</div><div class="stat-label">days tracked</div></div>
-    <div class="stats-card"><div class="stat-big" style="color:#1860a0">${waterGoalMet}</div><div class="stat-label">water goals met</div></div>
+    <div class="stats-card"><div class="stat-big">${doneTasks.length}</div><div class="stat-label">${T('tasks_done_lbl')}</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:${taskPct>=70?'#1d9e75':taskPct>=40?'#ba7517':'#e24b4a'}">${taskPct}%</div><div class="stat-label">${T('stats_completion')}</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:#1d9e75">${habitCheckins}</div><div class="stat-label">${T('stats_habit_days')}</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:#1860a0">${waterDays}</div><div class="stat-label">${T('stats_days_tracked')}</div></div>
+    <div class="stats-card"><div class="stat-big" style="color:#1860a0">${waterGoalMet}</div><div class="stat-label">${T('stats_water_met')}</div></div>
     <div class="stats-card"><div class="stat-big" style="color:${avgMood?MOOD_COLORS[Math.round(avgMood)]:'var(--text3)'}">
-      ${avgMood||'—'}</div><div class="stat-label">avg mood</div></div>
+      ${avgMood||'—'}</div><div class="stat-label">${T('stat_avg_mood')}</div></div>
   </div>`;
 
   // habits breakdown
@@ -2083,7 +2221,7 @@ function renderStats(){
     </div>`;
   }
 
-  html+=`<div style="font-size:13px;color:var(--text3);text-align:center;margin-top:8px">you're doing amazing ★</div>`;
+  html+=`<div style="font-size:13px;color:var(--text3);text-align:center;margin-top:8px">${T('encouragement')}</div>`;
   el.innerHTML=html;
 }
 
@@ -2149,20 +2287,20 @@ if('serviceWorker' in navigator){
 <!-- TODAY -->
 <div class="section active" id="tab-today">
   <div class="stats-row">
-    <div class="stat-win"><div class="stat-n" id="sDone">0</div><div class="stat-l">done ♡</div></div>
-    <div class="stat-win"><div class="stat-n" id="sLeft">0</div><div class="stat-l">left...</div></div>
-    <div class="stat-win"><div class="stat-n" id="sPct">0%</div><div class="stat-l">complete</div></div>
+    <div class="stat-win"><div class="stat-n" id="sDone">0</div><div class="stat-l" data-t="td_done">done ♡</div></div>
+    <div class="stat-win"><div class="stat-n" id="sLeft">0</div><div class="stat-l" data-t="td_left">left...</div></div>
+    <div class="stat-win"><div class="stat-n" id="sPct">0%</div><div class="stat-l" data-t="td_complete">complete</div></div>
   </div>
   <div class="win-panel">
     <div class="tbar"><div class="tbar-l"><span>👟</span> <span data-t="p_steps">STEPS.EXE</span></div><div class="wbtns"><div class="wbtn">_</div><div class="wbtn">✕</div></div></div>
     <div class="steps-body">
       <div class="sring">
         <svg width="76" height="76" viewBox="0 0 76 76"><circle class="rt" cx="38" cy="38" r="32"/><circle class="rf" cx="38" cy="38" r="32" id="sRing" stroke-dasharray="201.06" stroke-dashoffset="201.06"/></svg>
-        <div class="sctr"><div class="sbig" id="sNum">0</div><div class="sunit">steps</div></div>
+        <div class="sctr"><div class="sbig" id="sNum">0</div><div class="sunit" data-t="steps_unit">steps</div></div>
       </div>
       <div class="sinfo" style="flex:1">
-        <h3>DAILY STEPS</h3>
-        <p id="sGoalTxt">Goal: 10,000</p>
+        <h3 data-t="steps_h">DAILY STEPS</h3>
+        <p id="sGoalTxt"></p>
         <div class="sbtns">
           <button class="w98 sm" onclick="addSteps(500)">+500</button>
           <button class="w98 sm" onclick="addSteps(1000)">+1k</button>
@@ -2197,11 +2335,11 @@ if('serviceWorker' in navigator){
       </div>
       <div class="water-glasses" id="wGlasses"></div>
       <div class="water-goal-row">
-        <span>glass =</span>
+        <span data-t="w_glass_eq">glass =</span>
         <input type="number" id="wGlassSize" value="250" min="50" max="500" step="50" onchange="saveWaterSettings()"/>
-        <span>ml &nbsp;|&nbsp; goal:</span>
+        <span data-t="w_ml_goal">ml &nbsp;|&nbsp; goal:</span>
         <input type="number" id="wGoalInput" value="2000" min="500" max="5000" step="250" onchange="saveWaterSettings()"/>
-        <span>ml</span>
+        <span data-t="w_ml">ml</span>
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
         <button class="w98 sm" onclick="addWater(1)" data-t="btn_glass_p">+ 1 glass</button>
@@ -2242,10 +2380,10 @@ if('serviceWorker' in navigator){
 <!-- MEDS -->
 <div class="section" id="tab-meds">
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💊</span> MEDICINE_SCHEDULE.EXE</div><div class="wbtns"><div class="wbtn" onclick="openAddMed()">+</div><div class="wbtn">✕</div></div></div>
+    <div class="tbar"><div class="tbar-l"><span>💊</span> <span data-t="p_medsched_title">MEDICINE_SCHEDULE.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="openAddMed()">+</div><div class="wbtn">✕</div></div></div>
     <div class="pbody">
       <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
-        <button class="w98" onclick="openAddMed()">✦ ADD MED/VITAMIN</button>
+        <button class="w98" onclick="openAddMed()" data-t="btn_add_med_vit">✦ ADD MED/VITAMIN</button>
       </div>
       <div id="medList"></div>
     </div>
@@ -2260,10 +2398,10 @@ if('serviceWorker' in navigator){
 <div class="section" id="tab-goals">
   <!-- sub-tabs -->
   <div style="display:flex;gap:4px;margin-bottom:9px">
-    <button class="gtab active" id="gtab-yearly" onclick="swGoal('yearly')">⭐ YEARLY</button>
-    <button class="gtab" id="gtab-monthly" onclick="swGoal('monthly')">📅 MONTHLY</button>
-    <button class="gtab" id="gtab-weekly" onclick="swGoal('weekly')">📋 WEEKLY</button>
-    <button class="gtab" id="gtab-map" onclick="swGoal('map')">🗺 MAP</button>
+    <button class="gtab active" id="gtab-yearly" onclick="swGoal('yearly')" data-t="g_yearly">⭐ YEARLY</button>
+    <button class="gtab" id="gtab-monthly" onclick="swGoal('monthly')" data-t="g_monthly">📅 MONTHLY</button>
+    <button class="gtab" id="gtab-weekly" onclick="swGoal('weekly')" data-t="g_weekly">📋 WEEKLY</button>
+    <button class="gtab" id="gtab-map" onclick="swGoal('map')" data-t="g_map">🗺 MAP</button>
   </div>
 
   <!-- YEARLY -->
@@ -2271,7 +2409,7 @@ if('serviceWorker' in navigator){
     <div class="win-panel">
       <div class="tbar"><div class="tbar-l"><span>⭐</span> <span data-t="p_yearly">YEARLY_GOALS.EXE</span> — <span id="yearLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('yearly')">+</div></div></div>
       <div class="pbody">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('yearly')">✦ ADD YEARLY GOAL</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('yearly')" data-t="btn_add_yearly">✦ ADD YEARLY GOAL</button></div>
         <div id="yearlyGoalList"></div>
       </div>
     </div>
@@ -2282,7 +2420,7 @@ if('serviceWorker' in navigator){
     <div class="win-panel">
       <div class="tbar"><div class="tbar-l"><span>📅</span> <span data-t="p_monthly">MONTHLY_GOALS.EXE</span> — <span id="monthLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('monthly')">+</div></div></div>
       <div class="pbody">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('monthly')">✦ ADD MONTHLY GOAL</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('monthly')" data-t="btn_add_monthly">✦ ADD MONTHLY GOAL</button></div>
         <div id="monthlyGoalList"></div>
       </div>
     </div>
@@ -2293,7 +2431,7 @@ if('serviceWorker' in navigator){
     <div class="win-panel">
       <div class="tbar"><div class="tbar-l"><span>📋</span> <span data-t="p_weekly">WEEKLY_GOALS.EXE</span> — <span id="weekLabel" style="color:#ffccf0;font-size:6px"></span></div><div class="wbtns"><div class="wbtn" onclick="openGoalModal('weekly')">+</div></div></div>
       <div class="pbody">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('weekly')">✦ ADD WEEKLY GOAL</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openGoalModal('weekly')" data-t="btn_add_weekly">✦ ADD WEEKLY GOAL</button></div>
         <div id="weeklyGoalList"></div>
       </div>
     </div>
@@ -2316,19 +2454,19 @@ if('serviceWorker' in navigator){
   <div class="win-panel">
     <div class="tbar"><div class="tbar-l"><span>🌸</span> <span data-t="p_habits">HABITS_21DAY.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="openModal('habitModal')">+</div><div class="wbtn">✕</div></div></div>
     <div class="pbody">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openModal('habitModal')">✦ NEW HABIT</button></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:7px"><button class="w98" onclick="openModal('habitModal')" data-t="btn_new_habit">✦ NEW HABIT</button></div>
       <div id="habitList"></div>
     </div>
   </div>
   <div class="slabel" data-t="sl_suggested_habits">SUGGESTED_HABITS.TXT</div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💡</span> HABIT_SUGGESTIONS</div></div>
+    <div class="tbar"><div class="tbar-l"><span>💡</span> <span data-t="p_habit_suggest">HABIT_SUGGESTIONS</span></div></div>
     <div class="pbody">
       <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:var(--acc)"></div>WELLNESS</div><div class="sg-grid" id="sg-wellness"></div></div>
       <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:#9040a0"></div>MIND</div><div class="sg-grid" id="sg-mind"></div></div>
       <div class="sg-sec"><div class="sg-cat"><div class="sg-dot" style="background:#e080c0"></div>BEAUTY</div><div class="sg-grid" id="sg-beauty"></div></div>
       <div class="sg-sec" style="margin-bottom:0"><div class="sg-cat"><div class="sg-dot" style="background:#c09000"></div>GROWTH</div><div class="sg-grid" id="sg-growth"></div></div>
-      <button class="w98 acc full" onclick="addSuggested()">✦ ADD SELECTED</button>
+      <button class="w98 acc full" onclick="addSuggested()" data-t="btn_add_selected">✦ ADD SELECTED</button>
     </div>
   </div>
 </div>
@@ -2361,7 +2499,7 @@ if('serviceWorker' in navigator){
   <div class="win-panel">
     <div class="tbar"><div class="tbar-l"><span>😊</span> <span data-t="p_mood">MOOD_TRACKER.EXE</span></div></div>
     <div class="pbody">
-      <div style="font-size:14px;color:var(--text3);margin-bottom:10px">how are you feeling today? ♡</div>
+      <div style="font-size:14px;color:var(--text3);margin-bottom:10px" data-t="mood_q">how are you feeling today? ♡</div>
       <div id="moodToday"></div>
     </div>
   </div>
@@ -2396,16 +2534,16 @@ if('serviceWorker' in navigator){
     <div class="pbody">
       <div id="notifPermBox" style="margin-bottom:10px"></div>
       <div style="display:flex;justify-content:flex-end;margin-bottom:7px">
-        <button class="w98" onclick="openAddNotif()">✦ ADD REMINDER</button>
+        <button class="w98" onclick="openAddNotif()" data-t="btn_add_reminder">✦ ADD REMINDER</button>
       </div>
       <div id="notifList"></div>
     </div>
   </div>
-  <div class="slabel">SUGGESTED_REMINDERS.TXT</div>
+  <div class="slabel" data-t="sl_suggested_reminders">SUGGESTED_REMINDERS.TXT</div>
   <div class="win-panel">
-    <div class="tbar"><div class="tbar-l"><span>💡</span> QUICK_ADD</div></div>
+    <div class="tbar"><div class="tbar-l"><span>💡</span> <span data-t="p_quick_add">QUICK_ADD</span></div></div>
     <div class="pbody">
-      <div style="font-size:14px;color:var(--text3);margin-bottom:9px">tap to add a girly reminder ♡</div>
+      <div style="font-size:14px;color:var(--text3);margin-bottom:9px" data-t="quick_add_hint">tap to add a girly reminder ♡</div>
       <div id="notifSuggestions" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
   </div>
@@ -2538,7 +2676,7 @@ if('serviceWorker' in navigator){
 <!-- LOG DAY MODAL -->
 <div class="modal-backdrop" id="logModal">
   <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>📅</span> LOG_DAY.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mtbar"><div class="mtitle"><span>📅</span> <span data-t="mtitle_log">LOG_DAY.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
       <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--text2);margin-bottom:10px" id="logModalDate"></div>
       <div class="log-icons-grid" id="logIconsGrid"></div>
@@ -2553,7 +2691,7 @@ if('serviceWorker' in navigator){
 <!-- ADD TRACKER MODAL -->
 <div class="modal-backdrop" id="trackerModal">
   <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>⚙</span> ADD_TRACKER.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mtbar"><div class="mtitle"><span>⚙</span> <span data-t="mtitle_tracker">ADD_TRACKER.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
       <div class="field"><label data-t="l_tracker_name">TRACKER NAME</label><input type="text" id="trName" placeholder="e.g. Went for a walk..." data-tp="ph_tracker"/></div>
       <div class="field"><label data-t="l_emoji_icon">EMOJI ICON</label><input type="text" id="trEmoji" placeholder="e.g. 🚶" data-tp="ph_tracker_emoji" maxlength="2"/></div>
@@ -2565,7 +2703,7 @@ if('serviceWorker' in navigator){
 <!-- MED MODAL -->
 <div class="modal-backdrop" id="medModal">
   <div class="mwin">
-    <div class="mtbar"><div class="mtitle"><span>💊</span> ADD_MED.EXE</div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
+    <div class="mtbar"><div class="mtitle"><span>💊</span> <span data-t="mtitle_med">ADD_MED.EXE</span></div><div class="wbtns"><div class="wbtn" onclick="closeModals()">✕</div></div></div>
     <div class="mbody">
       <div class="field"><label data-t="l_name">NAME</label><input type="text" id="mIn" placeholder="e.g. Vitamin D, Aspirin..." data-tp="ph_med_name"/></div>
       <div class="field"><label data-t="l_dose">DOSE</label><input type="text" id="mDose" placeholder="e.g. 1 tablet, 500mg..." data-tp="ph_med_dose"/></div>
