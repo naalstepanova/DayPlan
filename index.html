@@ -49,9 +49,9 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .hstats{font-size:15px;color:var(--acc)}
 
 /* taskbar */
-.taskbar{background:var(--bf);border-top:2px solid var(--bl);border-bottom:2px solid var(--bd);padding:3px 6px;display:flex;gap:3px;flex-shrink:0;position:relative;z-index:2;overflow-x:auto}
+.taskbar{background:var(--bf);border-top:2px solid var(--bl);border-bottom:2px solid var(--bd);padding:3px 4px;display:flex;gap:2px;flex-shrink:0;position:relative;z-index:2}
 .taskbar::-webkit-scrollbar{display:none}
-.ttab{flex:0 0 auto;padding:4px 6px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text2);background:var(--bf);border-top:2px solid var(--bl);border-left:2px solid var(--bl);border-right:2px solid var(--bd);border-bottom:2px solid var(--bd);cursor:pointer;text-align:center;line-height:1.4;white-space:nowrap}
+.ttab{flex:1 1 0;min-width:0;padding:4px 2px;font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text2);background:var(--bf);border-top:2px solid var(--bl);border-left:2px solid var(--bl);border-right:2px solid var(--bd);border-bottom:2px solid var(--bd);cursor:pointer;text-align:center;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
 .ttab.active{background:var(--white);border-top-color:var(--bd);border-left-color:var(--bd);border-right-color:var(--bl);border-bottom-color:var(--white);color:var(--acc);margin-top:2px}
 
 /* scroll */
