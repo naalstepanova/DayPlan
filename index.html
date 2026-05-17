@@ -1694,7 +1694,8 @@ function gdSignIn(){
     return;
   }
   gdSetStatus('signing in...','busy');
-  const authUrl=`https://accounts.google.com/o/oauth2/v2/auth?client_id=${GD_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.href)}&response_type=token&scope=${encodeURIComponent(GD_SCOPE)}`;
+  const redirectUri = window.location.origin + '/';
+  const authUrl=`https://accounts.google.com/o/oauth2/v2/auth?client_id=${GD_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(GD_SCOPE)}`;
   const popup=window.open(authUrl,'gdauth','width=500,height=600');
   if(!popup){gdLog('popup blocked — allow popups and retry');gdSetStatus('popup blocked','err');return;}
   const check=setInterval(()=>{
