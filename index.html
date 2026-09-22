@@ -154,6 +154,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .hgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin:5px 0 2px}
 .dlbls{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:5px}
 .dlbl{font-size:11px;text-align:center;color:var(--text3)}
+.dlbl.now{color:var(--acc)}
 .hdot{aspect-ratio:1;background:var(--white);border-top:2px solid var(--bd);border-left:2px solid var(--bd);border-right:2px solid var(--bl);border-bottom:2px solid var(--bl);cursor:pointer;border-radius:0}
 .hdot.done{background:var(--acc);border-top-color:var(--bl);border-left-color:var(--bl);border-right-color:var(--bd);border-bottom-color:var(--bd)}
 .hdot.today{outline:2px dotted var(--acc2);outline-offset:1px}
@@ -1437,6 +1438,13 @@ function saveGoal(){
 function renderHabits(){
   const el=document.getElementById('habitList');
   if(!S.habits.length){el.innerHTML=`<div class="empty">${T('e_no_habits')}<br>${T('e_no_habits_sub')}</div>`;return;}
+  // column headers: the grid is 21 days in 7 columns, so every row shares the
+  // same weekday per column. Column 6 is always today.
+  const colStart=new Date();colStart.setDate(colStart.getDate()-20);
+  const dlbls=Array.from({length:7},(_,i)=>{
+    const d=new Date(colStart);d.setDate(colStart.getDate()+i);
+    return`<div class="dlbl${i===6?' now':''}">${dayName(d.getDay())}</div>`;
+  }).join('');
   el.innerHTML=S.habits.map(h=>{
     const streak=calcStreak(h);const pct=Math.min(100,Math.round(h.checkins.length/21*100));
     const dots=Array.from({length:21},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(20-i));const ds=d.toISOString().slice(0,10);return`<button class="hdot ${h.checkins.includes(ds)?'done':''} ${ds===today()?'today':''}" onclick="toggleHabit('${h.id}','${ds}')"></button>`;}).join('');
@@ -1447,7 +1455,7 @@ function renderHabits(){
       </div>
       <div class="prog-lbl"><span>day ${Math.min(h.checkins.length,21)} of 21</span><span>${pct}%</span></div>
       <div class="prog-wrap" style="margin-bottom:5px"><div class="prog98" style="width:${pct}%"></div></div>
-      <div class="dlbls">${['M','T','W','T','F','S','S'].map(d=>`<div class="dlbl">${d}</div>`).join('')}</div>
+      <div class="dlbls">${dlbls}</div>
       <div class="hgrid">${dots}</div>
     </div>`;
   }).join('');
