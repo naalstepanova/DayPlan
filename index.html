@@ -20,14 +20,34 @@
   --acc:#c060a8;--acc2:#9040a0;
   --white:#fff8fe;--pink:#fce8f8;
   --bf:#e8a8d8;--bs:#9040a0;--bh:#ffccf0;
+  --accbtn:#d070b8;--ring:#d8a0c8;--mic:#f8d0e0;--miclive:#c00060;
+  --tbdate:#ffccf0;--scan:rgba(180,0,160,.03);--ovl:rgba(160,60,200,.35);
+  --dbgimg:radial-gradient(circle at 20% 30%,rgba(180,80,200,.12) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(220,100,180,.1) 0%,transparent 50%);
+  --dbgsize:auto;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
+
+
+/* ── THEME: STEEL (classic 98) ── */
+html[data-theme="steel"]{
+  --bg:#0f7676;--bg2:#158b8b;--win:#c6c6c6;
+  --tb:#0a246a;--tb2:#3a6ea5;
+  --bd:#4a4a4a;--bl:#ffffff;
+  --text:#101010;--text2:#333333;--text3:#5e5e5e;
+  --acc:#0a246a;--acc2:#1e4f9c;
+  --white:#ffffff;--pink:#dfdfdf;
+  --bf:#c6c6c6;--bs:#6b6b6b;--bh:#ffffff;
+  --accbtn:#0a246a;--ring:#9a9a9a;--mic:#d4d4d4;--miclive:#0a246a;
+  --tbdate:#cfe0ff;--scan:rgba(0,0,0,.035);--ovl:rgba(10,20,40,.45);
+  --dbgimg:radial-gradient(circle at 25% 25%,rgba(255,255,255,.07) 0%,transparent 55%),radial-gradient(circle at 75% 75%,rgba(0,0,0,.12) 0%,transparent 55%);
+  --dbgsize:auto;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'VT323',monospace;overflow:hidden;overscroll-behavior:none}
-body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(180,0,160,.03) 2px,rgba(180,0,160,.03) 4px);pointer-events:none}
+body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scan) 2px,var(--scan) 4px);pointer-events:none}
 #app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;z-index:1}
-.dbg{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg);background-image:radial-gradient(circle at 20% 30%,rgba(180,80,200,.12) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(220,100,180,.1) 0%,transparent 50%)}
+.dbg{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg);background-image:var(--dbgimg);background-size:var(--dbgsize);background-repeat:repeat}
 
 /* window chrome */
 .win-panel{background:var(--win);border-top:2px solid var(--bl);border-left:2px solid var(--bl);border-right:2px solid var(--bd);border-bottom:2px solid var(--bd);margin-bottom:9px}
@@ -62,7 +82,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 /* buttons */
 .w98{background:var(--bf);border-top:2px solid var(--bh);border-left:2px solid var(--bh);border-right:2px solid var(--bs);border-bottom:2px solid var(--bs);padding:5px 11px;font-family:'VT323',monospace;font-size:17px;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:none}
 .w98:active{border-color:var(--bs) var(--bh) var(--bh) var(--bs);padding:6px 10px 4px 12px}
-.w98.acc{background:#d070b8;color:var(--white)}
+.w98.acc{background:var(--accbtn);color:var(--white)}
 .w98.sm{font-size:14px;padding:3px 8px}
 .w98.full{width:100%;justify-content:center;margin-top:10px}
 .w98.gd{background:#2a5a2a;border-color:#6aaa6a #1a3a1a #1a3a1a #6aaa6a;color:#aaffaa}
@@ -77,7 +97,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .steps-body{padding:9px;display:flex;align-items:center;gap:11px}
 .sring{position:relative;width:76px;height:76px;flex-shrink:0}
 .sring svg{transform:rotate(-90deg)}
-.rt{fill:none;stroke:#d8a0c8;stroke-width:8}
+.rt{fill:none;stroke:var(--ring);stroke-width:8}
 .rf{fill:none;stroke:var(--acc);stroke-width:8;stroke-linecap:square;transition:stroke-dashoffset .4s}
 .sctr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .sbig{font-size:18px;color:var(--text);line-height:1}
@@ -255,7 +275,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating
 .slabel::before,.slabel::after{content:'';flex:1;height:1px;background:var(--bd);opacity:.4}
 
 /* modals */
-.modal-backdrop{display:none;position:fixed;inset:0;z-index:300;background:rgba(160,60,200,.35);align-items:center;justify-content:center;padding:16px}
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:300;background:var(--ovl);align-items:center;justify-content:center;padding:16px}
 .modal-backdrop.open{display:flex}
 .mwin{background:var(--win);border-top:3px solid var(--bl);border-left:3px solid var(--bl);border-right:3px solid var(--bd);border-bottom:3px solid var(--bd);width:100%;max-width:360px;max-height:90vh;overflow-y:auto}
 .mtbar{background:linear-gradient(90deg,var(--tb),var(--tb2));padding:5px 8px;display:flex;align-items:center;justify-content:space-between}
@@ -272,9 +292,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .mbtns{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
 .voice-hint{background:var(--pink);border-top:1px solid var(--bd);border-left:1px solid var(--bd);border-right:1px solid var(--bl);border-bottom:1px solid var(--bl);padding:7px 9px;font-size:15px;color:var(--text2);margin-bottom:11px}
 .mic-btn{width:40px;height:36px;background:var(--bf);border-top:2px solid var(--bh);border-left:2px solid var(--bh);border-right:2px solid var(--bs);border-bottom:2px solid var(--bs);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:19px}
-.mic-btn.listening{background:#f8d0e0;border-color:var(--bs) var(--bh) var(--bh) var(--bs);animation:blink 1s step-start infinite}
+.mic-btn.listening{background:var(--mic);border-color:var(--bs) var(--bh) var(--bh) var(--bs);animation:blink 1s step-start infinite}
 .mic-st{font-size:13px;color:var(--text3);margin-top:3px;min-height:15px}
-.mic-st.live{color:#c00060}
+.mic-st.live{color:var(--miclive)}
 
 /* install */
 .inst{display:none;margin:0 9px 5px;background:var(--pink);border-top:2px solid var(--bl);border-left:2px solid var(--bl);border-right:2px solid var(--bd);border-bottom:2px solid var(--bd);padding:7px 9px;font-size:14px;color:var(--text2);align-items:center;gap:8px;justify-content:space-between;position:relative;z-index:2;flex-shrink:0}
@@ -292,6 +312,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .lang-toggle{display:flex;gap:2px}
 .lang-toggle button{font-family:'Press Start 2P',monospace;font-size:7px;padding:3px 6px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);color:var(--text2);cursor:pointer;letter-spacing:.5px}
 .lang-toggle button.active{background:var(--white);color:var(--acc);border-style:inset;border-color:var(--bs)}
+.theme-toggle{display:flex;gap:2px;justify-content:flex-end}
+.theme-toggle button{font-size:13px;line-height:1;padding:2px 6px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);color:var(--text2);cursor:pointer;font-family:'VT323',monospace}
+.theme-toggle button.active{background:var(--white);border-color:var(--bs) var(--bh) var(--bh) var(--bs)}
 </style>
 <script defer>
 /* ═══════════════════════════════════════
@@ -308,7 +331,7 @@ const SUGGESTED = new Proxy({}, {get:(_,k)=>getSuggested()[k]});
 /* old DEFAULT_BEAUTY removed — beauty is now calendar-based */
 function getDefaultTrackers(){return [
   {id:'t1',name:T('tr_alcohol'),emoji:'🍹'},{id:'t2',name:T('tr_sport'),emoji:'🏃'},
-  {id:'t3',name:T('tr_book'),emoji:'📚'},{id:'t4',name:T('tr_poop'),emoji:'💩'},
+  {id:'t3',name:T('tr_book'),emoji:'📚'},
   {id:'t5',name:T('tr_outside'),emoji:'🌿'},{id:'t6',name:T('tr_sleep'),emoji:'😴'},
   {id:'t7',name:T('tr_cook'),emoji:'🍳'},{id:'t8',name:T('tr_meditate'),emoji:'🧘'},
   {id:'t9',name:T('tr_period'),emoji:'🌸'},{id:'t10',name:T('tr_mood_great'),emoji:'😊'},
@@ -696,6 +719,22 @@ let LANG = (function(){
   return 'en';
 })();
 
+/* ═══ THEMES ═══ */
+const THEME_COLORS={pink:'#c060a8',steel:'#0a246a'};
+let THEME=(function(){try{var t=localStorage.getItem('dp_theme');if(t&&THEME_COLORS[t])return t;}catch(e){}return 'pink';})();
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',THEME);
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(m)m.setAttribute('content',THEME_COLORS[THEME]);
+  document.querySelectorAll('.theme-toggle button').forEach(function(b){b.classList.toggle('active',b.dataset.theme===THEME);});
+}
+function setTheme(t){
+  if(!THEME_COLORS[t])return;
+  THEME=t;
+  try{localStorage.setItem('dp_theme',t);}catch(e){}
+  applyTheme();
+}
+
 function T(key){
   return (I18N[LANG] && I18N[LANG][key]) || I18N.en[key] || key;
 }
@@ -817,7 +856,7 @@ function loadState(){
         monthlyGoals:parsed.monthlyGoals||[],
         weeklyGoals:parsed.weeklyGoals||[],
         notifs:parsed.notifs||[],
-        trackers:parsed.trackers||def.trackers,
+        trackers:(parsed.trackers||def.trackers).filter(function(t){return !(t&&t.id==='t4'&&t.emoji==='💩');}),
         meds:parsed.meds||[],
         goals:parsed.goals||[],
         log:parsed.log||{}
@@ -843,12 +882,14 @@ function fmtDate(ds){const d=new Date(ds+'T12:00:00');return d.getDate()+' '+mon
    INIT
 ═══════════════════════════════════════ */
 function init(){
+  applyTheme();
   applyLangToDOM();
   setTimeout(()=>{document.querySelectorAll(".lang-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.lang===LANG));},10);
   const d=new Date();
   document.getElementById('hDate').textContent=dayName(d.getDay())+' '+d.getDate()+' '+monthName(d.getMonth())+' '+d.getFullYear();
   document.getElementById('hDateFull').textContent=dayName(d.getDay())+' '+monthName(d.getMonth())+' '+d.getDate();
   buildGoalColorPicker();
+  if(!NOTIFS_ENABLED&&S.tab==='notifs')S.tab='today';
   sw(S.tab||'today',false);
   maybeShowInst();
   document.querySelectorAll('.modal-backdrop').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeModals();});});
@@ -1817,7 +1858,9 @@ const NOTIF_SUGGESTED = new Proxy([], {
 let snoozeTimer=null;
 let currentSnoozeMsg=null;
 
+const NOTIFS_ENABLED=false;   /* set to true to bring the NOTIFS tab back */
 function initNotifs(){
+  if(!NOTIFS_ENABLED)return;
   if(!S.notifs)S.notifs=[];
   requestNotifPermission();
   scheduleAllNotifs();
@@ -2246,7 +2289,7 @@ if('serviceWorker' in navigator){
 <div class="header">
   <div class="hwin">
     <div class="tbar">
-      <div class="tbar-l"><span>♡</span> DAYPLAN.EXE — <span id="hDate" style="color:#ffccf0;font-size:6px"></span></div>
+      <div class="tbar-l"><span>♡</span> DAYPLAN.EXE — <span id="hDate" style="color:var(--tbdate);font-size:6px"></span></div>
       <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn">✕</div></div>
     </div>
     <div class="hbody">
@@ -2259,6 +2302,10 @@ if('serviceWorker' in navigator){
         <div class="lang-toggle" style="margin-top:4px">
           <button data-lang="en" onclick="setLang('en')">EN</button>
           <button data-lang="ru" onclick="setLang('ru')">RU</button>
+        </div>
+        <div class="theme-toggle" style="margin-top:3px">
+          <button data-theme="pink" onclick="setTheme('pink')" title="pink">♡</button>
+          <button data-theme="steel" onclick="setTheme('steel')" title="steel">▤</button>
         </div>
       </div>
     </div>
@@ -2280,7 +2327,7 @@ if('serviceWorker' in navigator){
   <button class="ttab" onclick="sw('beauty')" data-t="tab_beauty">BEAUTY</button>
   <button class="ttab" onclick="sw('mood')" data-t="tab_mood">MOOD</button>
   <button class="ttab" onclick="sw('stats')" data-t="tab_stats">STATS ★</button>
-  <button class="ttab" onclick="sw('notifs')" data-t="tab_notifs">NOTIFS 🔔</button>
+  <button class="ttab" onclick="sw('notifs')" data-t="tab_notifs" style="display:none">NOTIFS 🔔</button>
 </div>
 
 <div class="scroll-area" id="sa">
@@ -2754,11 +2801,11 @@ if('serviceWorker' in navigator){
 <!-- WIN98 NOTIFICATION POPUP -->
 <div id="win98notif" style="display:none;position:fixed;bottom:20px;left:12px;right:12px;z-index:99999;max-width:380px;margin:0 auto;animation:slideUp .3s ease">
   <div style="background:#f5d0ea;border-top:2px solid #ffb8f0;border-left:2px solid #ffb8f0;border-right:2px solid #8030a0;border-bottom:2px solid #8030a0;box-shadow:3px 3px 0 rgba(128,48,160,0.3)">
-    <div style="background:linear-gradient(90deg,#c060a8,#9040a0);padding:4px 8px;display:flex;align-items:center;justify-content:space-between">
+    <div style="background:linear-gradient(90deg,var(--tb),var(--tb2));padding:4px 8px;display:flex;align-items:center;justify-content:space-between">
       <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#fff8fe;text-shadow:1px 1px 0 rgba(0,0,0,.3);display:flex;align-items:center;gap:5px">
         <span id="win98notifEmoji">🔔</span> DAYPLAN.EXE — REMINDER
       </div>
-      <div style="width:16px;height:14px;background:#e8a8d8;border-top:1px solid #ffccf0;border-left:1px solid #ffccf0;border-right:1px solid #9040a0;border-bottom:1px solid #9040a0;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'VT323',monospace;color:#3a0060" onclick="dismissWin98Notif()">✕</div>
+      <div style="width:16px;height:14px;background:var(--bf);border-top:1px solid var(--bh);border-left:1px solid var(--bh);border-right:1px solid var(--bs);border-bottom:1px solid var(--bs);font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'VT323',monospace;color:var(--text)" onclick="dismissWin98Notif()">✕</div>
     </div>
     <div style="padding:12px 14px;display:flex;align-items:flex-start;gap:10px">
       <div style="font-size:32px;flex-shrink:0;line-height:1" id="win98notifIcon">🔔</div>
@@ -2768,8 +2815,8 @@ if('serviceWorker' in navigator){
       </div>
     </div>
     <div style="padding:4px 10px 10px;display:flex;justify-content:flex-end;gap:7px">
-      <button onclick="snoozeNotif()" style="background:#e8a8d8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#3a0060;cursor:pointer">snooze 10min</button>
-      <button onclick="dismissWin98Notif()" style="background:#d070b8;border-top:2px solid #ffccf0;border-left:2px solid #ffccf0;border-right:2px solid #9040a0;border-bottom:2px solid #9040a0;padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:#fff8fe;cursor:pointer">ok ♡</button>
+      <button onclick="snoozeNotif()" style="background:var(--bf);border-top:2px solid var(--bh);border-left:2px solid var(--bh);border-right:2px solid var(--bs);border-bottom:2px solid var(--bs);padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:var(--text);cursor:pointer">snooze 10min</button>
+      <button onclick="dismissWin98Notif()" style="background:var(--accbtn);border-top:2px solid var(--bh);border-left:2px solid var(--bh);border-right:2px solid var(--bs);border-bottom:2px solid var(--bs);padding:4px 12px;font-family:'VT323',monospace;font-size:15px;color:var(--white);cursor:pointer">ok ♡</button>
     </div>
   </div>
 </div>
