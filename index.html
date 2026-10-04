@@ -907,6 +907,7 @@ function init(){
   document.querySelectorAll('.modal-backdrop').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeModals();});});
   // check gd token from localStorage
   const gt=localStorage.getItem('gd_token');if(gt){gdToken=gt;gdUpdateUI();}
+  gdHandleRedirect();
   setInterval(()=>{renderMeds();},60000);
   // auto-save every 30 seconds
   setInterval(()=>{save();},30000);
@@ -2632,7 +2633,7 @@ if('serviceWorker' in navigator){
       <div style="font-size:15px;color:var(--text2);line-height:1.6">
         your data saves as <b>dayplan_data.json</b> in your google drive.<br>
         sign in once → auto-saves every 5 min ♡<br>
-        <span style="color:var(--text3);font-size:13px">note: you need to allow popup on first sign-in</span>
+        <span style="color:var(--text3);font-size:13px">tap the button → google opens → sign in → comes back automatically ♡</span>
       </div>
       <div class="gd-log" id="gdLog" style="margin-top:8px"></div>
     </div>
