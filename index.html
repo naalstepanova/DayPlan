@@ -908,6 +908,7 @@ function init(){
   // check gd token from localStorage
   const gt=localStorage.getItem('gd_token');if(gt){gdToken=gt;gdUpdateUI();}
   gdHandleRedirect();
+  gdCheckTokenHelper();
   setInterval(()=>{renderMeds();},60000);
   // auto-save every 30 seconds
   setInterval(()=>{save();},30000);
@@ -2624,7 +2625,14 @@ if('serviceWorker' in navigator){
     <div class="pbody">
       <div class="gd-status"><div class="gd-dot" id="gdDot"></div><span id="gdStatusTxt">not connected</span></div>
       <div style="display:flex;flex-direction:column;gap:7px">
-        <button class="w98 gd" onclick="gdSignIn()">♡ SIGN IN WITH GOOGLE</button>
+        <button class="w98 gd" onclick="gdSignIn()" id="gdSignInBtn">♡ SIGN IN WITH GOOGLE</button>
+        <div id="webviewWarning" style="display:none;margin-top:8px;background:#fff0d0;border:1px solid #c08000;padding:8px 10px;font-size:14px;color:#633806;line-height:1.6">
+          <b>Running inside app?</b><br>
+          Open <b>Chrome</b> browser on your phone → go to<br>
+          <b>dayplan.naalstepanova.com</b><br>
+          → tap LOGIN there → sign in → come back to the app.<br>
+          Your data will sync automatically ♡
+        </div>
         <button class="w98 sm" onclick="gdSave()" id="gdSaveBtn" style="display:none" data-th="btn_save_drive">💾 SAVE TO DRIVE</button>
         <button class="w98 sm" onclick="gdLoad()" id="gdLoadBtn" style="display:none" data-th="btn_load_drive">📂 LOAD FROM DRIVE</button>
         <button class="w98 sm" onclick="gdSignOut()" id="gdOutBtn" style="display:none" style="color:var(--text3)">sign out</button>
@@ -2632,8 +2640,22 @@ if('serviceWorker' in navigator){
       <div class="slabel">INFO</div>
       <div style="font-size:15px;color:var(--text2);line-height:1.6">
         your data saves as <b>dayplan_data.json</b> in your google drive.<br>
-        sign in once → auto-saves every 5 min ♡<br>
-        <span style="color:var(--text3);font-size:13px">tap the button → google opens → sign in → comes back automatically ♡</span>
+        sign in once → auto-saves every 5 min ♡
+      </div>
+      <div class="slabel">IF SIGN-IN DOESN'T WORK IN APP</div>
+      <div style="font-size:14px;color:var(--text3);margin-bottom:8px;line-height:1.6">
+        1. Open Chrome → go to <b>dayplan.naalstepanova.com</b><br>
+        2. Tap LOGIN → sign in with Google<br>
+        3. After signing in, tap <b>COPY TOKEN</b> below<br>
+        4. Come back to the app → paste it here
+      </div>
+      <button class="w98 sm" onclick="copyTokenLink()" style="margin-bottom:6px">📋 OPEN TOKEN HELPER</button>
+      <div class="field" style="margin-top:6px">
+        <label style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text2)">PASTE TOKEN MANUALLY</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="manualToken" placeholder="paste access token here..." style="flex:1;font-size:14px"/>
+          <button class="w98 sm" onclick="applyManualToken()">OK ♡</button>
+        </div>
       </div>
       <div class="gd-log" id="gdLog" style="margin-top:8px"></div>
     </div>
